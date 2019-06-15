@@ -1,21 +1,27 @@
 <form method="POST" action="<?php echo site_url('komponenter/kasse/'.$Kasse['KasseID']); ?>">
+<?php if (isset($Kasse['KasseID'])) { ?>
 <input type="hidden" name="KasseID" value="<?php echo set_value('KasseID',$Kasse['KasseID']); ?>" />
+<?php } ?>
 
 <div class="card">
   <div class="card-header">Kasse</div>
   <div class="card-body">
     <div class="form-group">
       <label>ID:</label>
-      <input type="text" class="form-control" value="<?php echo '='.str_pad($Kasse['KasseID'],2,'0',STR_PAD_LEFT); ?>" readonly>
+<?php if (isset($Kasse['KasseID'])) { ?>
+      <input type="text" class="form-control" value="<?php echo '='.$Kasse['KasseID']; ?>" readonly>
+<?php } else { ?>
+      <input type="text" class="form-control" id="NyKasseID" name="NyKasseID">
+<?php } ?>
     </div>
     <div class="form-group">
       <label for="Navn">Navn:</label>
       <input type="text" class="form-control" id="Navn" name="Navn" value="<?php echo set_value('Navn',$Kasse['Navn']); ?>">
     </div>
     <div class="form-group">
-      <label for="LokasjonID">Lokasjon:</label>
+      <label for="LokasjonID">Plassering:</label>
       <select class="custom-select custom-select-sm" id="LokasjonID" name="LokasjonID">
-        <option value="0">[ingen]</option>
+        <option value="">[ingen]</option>
 <?php
   foreach ($Lokasjoner as $Lokasjon) {
 ?>

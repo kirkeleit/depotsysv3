@@ -42,8 +42,20 @@
       if ($this->input->post('KomponentLagre')) {
         $KomponentID = $this->input->post('KomponentID');
 	$Komponent['Beskrivelse'] = $this->input->post('Beskrivelse');
-	$Komponent['LokasjonID'] = $this->input->post('LokasjonID');
-	$Komponent['KasseID'] = $this->input->post('KasseID');
+	if ($this->input->post('Plassering')) {
+          if ($this->input->post('Plassering') == '') {
+            $Komponent['LokasjonID'] = '';
+	    $Komponent['KasseID'] = '';
+	  } else {
+            if (substr($this->input->post('Plassering'),0,1) == '+') {
+              $Komponent['KasseID'] = '';
+	      $Komponent['LokasjonID'] = substr($this->input->post('Plassering'),1);
+	    } elseif (substr($this->input->post('Plassering'),0,1) == '=') {
+              $Komponent['LokasjonID'] = '';
+	      $Komponent['KasseID'] = substr($this->input->post('Plassering'),1);
+	    }
+	  }
+	}
         $Komponent['ProdusentID'] = $this->input->post('ProdusentID');
         $Komponent['Notater'] = $this->input->post('Notater');
         $this->Komponenter_model->komponent_lagre($KomponentID,$Komponent);
@@ -137,7 +149,9 @@
       $this->load->model('Komponenter_model');
       if ($this->input->post('LokasjonLagre')) {
         $LokasjonID = $this->input->post('LokasjonID');
-        $Lokasjon['LokasjonID'] = $LokasjonID;
+        if ($this->input->post('NyLokasjonID')) {
+          $Lokasjon['LokasjonID'] = $this->input->post('NyLokasjonID');
+        }
         $Lokasjon['Navn'] = $this->input->post('Navn');
         $Lokasjon['Notater'] = $this->input->post('Notater');
         $this->Komponenter_model->lokasjon_lagre($LokasjonID,$Lokasjon);
@@ -170,13 +184,16 @@
       $this->load->model('Komponenter_model');
       if ($this->input->post('KasseLagre')) {
         $KasseID = $this->input->post('KasseID');
+        if ($this->input->post('NyKasseID')) {
+          $Kasse['KasseID'] = $this->input->post('NyKasseID');
+        }
 	$Kasse['Navn'] = $this->input->post('Navn');
 	$Kasse['LokasjonID'] = $this->input->post('LokasjonID');
         $Kasse['Notater'] = $this->input->post('Notater');
         $this->Komponenter_model->kasse_lagre($KasseID,$Kasse);
         redirect('komponenter/kasser');
       } elseif ($this->input->post('KasseSlett')) {
-        $this->Komponent_model->kasse_slett($this->input->post('KasseID'));
+        $this->Komponenter_model->kasse_slett($this->input->post('KasseID'));
         redirect('komponenter/kasser');
       } else {
         $data['Kasse'] = $this->Komponenter_model->kasse_info($this->uri->segment(3));

@@ -61,7 +61,13 @@
   </div>
 </nav>
 
-<main role="main" class="container">
+<main role="main" class="container-fluid">
+<?php if ($this->session->flashdata('Feilmelding')) { ?>
+  <div class="alert alert-danger" role="alert"><?php echo $this->session->flashdata('Feilmelding'); ?></div>
+<?php } ?>
+<?php if ($this->session->flashdata('Infomelding')) { ?>
+  <div class="alert alert-success" role="alert"><?php echo $this->session->flashdata('Infomelding'); ?></div>
+<?php } ?>
 <?php echo $contents; ?>
 </main>
 

@@ -6,8 +6,8 @@
         <tr>
 	  <th>ID</th>
 	  <th>Navn</th>
-          <th>Lokasjon</th>
-          <th>Endret</th>
+          <th>Plassering</th>
+	  <th>Endret</th>
           <th>Komponenter</th>
         </tr>
       </thead>
@@ -20,8 +20,8 @@
 	  <th><a href="<?php echo site_url('komponenter/kasse/'.$Kasse['KasseID']); ?>"><?php echo "=".str_pad($Kasse['KasseID'],2,'0',STR_PAD_LEFT); ?></a></th>
 	  <td><?php echo $Kasse['Navn']; ?></td>
           <td><?php if (strlen($Kasse['LokasjonID']) > 0) { echo '+'.$Kasse['LokasjonID']; } ?></td>
-          <td><?php echo date('d.m.Y',strtotime($Kasse['DatoEndret'])); ?></td>
-          <td>0 stk</td>
+	  <td><?php echo date('d.m.Y',strtotime($Kasse['DatoEndret'])); ?></td>
+	  <td><?php if ($Kasse['KomponenterAntall'] > 0) { echo $Kasse['KomponenterAntall']." stk"; } else { echo "&nbsp;"; } ?></td>
         </tr>
 <?php
     }

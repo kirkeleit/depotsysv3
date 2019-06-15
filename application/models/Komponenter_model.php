@@ -94,7 +94,7 @@
         $data['KomponenttypeID'] = $KomponenttypeID;
       }
       if ($this->db->affected_rows() > 0) {
-        //$this->session->set_flashdata('Infomelding','Lagerplassen "" ble vellykket oppdatert!');
+        $this->session->set_flashdata('Infomelding','Komponenttype '.$data['KomponenttypeID'].' ble lagret.');
       }
       return $data;
     }
@@ -105,7 +105,7 @@
 
 
     function produsenter() {
-      $rprodusenter = $this->db->query("SELECT ProdusentID,DatoRegistrert,DatoEndret,DatoSlettet,Navn,Nettsted FROM Produsenter WHERE (DatoSlettet Is Null) ORDER BY Navn ASC");
+      $rprodusenter = $this->db->query("SELECT ProdusentID,DatoRegistrert,DatoEndret,DatoSlettet,Navn,Nettsted,(SELECT COUNT(*) FROM Komponenter k WHERE (k.ProdusentID=p.ProdusentID)) AS KomponenterAntall FROM Produsenter p WHERE (DatoSlettet Is Null) ORDER BY Navn ASC");
       foreach ($rprodusenter->result_array() as $rprodusent) {
         $produsenter[] = $rprodusent;
         unset($rprodusent);
@@ -133,7 +133,7 @@
         $data['ProdusentID'] = $ProdusentID;
       }
       if ($this->db->affected_rows() > 0) {
-        //$this->session->set_flashdata('Infomelding','Lagerplassen "" ble vellykket oppdatert!');
+        $this->session->set_flashdata('Infomelding','Produsent '.$data['Navn'].' ble lagret.');
       }
       return $data;
     }
@@ -144,7 +144,7 @@
 
 
     function lokasjoner() {
-      $rlokasjoner = $this->db->query("SELECT LokasjonID,DatoRegistrert,DatoEndret,DatoSlettet,Navn FROM Lokasjoner WHERE (DatoSlettet Is Null) ORDER BY LokasjonID ASC");
+      $rlokasjoner = $this->db->query("SELECT LokasjonID,DatoRegistrert,DatoEndret,DatoSlettet,Navn,(SELECT COUNT(*) FROM Kasser ka WHERE (ka.LokasjonID=l.LokasjonID)) AS KasserAntall,(SELECT COUNT(*) FROM Komponenter ko WHERE (ko.LokasjonID=l.LokasjonID)) AS KomponenterAntall FROM Lokasjoner l WHERE (DatoSlettet Is Null) ORDER BY LokasjonID ASC");
       foreach ($rlokasjoner->result_array() as $rlokasjon) {
         $lokasjoner[] = $rlokasjon;
         unset($rlokasjon);
@@ -166,13 +166,14 @@
       if ($LokasjonID == null) {
         $data['DatoRegistrert'] = $data['DatoEndret'];
         $this->db->query($this->db->insert_string('Lokasjoner',$data));
-        //$data['ProdusentID'] = $this->db->insert_id();
       } else {
         $this->db->query($this->db->update_string('Lokasjoner',$data,"LokasjonID='".$LokasjonID."'"));
         $data['LokasjonID'] = $LokasjonID;
       }
       if ($this->db->affected_rows() > 0) {
-        //$this->session->set_flashdata('Infomelding','Lagerplassen "" ble vellykket oppdatert!');
+        $this->session->set_flashdata('Infomelding','Lokasjon +'.$data['LokasjonID'].' ble vellykket lagret.');
+      } else {
+        $this->session->set_flashdata('Feilmelding','En feil oppstod. Feilmelding: '.$this->db->error());
       }
       return $data;
     }
@@ -183,7 +184,7 @@
 
 
     function kasser() {
-      $rkasser = $this->db->query("SELECT KasseID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,Navn FROM Kasser WHERE (DatoSlettet Is Null) ORDER BY KasseID ASC");
+      $rkasser = $this->db->query("SELECT KasseID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,Navn,(SELECT COUNT(*) FROM Komponenter ko WHERE (ko.KasseID=ka.KasseID)) AS KomponenterAntall FROM Kasser ka WHERE (DatoSlettet Is Null) ORDER BY KasseID ASC");
       foreach ($rkasser->result_array() as $rkasse) {
         $kasser[] = $rkasse;
         unset($rkasse);
@@ -205,13 +206,15 @@
       if ($KasseID == null) {
         $data['DatoRegistrert'] = $data['DatoEndret'];
         $this->db->query($this->db->insert_string('Kasser',$data));
-        $data['KasseID'] = $this->db->insert_id();
+        //$data['KasseID'] = $data['NyKasseID'];
       } else {
         $this->db->query($this->db->update_string('Kasser',$data,"KasseID='".$KasseID."'"));
         $data['KasseID'] = $KasseID;
       }
       if ($this->db->affected_rows() > 0) {
-        //$this->session->set_flashdata('Infomelding','Lagerplassen "" ble vellykket oppdatert!');
+        $this->session->set_flashdata('Infomelding','Kasse ='.str_pad($data['KasseID'],2,'0',STR_PAD_LEFT).' ble vellykket lagret.');
+      } else {
+        $this->session->set_flashdata('Feilmelding','En feil oppstod. Feilmelding: '.$this->db->error());
       }
       return $data;
     }

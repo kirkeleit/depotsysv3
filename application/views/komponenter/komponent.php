@@ -9,29 +9,28 @@
       <input type="text" class="form-control" value="<?php echo $Komponent['KomponentID']; ?>" readonly>
     </div>
     <div class="form-group">
-      <label for="LokasjonID">Lokasjon:</label>
-      <select class="custom-select custom-select-sm" id="LokasjonID" name="LokasjonID">
-        <option value="0">[ingen]</option>
-<?php
-  foreach ($Lokasjoner as $Lokasjon) {
-?>
-        <option value="<?php echo $Lokasjon['LokasjonID']; ?>"<?php if ($Komponent['LokasjonID'] == $Lokasjon['LokasjonID']) { echo " selected"; } ?>><?php echo '+'.$Lokasjon['LokasjonID']." ".$Lokasjon['Navn']; ?></option>
-<?php
-  }
-?>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="KasseID">Kasse:</label>
-      <select class="custom-select custom-select-sm" id="KasseID" name="KasseID">
-        <option value="0">[ingen]</option>
+      <label for="Plassering">Plassering:</label>
+      <select class="custom-select custom-select-sm" id="Plassering" name="Plassering">
+	<option value="">[ukjent/ingen plass]</option>
+        <optgroup label="Kasser">
 <?php
   foreach ($Kasser as $Kasse) {
 ?>
-        <option value="<?php echo $Kasse['KasseID']; ?>"<?php if ($Komponent['KasseID'] == $Kasse['KasseID']) { echo " selected"; } ?>><?php echo '='.$Kasse['KasseID']." ".$Kasse['Navn']; ?></option>
+          <option value="=<?php echo $Kasse['KasseID']; ?>"<?php if ($Komponent['KasseID'] == $Kasse['KasseID']) { echo " selected"; } ?>><?php echo '='.$Kasse['KasseID']." ".$Kasse['Navn']; ?></option>
 <?php
   }
 ?>
+	</optgroup>
+        <optgroup label="Lokasjoner">
+<?php
+  foreach ($Lokasjoner as $Lokasjon) {
+?>
+        <option value="+<?php echo $Lokasjon['LokasjonID']; ?>"<?php if ($Komponent['LokasjonID'] == $Lokasjon['LokasjonID']) { echo " selected"; } ?>><?php echo '+'.$Lokasjon['LokasjonID']." ".$Lokasjon['Navn']; ?></option>
+<?php
+  }
+?>
+
+        </optgroup>
       </select>
     </div>
     <div class="form-group">

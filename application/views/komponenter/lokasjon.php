@@ -11,7 +11,7 @@
 <?php if (isset($Lokasjon)) { ?>
       <input type="text" class="form-control" value="<?php echo '+'.$Lokasjon['LokasjonID']; ?>" readonly>
 <?php } else { ?>
-      <input type="text" class="form-control" id="LokasjonID" name="LokasjonID">
+      <input type="text" class="form-control" id="NyLokasjonID" name="NyLokasjonID">
 <?php } ?>
     </div>
     <div class="form-group">

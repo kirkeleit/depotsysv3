@@ -21,7 +21,7 @@
 	  <td><?php echo $Produsent['Navn']; ?></td>
           <td><?php echo date('d.m.Y',strtotime($Produsent['DatoEndret'])); ?></td>
           <td><?php echo $Produsent['Nettsted']; ?></td>
-          <td>0 stk</td>
+	  <td><?php if ($Produsent['KomponenterAntall'] > 0) { echo $Produsent['KomponenterAntall']." stk"; } else { echo "&nbsp;"; } ?></td>
         </tr>
 <?php
     }

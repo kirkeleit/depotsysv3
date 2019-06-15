@@ -21,8 +21,8 @@
 	  <th><a href="<?php echo site_url('komponenter/komponent/'.$Komponent['KomponentID']); ?>"><?php echo "-".$Komponent['KomponentID']; ?></a></th>
           <td><?php echo $Komponent['Beskrivelse']; ?></td>
 	  <td><?php echo $Komponent['ProdusentNavn']; ?></td>
-          <td><?php echo "+".$Komponent['LokasjonID']; ?></td>
-          <td><?php echo "=".$Komponent['KasseID']; ?></td>
+          <td><?php if (strlen($Komponent['LokasjonID']) > 0) { echo "+".$Komponent['LokasjonID']; } else { echo "&nbsp;"; } ?></td>
+          <td><?php if (strlen($Komponent['KasseID']) > 0) { echo "=".$Komponent['KasseID']; } else { echo "&nbsp;"; } ?></td>
           <td><?php echo date("d.m.Y",strtotime($Komponent['DatoEndret'])); ?></td>
         </tr>
 <?php

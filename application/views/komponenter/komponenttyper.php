@@ -19,7 +19,7 @@
 	  <th><a href="<?php echo site_url('komponenter/komponenttype/'.$Komponenttype['KomponenttypeID']); ?>"><?php echo $Komponenttype['KomponenttypeID']; ?></a></th>
 	  <td><?php echo $Komponenttype['Beskrivelse']; ?></td>
           <td><?php echo date('d.m.Y',strtotime($Komponenttype['DatoEndret'])); ?></td>
-	  <td><?php echo $Komponenttype['AntallKomponenter']; ?> stk</td>
+	  <td><?php if ($Komponenttype['AntallKomponenter'] > 0) { echo $Komponenttype['AntallKomponenter']." stk"; } else { echo "&nbsp;"; } ?></td>
         </tr>
 <?php
     }
