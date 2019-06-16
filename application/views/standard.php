@@ -52,6 +52,14 @@
 	  <a class="dropdown-item" href="<?php echo site_url('komponenter/produsenter'); ?>">Produsenter</a>
         </div>
       </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarVedlikehold" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Vedlikehold
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarVedlikehold">
+          <a class="dropdown-item" href="<?php echo site_url('vedlikehold/kontrolliste'); ?>">Kontrolliste</a>
+	</div> 
+      </li>
 
     </ul>
     <form class="form-inline mt-2 mt-md-0">
