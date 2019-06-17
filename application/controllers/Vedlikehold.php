@@ -56,4 +56,10 @@
       }
     }
 
+    public function avviksliste() {
+      $this->load->model('Vedlikehold_model');
+      $data['Avviksliste'] = $this->Vedlikehold_model->avviksliste();
+      $this->template->load('standard','vedlikehold/avviksliste',$data);
+    }
+
   }

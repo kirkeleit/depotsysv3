@@ -57,7 +57,8 @@
           Vedlikehold
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarVedlikehold">
-          <a class="dropdown-item" href="<?php echo site_url('vedlikehold/kontrolliste'); ?>">Kontrolliste</a>
+	  <a class="dropdown-item" href="<?php echo site_url('vedlikehold/kontrolliste'); ?>">Kontrolliste</a>
+          <!--<a class="dropdown-item" href="<?php echo site_url('vedlikehold/avviksliste'); ?>">Avvik</a>-->
 	</div> 
       </li>
 

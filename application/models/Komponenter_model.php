@@ -2,7 +2,7 @@
   class Komponenter_model extends CI_Model {
 
     function komponenter($filter = null) {
-      $sql = "SELECT KomponentID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=k.ProdusentID)) AS ProdusentNavn FROM Komponenter k WHERE (DatoSlettet Is Null)";
+      $sql = "SELECT KomponentID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=k.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontrollogg l WHERE l.KomponentID=k.KomponentID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,Antall FROM Komponenter k WHERE (DatoSlettet Is Null)";
       if (isset($filter['FilterKomponenttypeID'])) {
         $sql .= " AND (KomponentID Like '".$filter['FilterKomponenttypeID']."%')";
       }
