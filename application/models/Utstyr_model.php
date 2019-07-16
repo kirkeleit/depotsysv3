@@ -1,10 +1,10 @@
 <?php
-  class Komponenter_model extends CI_Model {
+  class Utstyr_model extends CI_Model {
 
-    function komponenter($filter = null) {
-      $sql = "SELECT KomponentID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=k.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontrollogg l WHERE l.KomponentID=k.KomponentID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,Antall FROM Komponenter k WHERE (DatoSlettet Is Null)";
-      if (isset($filter['FilterKomponenttypeID'])) {
-        $sql .= " AND (KomponentID Like '".$filter['FilterKomponenttypeID']."%')";
+    function utstyrsliste($filter = null) {
+      $sql = "SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontrollogg l WHERE l.UtstyrID=u.UtstyrID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,Antall FROM Utstyr u WHERE (DatoSlettet Is Null)";
+      if (isset($filter['FilterUtstyrstypeID'])) {
+        $sql .= " AND (UtstyrID Like '".$filter['FilterUtstyrstypeID']."%')";
       }
       if (isset($filter['FilterProdusentID'])) {
         $sql .= " AND (ProdusentID='".$filter['FilterProdusentID']."')";
@@ -15,14 +15,15 @@
       if (isset($filter['FilterKasseID'])) {
         $sql .= " AND (KasseID='".$filter['FilterKasseID']."')";
       }
-      $sql .= " ORDER BY KomponentID ASC";
-      $rkomponenter = $this->db->query($sql);
-      foreach ($rkomponenter->result_array() as $rkomponent) {
-        $komponenter[] = $rkomponent;
-        unset($rkomponent);
+      $sql .= " ORDER BY UtstyrID ASC";
+      $rutstyrsliste = $this->db->query($sql);
+      foreach ($rutstyrsliste->result_array() as $rutstyr) {
+        $Utstyrsliste[] = $rutstyr;
+        unset($rutstyr);
       }
-      if (isset($komponenter)) {
-        return $komponenter;
+      unset($rutstyrsliste);
+      if (isset($Utstyrsliste)) {
+        return $Utstyrsliste;
       }
     }
 
@@ -37,22 +38,22 @@
       }
     }
 
-    function komponent_info($KomponentID = null) {
-      $rkomponenter = $this->db->query("SELECT KomponentID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,ProdusentID,Notater FROM Komponenter WHERE (KomponentID='".$KomponentID."')");
-      if ($rkomponent = $rkomponenter->row_array()) {
-	return $rkomponent;
+    function utstyr_info($UtstyrID = null) {
+      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,ProdusentID,Notater FROM Utstyr WHERE (UtstyrID='".$UtstyrID."') LIMIT 1");
+      if ($rutstyr = $rutstyrsliste->row_array()) {
+	return $rutstyr;
       }
     }
 
-    function komponent_lagre($KomponentID = null,$data) {
+    function utstyr_lagre($UtstyrID = null,$data) {
       $data['DatoEndret'] = date('Y-m-d H:i:s');
-      if ($KomponentID == null) {
+      if ($UtstyrID == null) {
         $data['DatoRegistrert'] = $data['DatoEndret'];
-        $this->db->query($this->db->insert_string('Komponenter',$data));
+        $this->db->query($this->db->insert_string('Utstyr',$data));
         //$data['KomponentID'] = $this->db->insert_id();
       } else {
-        $this->db->query($this->db->update_string('Komponenter',$data,"KomponentID='".$KomponentID."'"));
-        $data['KomponentID'] = $KomponentID;
+        $this->db->query($this->db->update_string('Utstyr',$data,"UtstyrID='".$UtstyrID."'"));
+        $data['UtstyrID'] = $UtstyrID;
       }
       if ($this->db->affected_rows() > 0) {
         //$this->session->set_flashdata('Infomelding','Lagerplassen "" ble vellykket oppdatert!');
@@ -60,38 +61,39 @@
       return $data;
     }
 
-    function komponent_slett($KomponentID) {
-      $this->db->query("UPDATE Komponenter SET DatoSlettet=Now() WHERE KomponentID='".$KomponentID."' LIMIT 1");
+    function utstyr_slett($UtstyrID) {
+      $this->db->query("UPDATE Utstyr SET DatoSlettet=Now() WHERE UtstyrID='".$UtstyrID."' LIMIT 1");
     }
 
 
-    function komponenttyper() {
-      $rkomponenttyper = $this->db->query("SELECT KomponenttypeID,DatoRegistrert,DatoEndret,DatoSlettet,Beskrivelse,(SELECT COUNT(*) FROM Komponenter WHERE (KomponentID Like CONCAT(kt.KomponenttypeID,'%'))) AS AntallKomponenter FROM Komponenttyper kt WHERE (DatoSlettet Is Null) ORDER BY KomponenttypeID ASC");
-      foreach ($rkomponenttyper->result_array() as $rkomponenttype) {
-        $komponenttyper[] = $rkomponenttype;
-        unset($rkomponenttype);
+    function utstyrstyper() {
+      $rutstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,Beskrivelse,(SELECT COUNT(*) FROM Utstyr u WHERE (u.UtstyrID Like CONCAT(ut.UtstyrstypeID,'%'))) AS AntallUtstyr FROM Utstyrstyper ut WHERE (DatoSlettet Is Null) ORDER BY UtstyrstypeID ASC");
+      foreach ($rutstyrstyper->result_array() as $rutstyrstype) {
+        $Utstyrstyper[] = $rutstyrstype;
+        unset($rutstyrstype);
       }
-      if (isset($komponenttyper)) {
-        return $komponenttyper;
-      }
-    }
-
-    function komponenttype_info($KomponenttypeID = null) {
-      $rkomponenttyper = $this->db->query("SELECT KomponenttypeID,DatoRegistrert,DatoEndret,DatoSlettet,Beskrivelse,Notater FROM Komponenttyper WHERE (KomponenttypeID='".$KomponenttypeID."')");
-      if ($rkomponenttype = $rkomponenttyper->row_array()) {
-        return $rkomponenttype;
+      unset($rutstyrstyper);
+      if (isset($Utstyrstyper)) {
+        return $Utstyrstyper;
       }
     }
 
-    function komponenttype_lagre($KomponenttypeID = null,$data) {
+    function utstyrstype_info($UtstyrstypeID = null) {
+      $rutstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,Beskrivelse,Notater FROM Utstyrstyper WHERE (UtstyrstypeID='".$UtstyrstypeID."') LIMIT 1");
+      if ($rutstyrstype = $rutstyrstyper->row_array()) {
+        return $rutstyrstype;
+      }
+    }
+
+    function utstyrstype_lagre($UtstyrstypeID = null,$data) {
       $data['DatoEndret'] = date('Y-m-d H:i:s');
-      if ($KomponenttypeID == null) {
+      if ($UtstyrstypeID == null) {
         $data['DatoRegistrert'] = $data['DatoEndret'];
-        $this->db->query($this->db->insert_string('Komponenttyper',$data));
-        $data['KomponenttypeID'] = $this->db->insert_id();
+        $this->db->query($this->db->insert_string('Utstyrstyper',$data));
+        $data['UtstyrstypeID'] = $this->db->insert_id();
       } else {
-        $this->db->query($this->db->update_string('Komponenttyper',$data,"KomponenttypeID='".$KomponenttypeID."'"));
-        $data['KomponenttypeID'] = $KomponenttypeID;
+        $this->db->query($this->db->update_string('Utstyrstyper',$data,"UtstyrstypeID='".$UtstyrstypeID."'"));
+        $data['UtstyrstypeID'] = $UtstyrstypeID;
       }
       if ($this->db->affected_rows() > 0) {
         $this->session->set_flashdata('Infomelding','Komponenttype '.$data['KomponenttypeID'].' ble lagret.');
@@ -99,13 +101,13 @@
       return $data;
     }
 
-    function komponenttype_slett($KomponenttypeID) {
-      $this->db->query("UPDATE Komponenttyper SET DatoSlettet=Now() WHERE KomponenttypeID='".$KomponenttypeID."' LIMIT 1");
+    function utstyrstype_slett($UtstyrstypeID) {
+      $this->db->query("UPDATE Utstyrstyper SET DatoSlettet=Now() WHERE UtstyrstypeID='".$UtstyrstypeID."' LIMIT 1");
     }
 
 
     function produsenter() {
-      $rprodusenter = $this->db->query("SELECT ProdusentID,DatoRegistrert,DatoEndret,DatoSlettet,Navn,Nettsted,(SELECT COUNT(*) FROM Komponenter k WHERE (k.ProdusentID=p.ProdusentID)) AS KomponenterAntall FROM Produsenter p WHERE (DatoSlettet Is Null) ORDER BY Navn ASC");
+      $rprodusenter = $this->db->query("SELECT ProdusentID,DatoRegistrert,DatoEndret,DatoSlettet,Navn,Nettsted,(SELECT COUNT(*) FROM Utstyr u WHERE (u.ProdusentID=p.ProdusentID)) AS UtstyrAntall FROM Produsenter p WHERE (DatoSlettet Is Null) ORDER BY Navn ASC");
       foreach ($rprodusenter->result_array() as $rprodusent) {
         $produsenter[] = $rprodusent;
         unset($rprodusent);
@@ -144,7 +146,7 @@
 
 
     function lokasjoner() {
-      $rlokasjoner = $this->db->query("SELECT LokasjonID,DatoRegistrert,DatoEndret,DatoSlettet,Navn,(SELECT COUNT(*) FROM Kasser ka WHERE (ka.LokasjonID=l.LokasjonID)) AS KasserAntall,(SELECT COUNT(*) FROM Komponenter ko WHERE (ko.LokasjonID=l.LokasjonID)) AS KomponenterAntall FROM Lokasjoner l WHERE (DatoSlettet Is Null) ORDER BY LokasjonID ASC");
+      $rlokasjoner = $this->db->query("SELECT LokasjonID,DatoRegistrert,DatoEndret,DatoSlettet,Navn,(SELECT COUNT(*) FROM Kasser ka WHERE (ka.LokasjonID=l.LokasjonID)) AS KasserAntall,(SELECT COUNT(*) FROM Utstyr u WHERE (u.LokasjonID=l.LokasjonID)) AS UtstyrAntall FROM Lokasjoner l WHERE (DatoSlettet Is Null) ORDER BY LokasjonID ASC");
       foreach ($rlokasjoner->result_array() as $rlokasjon) {
         $lokasjoner[] = $rlokasjon;
         unset($rlokasjon);
@@ -155,7 +157,7 @@
     }
 
     function lokasjon_info($LokasjonID = null) {
-      $rlokasjoner = $this->db->query("SELECT LokasjonID,DatoRegistrert,DatoEndret,DatoSlettet,Navn,Notater FROM Lokasjoner WHERE (LokasjonID='".$LokasjonID."')");
+      $rlokasjoner = $this->db->query("SELECT LokasjonID,DatoRegistrert,DatoEndret,DatoSlettet,Navn,Notater FROM Lokasjoner WHERE (LokasjonID='".$LokasjonID."') LIMIT 1");
       if ($rlokasjon = $rlokasjoner->row_array()) {
         return $rlokasjon;
       }
@@ -184,7 +186,7 @@
 
 
     function kasser() {
-      $rkasser = $this->db->query("SELECT KasseID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,Navn,(SELECT COUNT(*) FROM Komponenter ko WHERE (ko.KasseID=ka.KasseID)) AS KomponenterAntall FROM Kasser ka WHERE (DatoSlettet Is Null) ORDER BY KasseID ASC");
+      $rkasser = $this->db->query("SELECT KasseID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,Navn,(SELECT COUNT(*) FROM Utstyr u WHERE (u.KasseID=ka.KasseID)) AS UtstyrAntall FROM Kasser ka WHERE (DatoSlettet Is Null) ORDER BY KasseID ASC");
       foreach ($rkasser->result_array() as $rkasse) {
         $kasser[] = $rkasse;
         unset($rkasse);

@@ -8,7 +8,7 @@
 	  <th>Navn</th>
 	  <th>Endret</th>
           <th>Kasser</th>
-          <th>Komponenter</th>
+          <th>Utstyr</th>
         </tr>
       </thead>
       <tbody>
@@ -17,11 +17,11 @@
     foreach ($Lokasjoner as $Lokasjon) {
 ?>
         <tr>
-	  <th><a href="<?php echo site_url('komponenter/lokasjon/'.$Lokasjon['LokasjonID']); ?>"><?php echo '+'.$Lokasjon['LokasjonID']; ?></a></th>
+	  <th><a href="<?php echo site_url('utstyr/lokasjon/'.$Lokasjon['LokasjonID']); ?>"><?php echo '+'.$Lokasjon['LokasjonID']; ?></a></th>
 	  <td><?php echo $Lokasjon['Navn']; ?></td>
 	  <td><?php echo date('d.m.Y',strtotime($Lokasjon['DatoEndret'])); ?></td>
 	  <td><?php if ($Lokasjon['KasserAntall'] > 0) { echo $Lokasjon['KasserAntall']." stk"; } else { echo "&nbsp;"; } ?></td>
-	  <td><?php if ($Lokasjon['KomponenterAntall'] > 0) { echo $Lokasjon['KomponenterAntall']." stk"; } else { echo "&nbsp;"; } ?></td>
+	  <td><?php if ($Lokasjon['UtstyrAntall'] > 0) { echo $Lokasjon['UtstyrAntall']." stk"; } else { echo "&nbsp;"; } ?></td>
         </tr>
 <?php
     }

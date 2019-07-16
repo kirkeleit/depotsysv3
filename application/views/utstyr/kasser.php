@@ -8,7 +8,7 @@
 	  <th>Navn</th>
           <th>Plassering</th>
 	  <th>Endret</th>
-          <th>Komponenter</th>
+          <th>Utstyr</th>
         </tr>
       </thead>
       <tbody>
@@ -17,11 +17,11 @@
     foreach ($Kasser as $Kasse) {
 ?>
         <tr>
-	  <th><a href="<?php echo site_url('komponenter/kasse/'.$Kasse['KasseID']); ?>"><?php echo "=".str_pad($Kasse['KasseID'],2,'0',STR_PAD_LEFT); ?></a></th>
+	  <th><a href="<?php echo site_url('utstyr/kasse/'.$Kasse['KasseID']); ?>"><?php echo "=".str_pad($Kasse['KasseID'],2,'0',STR_PAD_LEFT); ?></a></th>
 	  <td><?php echo $Kasse['Navn']; ?></td>
           <td><?php if (strlen($Kasse['LokasjonID']) > 0) { echo '+'.$Kasse['LokasjonID']; } ?></td>
 	  <td><?php echo date('d.m.Y',strtotime($Kasse['DatoEndret'])); ?></td>
-	  <td><?php if ($Kasse['KomponenterAntall'] > 0) { echo $Kasse['KomponenterAntall']." stk"; } else { echo "&nbsp;"; } ?></td>
+	  <td><?php if ($Kasse['UtstyrAntall'] > 0) { echo $Kasse['UtstyrAntall']." stk"; } else { echo "&nbsp;"; } ?></td>
         </tr>
 <?php
     }

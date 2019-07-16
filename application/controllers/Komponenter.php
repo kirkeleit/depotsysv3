@@ -19,6 +19,44 @@
 	 * @see https://codeigniter.com/user_guide/general/urls.html
 	 */
 
+    public function __construct() {
+      parent::__construct();
+      if (!isset($_SESSION['BrukerID'])) {
+        if ($this->uri->segment(2) != 'login') {
+          redirect('komponenter/login');
+        }
+      }
+    }
+
+    public function login() {
+      if ($this->input->post('DoLogin')) {
+        $this->form_validation->set_rules('Brukernavn', 'Brukernavn', 'trim|required');
+        $this->form_validation->set_rules('Passord', 'Passord', 'trim|required');
+        if ($this->form_validation->run() == TRUE) {
+          $this->load->model('Brukere_model');
+          $Brukernavn = $this->input->post('Brukernavn');
+          $Passord = hash('SHA256',$this->input->post('Passord'));
+          $result = $this->Brukere_model->login($Brukernavn,$Passord);
+          if($result) {
+            $this->session->set_userdata('BrukerID', $result['BrukerID']);
+            $this->session->set_userdata('Fornavn', $result['fornavn']);
+            redirect('komponenter');
+          } else {
+            $data['Brukernavn'] = $Brukernavn;
+            $data['Feilmelding'] = "Feil brukernavn eller passord!";
+            $this->load->view('login',$data);
+          }
+        }
+      } else {
+        $this->load->view('login');
+      }
+    }
+
+    public function logout() {
+      $this->session->sess_destroy();
+      redirect('komponenter');
+    }
+
     public function index() {
       redirect('komponenter/liste');
     }

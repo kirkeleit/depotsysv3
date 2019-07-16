@@ -4,7 +4,7 @@
 <?php } ?>
 
 <div class="card">
-  <div class="card-header">Lokasjon <?php echo $Lokasjon['LokasjonID']; ?></div>
+  <div class="card-header">Lokasjon +<?php echo $Lokasjon['LokasjonID']; ?></div>
   <div class="card-body">
     <div class="form-group">
       <label>ID:</label>
@@ -32,9 +32,9 @@
 
 </form>
 
-<?php if (isset($Komponenter)) { ?>
+<?php if (isset($Utstyrsliste)) { ?>
 <div class="card">
-  <div class="card-header">Komponenter</div>
+  <div class="card-header">Utstyrsliste</div>
   <div class="table-responsive">
     <table class="table table-sm table-striped table-hover">
       <thead>
@@ -49,15 +49,15 @@
         </tr>
       </thead>
       <tbody>
-<?php foreach ($Komponenter as $Komponent) { ?>
+<?php foreach ($Utstyrsliste as $Utstyr) { ?>
         <tr>
-          <th><a href="<?php echo site_url('komponenter/komponent/'.$Komponent['KomponentID']); ?>"><?php echo "-".$Komponent['KomponentID']; ?></a></th>
-          <td><?php echo $Komponent['ProdusentNavn']; ?></td>
-          <td><?php echo $Komponent['Beskrivelse']; ?></td>
-          <td><?php if (substr($Komponent['KomponentID'],-1,1) == 'T') { echo $Komponent['Antall']." stk"; } else { echo "&nbsp;"; } ?></td>
-          <td><?php if (strlen($Komponent['LokasjonID']) > 0) { echo "+".$Komponent['LokasjonID']; } else { echo "&nbsp;"; } ?><?php if (strlen($Komponent['KasseID']) > 0) { echo "=".$Komponent['KasseID']; } else { echo "&nbsp;"; } ?></td>
-          <td><?php echo date("d.m.Y",strtotime($Komponent['DatoEndret'])); ?></td>
-          <td><?php if ($Komponent['DatoKontrollert'] != '') { echo date("d.m.Y",strtotime($Komponent['DatoKontrollert'])); } else { echo "&nbsp;"; } ?></td>
+          <th><a href="<?php echo site_url('utstyr/utstyr/'.$Utstyr['UtstyrID']); ?>"><?php echo "-".$Utstyr['UtstyrID']; ?></a></th>
+          <td><?php echo $Utstyr['ProdusentNavn']; ?></td>
+          <td><?php echo $Utstyr['Beskrivelse']; ?></td>
+          <td><?php if (substr($Utstyr['UtstyrID'],-1,1) == 'T') { echo $Utstyr['Antall']." stk"; } else { echo "&nbsp;"; } ?></td>
+          <td><?php if (strlen($Utstyr['LokasjonID']) > 0) { echo "+".$Utstyr['LokasjonID']; } else { echo "&nbsp;"; } ?><?php if (strlen($Utstyr['KasseID']) > 0) { echo "=".$Utstyr['KasseID']; } else { echo "&nbsp;"; } ?></td>
+          <td><?php echo date("d.m.Y",strtotime($Utstyr['DatoEndret'])); ?></td>
+          <td><?php if ($Utstyr['DatoKontrollert'] != '') { echo date("d.m.Y",strtotime($Utstyr['DatoKontrollert'])); } else { echo "&nbsp;"; } ?></td>
         </tr>
 <?php } ?>
       </tbody>

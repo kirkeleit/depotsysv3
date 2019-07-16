@@ -33,21 +33,20 @@
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarDepotsys" aria-controls="navbarDepotsys" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <a class="navbar-brand" href="#">DepotSYS</a>
   <div class="collapse navbar-collapse" id="navbarDepotsys">
     <a class="navbar-brand" href="#">DepotSYS</a>
     <ul class="navbar-nav mr-auto">
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarKomponenter" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Komponenter
+        <a class="nav-link dropdown-toggle" href="#" id="navbarUtstyr" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Utstyr
         </a>
-        <div class="dropdown-menu" aria-labelledby="navbarKomponenter">
-	  <a class="dropdown-item" href="<?php echo site_url('komponenter/liste'); ?>">Liste</a>
+        <div class="dropdown-menu" aria-labelledby="navbarUtstyr">
+	  <a class="dropdown-item" href="<?php echo site_url('utstyr/utstyrsliste'); ?>">Utstyrsliste</a>
 	  <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="<?php echo site_url('komponenter/lokasjoner'); ?>">Lokasjoner</a>
-	  <a class="dropdown-item" href="<?php echo site_url('komponenter/kasser'); ?>">Kasser</a>
-          <a class="dropdown-item" href="<?php echo site_url('komponenter/komponenttyper'); ?>">Komponenttyper</a>
-	  <a class="dropdown-item" href="<?php echo site_url('komponenter/produsenter'); ?>">Produsenter</a>
+          <a class="dropdown-item" href="<?php echo site_url('utstyr/lokasjoner'); ?>">Lokasjoner</a>
+	  <a class="dropdown-item" href="<?php echo site_url('utstyr/kasser'); ?>">Kasser</a>
+          <a class="dropdown-item" href="<?php echo site_url('utstyr/utstyrstyper'); ?>">Utstyrstyper</a>
+	  <a class="dropdown-item" href="<?php echo site_url('utstyr/produsenter'); ?>">Produsenter</a>
         </div>
       </li>
       <li class="nav-item dropdown">
@@ -56,7 +55,7 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarVedlikehold">
 	  <a class="dropdown-item" href="<?php echo site_url('vedlikehold/kontrolliste'); ?>">Kontrolliste</a>
-          <!--<a class="dropdown-item" href="<?php echo site_url('vedlikehold/avviksliste'); ?>">Avvik</a>-->
+          <a class="dropdown-item" href="<?php echo site_url('vedlikehold/avviksliste'); ?>">Avvik</a>
 	</div> 
       </li>
     </ul>

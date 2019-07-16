@@ -76,6 +76,24 @@
       curl_close($c);
     }
 
+    function avviksliste($filter = null) {
+      $sql = "SELECT AvvikID,DatoRegistrert,KomponentID,Beskrivelse FROM Avvik a WHERE 1";
+      if (isset($filter['FilterLokasjonID'])) {
+        $sql .= " AND (LokasjonID Like '".$filter['FilterLokasjonID']."%')";
+      }
+      if (isset($filter['FilterKasseID'])) {
+        $sql .= " AND (KasseID='".$filter['FilterKasseID']."')";
+      }
+      $sql .= " ORDER BY KomponentID,DatoRegistrert ASC";
+      $ravviksliste = $this->db->query($sql);
+      foreach ($ravviksliste->result_array() as $ravvik) {
+        $avviksliste[] = $ravvik;
+        unset($ravvik);
+      }
+      if (isset($avviksliste)) {
+        return $avviksliste;
+      }
+    }
 
   }
 ?>
