@@ -1,5 +1,5 @@
 <div class="card">
-  <div class="card-header text-right"><a href="<?php echo site_url('komponenter/nykasse'); ?>" class="btn btn-success btn-sm" tabindex="-1" role="button">Ny kasse</a></div>
+  <div class="card-header text-right"><a href="<?php echo site_url('utstyr/nykasse'); ?>" class="btn btn-success btn-sm" tabindex="-1" role="button">Ny kasse</a></div>
   <div class="table-responsive">
     <table class="table table-striped table-hover table-sm">
       <thead>

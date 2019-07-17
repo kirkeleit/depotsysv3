@@ -1,12 +1,18 @@
 <form method="POST" action="<?php echo site_url('utstyr/utstyrstype/'.$Utstyrstype['UtstyrstypeID']); ?>">
+<?php if (isset($Utstyrstype['UtstyrstypeID'])) { ?>
 <input type="hidden" name="UtstyrstypeID" value="<?php echo set_value('UtstyrstypeID',$Utstyrstype['UtstyrstypeID']); ?>" />
+<?php } ?>
 
 <div class="card">
   <div class="card-header">Utstyrstype <?php echo $Utstyrstype['UtstyrstypeID']; ?></div>
   <div class="card-body">
     <div class="form-group">
       <label>ID:</label>
+<?php if (isset($Utstyrstype['UtstyrstypeID'])) { ?>
       <input type="text" class="form-control" value="<?php echo $Utstyrstype['UtstyrstypeID']; ?>" readonly>
+<?php } else { ?>
+      <input type="text" class="form-control" id="NyUtstyrstypeID" name="NyUtstyrstypeID">
+<?php } ?>
     </div>
     <div class="form-group">
       <label for="Beskrivelse">Beskrivelse:</label>
@@ -19,8 +25,10 @@
   </div>
   <div class="card-footer">
     <input type="submit" class="btn btn-primary" value="Lagre" name="UtstyrstypeLagre" />
+<?php if (isset($Utstyrstype['UtstyrstypeID'])) { ?>
     <input type="submit" class="btn btn-secondary" value="Slett" name="UtstyrstypeSlett" />
     <a href="<?php echo site_url('utstyr/nyttutstyr/'.$Utstyrstype['UtstyrstypeID']); ?>" class="btn btn-success" tabindex="-1" role="button">Nytt utstyr</a>
+<?php } ?>
   </div>
 </div>
 <br />

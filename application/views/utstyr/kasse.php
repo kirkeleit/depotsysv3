@@ -1,4 +1,4 @@
-<form method="POST" action="<?php echo site_url('komponenter/kasse/'.$Kasse['KasseID']); ?>">
+<form method="POST" action="<?php echo site_url('utstyr/kasse/'.$Kasse['KasseID']); ?>">
 <?php if (isset($Kasse['KasseID'])) { ?>
 <input type="hidden" name="KasseID" value="<?php echo set_value('KasseID',$Kasse['KasseID']); ?>" />
 <?php } ?>

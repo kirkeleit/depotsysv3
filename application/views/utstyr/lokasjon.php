@@ -1,4 +1,4 @@
-<form method="POST" action="<?php echo site_url('komponenter/lokasjon/'.$Lokasjon['LokasjonID']); ?>">
+<form method="POST" action="<?php echo site_url('utstyr/lokasjon/'.$Lokasjon['LokasjonID']); ?>">
 <?php if (isset($Lokasjon)) { ?>
 <input type="hidden" name="LokasjonID" value="<?php echo set_value('LokasjonID',$Lokasjon['LokasjonID']); ?>" />
 <?php } ?>

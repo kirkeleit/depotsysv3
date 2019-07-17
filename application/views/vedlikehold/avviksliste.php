@@ -8,7 +8,8 @@
 	  <th>ID</th>
           <th>Registrert</td>
 	  <th>Komponent</th>
-          <th>Beskrivelse</th>
+	  <th>Beskrivelse</th>
+          <th>Status</th>
         </tr>
       </thead>
       <tbody>
@@ -17,10 +18,11 @@
     foreach ($Avviksliste as $Avvik) {
 ?>
         <tr>
-	  <th><a href="<?php echo site_url('vedlikehold/avvik/'.$Avvik['AvvikID']); ?>"><?php echo $Avvik['AvvikID']; ?></a></th>
+	  <th><a href="<?php echo site_url('utstyr/avvik/'.$Avvik['AvvikID']); ?>"><?php echo $Avvik['AvvikID']; ?></a></th>
           <td><?php echo date("d.m.Y",strtotime($Avvik['DatoRegistrert'])); ?></td>
-	  <td><a href="<?php echo site_url('komponenter/komponent/'.$Avvik['KomponentID']); ?>"><?php echo "-".$Avvik['KomponentID']; ?></a></td>
-          <td><?php echo $Avvik['Beskrivelse']; ?></td>
+	  <td><a href="<?php echo site_url('utstyr/utstyr/'.$Avvik['UtstyrID']); ?>"><?php echo "-".$Avvik['UtstyrID']; ?></a></td>
+	  <td><?php echo $Avvik['Beskrivelse']; ?></td>
+          <td><?php echo $Avvik['Status']; ?></td>
         </tr>
 <?php
     }

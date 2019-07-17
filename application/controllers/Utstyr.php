@@ -67,12 +67,12 @@
       $this->template->load('standard','utstyr/liste',$data);
     }
 
-    public function nyttmateriell() {
-      $this->load->model('Materiell_model');
-      $ID = $this->Materiell_model->nymateriellid($this->uri->segment(3));
-      $Materiell['MateriellID'] = $ID;
-      $data['Materiell'] = $this->Materiell_model->materiell_lagre(null,$Materiell);
-      redirect('utstyr/materiell/'.$data['Materiell']['MateriellID']);
+    public function nyttutstyr() {
+      $this->load->model('Utstyr_model');
+      $ID = $this->Utstyr_model->nyttutstyrid($this->uri->segment(3));
+      $Utstyr['UtstyrID'] = $ID;
+      $data['Utstyr'] = $this->Utstyr_model->utstyr_lagre(null,$Utstyr);
+      redirect('utstyr/utstyr/'.$data['Utstyr']['UtstyrID']);
     }
 
     public function utstyr() {
@@ -117,8 +117,8 @@
       $this->template->load('standard','utstyr/utstyrstyper',$data);
     }
 
-    public function nykomponenttype() {
-      $data['Utstyrsttype'] = null;
+    public function nyutstyrstype() {
+      $data['Utstyrstype'] = null;
       $this->template->load('standard','utstyr/utstyrstype',$data);
     }
 
@@ -126,6 +126,9 @@
       $this->load->model('Utstyr_model');
       if ($this->input->post('UtstyrstypeLagre')) {
         $UtstyrstypeID = $this->input->post('UtstyrstypeID');
+        if ($this->input->post('NyUtstyrstypeID')) {
+          $Utstyrstype['UtstyrstypeID'] = $this->input->post('NyUtstyrstypeID');
+        }
         $Utstyrstype['Beskrivelse'] = $this->input->post('Beskrivelse');
         $Utstyrstype['Notater'] = $this->input->post('Notater');
         $this->Utstyr_model->utstyrstype_lagre($UtstyrstypeID,$Utstyrstype);
@@ -188,7 +191,7 @@
       if ($this->input->post('LokasjonLagre')) {
         $LokasjonID = $this->input->post('LokasjonID');
         if ($this->input->post('NyLokasjonID')) {
-          $Lokasjon['LokasjonID'] = $this->input->post('NyLokasjonID');
+          $Lokasjon['LokasjonID'] = str_replace('+','',$this->input->post('NyLokasjonID'));
         }
         $Lokasjon['Navn'] = $this->input->post('Navn');
         $Lokasjon['Notater'] = $this->input->post('Notater');
@@ -223,7 +226,7 @@
       if ($this->input->post('KasseLagre')) {
         $KasseID = $this->input->post('KasseID');
         if ($this->input->post('NyKasseID')) {
-          $Kasse['KasseID'] = $this->input->post('NyKasseID');
+          $Kasse['KasseID'] = str_replace('=','',$this->input->post('NyKasseID'));
         }
 	$Kasse['Navn'] = $this->input->post('Navn');
 	$Kasse['LokasjonID'] = $this->input->post('LokasjonID');
@@ -238,6 +241,32 @@
         $data['Lokasjoner'] = $this->Utstyr_model->lokasjoner();
         $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterKasseID' => $data['Kasse']['KasseID']));
         $this->template->load('standard','utstyr/kasse',$data);
+      }
+    }
+
+
+    public function avviksliste() {
+      $this->load->model('Vedlikehold_model');
+      $data['Avviksliste'] = $this->Vedlikehold_model->avviksliste();
+      $this->template->load('standard','vedlikehold/avviksliste',$data);
+    }
+
+    public function avvik() {
+      $this->load->model('Vedlikehold_model');
+      if ($this->input->post('AvvikLagre')) {
+        $AvvikID = $this->input->post('AvvikID');
+        $Avvik['Beskrivelse'] = $this->input->post('Beskrivelse');
+        $Avvik['Notater'] = $this->input->post('Notater');
+        $this->Vedlikehold_model->avvik_lagre($AvvikID,$Avvik);
+        redirect('utstyr/avviksliste');
+      } elseif ($this->input->post('AvvikSlett')) {
+        $this->Vedlikehold_model->avvik_slett($this->input->post('AvvikID'));
+        redirect('utstyr/avviksliste');
+      } else {
+        $this->load->model('Brukere_model');
+        $data['Avvik'] = $this->Vedlikehold_model->avvik_info($this->uri->segment(3));
+        $data['Brukere'] = $this->Brukere_model->brukere();
+        $this->template->load('standard','vedlikehold/avvik',$data);
       }
     }
 

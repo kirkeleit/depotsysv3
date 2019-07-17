@@ -2,7 +2,7 @@
   class Utstyr_model extends CI_Model {
 
     function utstyrsliste($filter = null) {
-      $sql = "SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontrollogg l WHERE l.UtstyrID=u.UtstyrID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,Antall FROM Utstyr u WHERE (DatoSlettet Is Null)";
+      $sql = "SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontrollogg l WHERE l.UtstyrID=u.UtstyrID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,Antall,(SELECT COUNT(*) FROM Avvik a WHERE (a.UtstyrID=u.UtstyrID) AND (StatusID<2) AND (DatoSlettet Is Null)) AS AntallAvvik FROM Utstyr u WHERE (DatoSlettet Is Null)";
       if (isset($filter['FilterUtstyrstypeID'])) {
         $sql .= " AND (UtstyrID Like '".$filter['FilterUtstyrstypeID']."%')";
       }
@@ -27,14 +27,14 @@
       }
     }
 
-    function nykomponentid($KomponenttypeID) {
-      $rkomponenter = $this->db->query("SELECT * FROM Komponenter WHERE (KomponentID Like CONCAT('".$KomponenttypeID."','%')) ORDER BY KomponentID DESC");
-      if ($rkomponenter->num_rows() == 0) {
-        return $KomponenttypeID.'001';
+    function nyttutstyrid($UtstyrstypeID) {
+      $rutstyrsliste = $this->db->query("SELECT * FROM Utstyr WHERE (UtstyrID Like CONCAT('".$UtstyrstypeID."','%')) ORDER BY UtstyrID DESC");
+      if ($rutstyrsliste->num_rows() == 0) {
+        return $UtstyrstypeID.'001';
       } else {
-        $rkomponent = $rkomponenter->row_array();
+        $rutstyr = $rutstyrsliste->row_array();
         //return substr($rkomponent['KomponentID'],2);
-        return $KomponenttypeID.str_pad((substr($rkomponent['KomponentID'],2)+1),3,'0',STR_PAD_LEFT);
+        return $UtstyrstypeID.str_pad((substr($rutstyr['UtstyrID'],2)+1),3,'0',STR_PAD_LEFT);
       }
     }
 
