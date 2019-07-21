@@ -38,3 +38,4 @@
   </div>
   <div class="card-footer text-muted"><?php echo sizeof($Utstyrsliste); ?> stk</div>
 </div>
+

@@ -264,34 +264,50 @@
     public function avvik() {
       $this->load->model('Vedlikehold_model');
       if ($this->input->post('AvvikLagre')) {
-        $AvvikID = $this->input->post('AvvikID');
-        $Avvik['UtstyrID'] = $this->input->post('UtstyrID');
-        $Avvik['BrukerID'] = $this->input->post('BrukerID');
-        $Avvik['Beskrivelse'] = $this->input->post('Beskrivelse');
-	$Avvik['Kostnad'] = $this->input->post('Kostnad');
-	$Avvik['StatusID'] = $this->input->post('StatusID');
-	$data = $this->Vedlikehold_model->avvik_lagre($AvvikID,$Avvik);
-	redirect('utstyr/avvik/'.$data['AvvikID']);
+        $data['UtstyrID'] = $this->input->post('UtstyrID');
+        $data['BrukerID'] = $this->input->post('BrukerID');
+        $data['Beskrivelse'] = $this->input->post('Beskrivelse');
+        $data['Kostnad'] = $this->input->post('Kostnad');
+        $data['StatusID'] = $this->input->post('StatusID');
+        if ($this->input->post('AvvikID')) {
+	  $AvvikID = $this->Vedlikehold_model->avvik_lagre($this->input->post('AvvikID'),$data);
+	  if ($AvvikID != false) {
+            $this->session->set_flashdata('Infomelding','Avvik #'.$AvvikID.' på utstyr \'-'.$data['UtstyrID'].'\' er nå lagret.');
+	  }
+	} else {
+	  $AvvikID = $this->Vedlikehold_model->avvik_opprett($data);
+	  if ($AvvikID != false) {
+            $this->session->set_flashdata('Infomelding','Avvik #'.$AvvikID.' på utstyr \'-'.$data['UtstyrID'].'\' er nå opprettet!');
+            $this->slack->sendmessage("Avvik *#".$AvvikID."* på utstyret *'-".$data['UtstyrID']."'* er nå registrert med følgende beskrivelse:\n>".$data['Beskrivelse']."\n<".site_url('utstyr/avvik/'.$AvvikID)."|Trykk her> for å åpne avviket.");
+	  }
+	}
+	redirect('utstyr/avvik/'.$AvvikID);
       } elseif ($this->input->post('AvvikLagrelogg')) {
-	$AvvikID = $this->input->post('AvvikID');
         $data['BrukerID'] = $_SESSION['BrukerID'];
         $data['Tekst'] = $this->input->post('Loggtekst');
         if ($this->input->post('AvvikLukk')) {
           $data['LoggtypeID'] = 1;
-          $this->Vedlikehold_model->avvik_lagrelogg($AvvikID,$data);
-          unset($data);
-          $data['StatusID'] = 3;
-	  $this->Vedlikehold_model->avvik_lagre($AvvikID,$data);
-        } else {
+	} else {
           $data['LoggtypeID'] = 0;
-          $this->Vedlikehold_model->avvik_lagrelogg($AvvikID,$data);
-          unset($data);
-          $data['StatusID'] = 1;
-	  $this->Vedlikehold_model->avvik_lagre($AvvikID,$data);
-        }
+	}
+	$AvvikID = $this->Vedlikehold_model->avvik_logg($this->input->post('AvvikID'),$data);
+	if ($AvvikID != false) {
+          $this->session->set_flashdata('Infomelding','Logg er lagt til på avvik #'.$AvvikID.'.');
+          $this->slack->sendmessage("Følgende logg er nå lagt til på avvik *#".$AvvikID."*:\n>".$data['Tekst']."\n<".site_url('utstyr/avvik/'.$AvvikID)."|Trykk her> for å åpne avviket.");
+          if ($this->input->post('AvvikLukk')) {
+            $this->Vedlikehold_model->avvik_lagre($AvvikID,array('StatusID' => 3));
+            $this->slack->sendmessage("Avvik *#".$AvvikID."* er nå lukket. <".site_url('utstyr/avvik/'.$AvvikID)."|Trykk her> for å åpne avviket.");
+          } else {
+            $this->Vedlikehold_model->avvik_lagre($AvvikID,array('StatusID' => 1));
+          }
+	}
         redirect('utstyr/avvik/'.$AvvikID);
       } elseif ($this->input->post('AvvikSlett')) {
-        $this->Vedlikehold_model->avvik_slett($this->input->post('AvvikID'));
+        $AvvikID = $this->Vedlikehold_model->avvik_slett($this->input->post('AvvikID'));
+        if ($AvvikID != false) {
+          $this->session->set_flashdata('Infomelding','Avvik #'.$AvvikID.' ble vellykket slettet.');
+          $this->slack->sendmessage("Avvik *#".$AvvikID."* ble vellykket slettet. <".site_url('utstyr/avvik/'.$AvvikID)."|Trykk her> for å åpne avviket.");
+        }
         redirect('utstyr/avviksliste');
       } else {
         $this->load->model('Brukere_model');

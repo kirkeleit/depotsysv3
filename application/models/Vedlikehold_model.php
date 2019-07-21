@@ -113,30 +113,42 @@
       }
     }
 
+    function avvik_opprett($data) {
+      $data['DatoRegistrert'] = date('Y-m-d H:i:s');
+      $data['DatoEndret'] = $data['DatoRegistrert'];
+      if ($this->db->query($this->db->insert_string('Avvik',$data))) {
+        $AvvikID = $this->db->insert_id();
+	return $AvvikID;
+      } else {
+        return false;
+      }
+    }
+
     function avvik_lagre($AvvikID = null,$data) {
       $data['DatoEndret'] = date('Y-m-d H:i:s');
-      if ($AvvikID == null) {
-        $data['DatoRegistrert'] = $data['DatoEndret'];
-        $this->db->query($this->db->insert_string('Avvik',$data));
-        $data['AvvikID'] = $this->db->insert_id();
+      if ($this->db->query($this->db->update_string('Avvik',$data,"AvvikID='".$AvvikID."'"))) {
+        return $AvvikID;
       } else {
-        $this->db->query($this->db->update_string('Avvik',$data,"AvvikID='".$AvvikID."'"));
-        $data['AvvikID'] = $AvvikID;
+        return false;
       }
-      if ($this->db->affected_rows() > 0) {
-        $this->session->set_flashdata('Infomelding','Avvik '.$data['AvvikID'].' ble lagret.');
-      }
-      return $data;
     }
 
     function avvik_slett($AvvikID) {
-      $this->db->query("UPDATE Avvik SET DatoSlettet=Now() WHERE AvvikID='".$AvvikID."' LIMIT 1");
+      if ($this->db->query("UPDATE Avvik SET DatoSlettet=Now() WHERE AvvikID='".$AvvikID."' LIMIT 1")) {
+        return $AvvikID;
+      } else {
+        return false;
+      }
     }
 
-    function avvik_lagrelogg($AvvikID,$data) {
+    function avvik_logg($AvvikID = null,$data) {
       $data['DatoRegistrert'] = date('Y-m-d H:i:s');
       $data['AvvikID'] = $AvvikID;
-      $this->db->query($this->db->insert_string('Avvikslogg',$data));
+      if ($this->db->query($this->db->insert_string('Avvikslogg',$data))) {
+        return $AvvikID;
+      } else {
+        return false;
+      }
     }
 
   }
