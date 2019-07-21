@@ -11,7 +11,7 @@
           <th>Plassering</th>
 	  <th>Endret</th>
 	  <th>Kontrollert</th>
-          <th>Avvik</th>
+          <th>Åpne avvik</th>
         </tr>
       </thead>
       <tbody>

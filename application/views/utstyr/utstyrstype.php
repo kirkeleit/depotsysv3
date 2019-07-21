@@ -6,21 +6,27 @@
 <div class="card">
   <div class="card-header">Utstyrstype <?php echo $Utstyrstype['UtstyrstypeID']; ?></div>
   <div class="card-body">
-    <div class="form-group">
-      <label>ID:</label>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="UtstyrstypeID">Utstyrstype ID:</label>
+      <div class="col-sm-10">
 <?php if (isset($Utstyrstype['UtstyrstypeID'])) { ?>
-      <input type="text" class="form-control" value="<?php echo $Utstyrstype['UtstyrstypeID']; ?>" readonly>
+        <input type="text" class="form-control-plaintext" id="UtstyrstypeID" value="<?php echo $Utstyrstype['UtstyrstypeID']; ?>" readonly>
 <?php } else { ?>
-      <input type="text" class="form-control" id="NyUtstyrstypeID" name="NyUtstyrstypeID">
+        <input type="text" class="form-control" id="UtstyrstypeID" name="NyUtstyrstypeID">
 <?php } ?>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="Beskrivelse">Beskrivelse:</label>
-      <input type="text" class="form-control" id="Beskrivelse" name="Beskrivelse" value="<?php echo set_value('Beskrivelse',$Utstyrstype['Beskrivelse']); ?>">
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="Beskrivelse">Beskrivelse:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="Beskrivelse" name="Beskrivelse" value="<?php echo set_value('Beskrivelse',$Utstyrstype['Beskrivelse']); ?>">
+      </div>
     </div>
-    <div class="form-group">
-      <label for="Notater">Notater:</label>
-      <textarea class="form-control" id="Notater" name="Notater" rows="3"><?php echo set_value('Notater',$Utstyrstype['Notater']); ?></textarea>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="Notater">Notater:</label>
+      <div class="col-sm-10">
+        <textarea class="form-control" id="Notater" name="Notater" rows="3"><?php echo set_value('Notater',$Utstyrstype['Notater']); ?></textarea>
+      </div>
     </div>
   </div>
   <div class="card-footer">

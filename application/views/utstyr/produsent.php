@@ -4,21 +4,29 @@
 <div class="card">
   <div class="card-header">Produsent <?php echo $Produsent['Navn']; ?></div>
   <div class="card-body">
-    <div class="form-group">
-      <label>ID:</label>
-      <input type="text" class="form-control" value="<?php echo $Produsent['ProdusentID']; ?>" readonly>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="ProdusentID">Produsent ID:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control-plaintext" id="ProdusentID" value="<?php echo $Produsent['ProdusentID']; ?>" readonly>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="Navn">Navn:</label>
-      <input type="text" class="form-control" id="Navn" name="Navn" value="<?php echo set_value('Navn',$Produsent['Navn']); ?>">
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="Navn">Navn:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="Navn" name="Navn" value="<?php echo set_value('Navn',$Produsent['Navn']); ?>">
+      </div>
     </div>
-    <div class="form-group">
-      <label for="Nettsted">Nettsted:</label>
-      <input type="text" class="form-control" id="Nettsted" name="Nettsted" value="<?php echo set_value('Nettsted',$Produsent['Nettsted']); ?>">
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="Nettsted">Nettsted:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="Nettsted" name="Nettsted" value="<?php echo set_value('Nettsted',$Produsent['Nettsted']); ?>">
+      </div>
     </div>
-    <div class="form-group">
-      <label for="Notater">Notater:</label>
-      <textarea class="form-control" id="Notater" name="Notater" rows="3"><?php echo set_value('Notater',$Produsent['Notater']); ?></textarea>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="Notater">Notater:</label>
+      <div class="col-sm-10">
+        <textarea class="form-control" id="Notater" name="Notater" rows="3"><?php echo set_value('Notater',$Produsent['Notater']); ?></textarea>
+      </div>
     </div>
   </div>
   <div class="card-footer">

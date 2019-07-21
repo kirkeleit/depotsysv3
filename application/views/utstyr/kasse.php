@@ -6,34 +6,42 @@
 <div class="card">
   <div class="card-header"><b>Kasse =<?php echo $Kasse['KasseID']; ?></b></div>
   <div class="card-body">
-    <div class="form-group">
-      <label>ID:</label>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="KasseID">ID:</label>
+      <div class="col-sm-10">
 <?php if (isset($Kasse['KasseID'])) { ?>
-      <input type="text" class="form-control" value="<?php echo '='.$Kasse['KasseID']; ?>" readonly>
+        <input type="text" class="form-control-plaintext" id="KasseID" value="<?php echo '='.$Kasse['KasseID']; ?>" readonly>
 <?php } else { ?>
-      <input type="text" class="form-control" id="NyKasseID" name="NyKasseID">
+        <input type="text" class="form-control" id="KasseID" name="NyKasseID">
 <?php } ?>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="Navn">Navn:</label>
-      <input type="text" class="form-control" id="Navn" name="Navn" value="<?php echo set_value('Navn',$Kasse['Navn']); ?>">
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="Navn">Navn:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="Navn" name="Navn" value="<?php echo set_value('Navn',$Kasse['Navn']); ?>">
+      </div>
     </div>
-    <div class="form-group">
-      <label for="LokasjonID">Plassering:</label>
-      <select class="custom-select custom-select-sm" id="LokasjonID" name="LokasjonID">
-        <option value="">[ingen]</option>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="LokasjonID">Plassering:</label>
+      <div class="col-sm-10">
+        <select class="custom-select custom-select-sm" id="LokasjonID" name="LokasjonID">
+          <option value="">[ingen]</option>
 <?php
   foreach ($Lokasjoner as $Lokasjon) {
 ?>
-        <option value="<?php echo $Lokasjon['LokasjonID']; ?>"<?php if ($Kasse['LokasjonID'] == $Lokasjon['LokasjonID']) { echo " selected"; } ?>><?php echo '+'.$Lokasjon['LokasjonID']." ".$Lokasjon['Navn']; ?></option>
+          <option value="<?php echo $Lokasjon['LokasjonID']; ?>"<?php if ($Kasse['LokasjonID'] == $Lokasjon['LokasjonID']) { echo " selected"; } ?>><?php echo '+'.$Lokasjon['LokasjonID']." ".$Lokasjon['Navn']; ?></option>
 <?php
   }
 ?>
-      </select>
+	</select>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="Notater">Notater:</label>
-      <textarea class="form-control" id="Notater" name="Notater" rows="3"><?php echo set_value('Notater',$Kasse['Notater']); ?></textarea>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="Notater">Notater:</label>
+      <div class="col-sm-10">
+        <textarea class="form-control" id="Notater" name="Notater" rows="3"><?php echo set_value('Notater',$Kasse['Notater']); ?></textarea>
+      </div>
     </div>
   </div>
   <div class="card-footer">

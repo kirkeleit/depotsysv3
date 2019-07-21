@@ -1,7 +1,7 @@
 <?php
   class Vedlikehold_model extends CI_Model {
 
-    var $AvvikStatus = array(0 => 'Registrert', 1 => 'Under arbeid', 2 => 'Lukket');
+    var $AvvikStatus = array(0 => 'Registrert', 1 => 'Under arbeid', 2 => 'På vent', 3 => 'Lukket');
 
     function kontrolliste($filter = null) {
       $sql = "SELECT KomponentID,Beskrivelse,LokasjonID,KasseID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=k.ProdusentID)) AS ProdusentNavn,Antall FROM Komponenter k WHERE 1";
@@ -79,9 +79,11 @@
     }
 
     function avviksliste($filter = null) {
-      $sql = "SELECT AvvikID,DatoRegistrert,UtstyrID,Beskrivelse,BrukerID,StatusID FROM Avvik a WHERE (DatoSlettet Is Null)";
+      $sql = "SELECT AvvikID,DatoRegistrert,UtstyrID,Beskrivelse,BrukerID,StatusID,Kostnad,(SELECT CONCAT(Fornavn,' ',Etternavn) AS Navn FROM Brukere b WHERE (b.BrukerID=a.BrukerID)) AS BrukerNavn FROM Avvik a WHERE (DatoSlettet Is Null)";
       if (isset($filter['FilterUtstyrID'])) {
         $sql .= " AND (UtstyrID='".$filter['FilterUtstyrID']."')";
+      } else {
+        $sql .= " AND (StatusID < 3)";
       }
       $sql .= " ORDER BY UtstyrID,DatoRegistrert ASC";
       $rAvviksliste = $this->db->query($sql);
@@ -97,30 +99,44 @@
     }
 
     function avvik_info($AvvikID = null) {
-      $rAvviksliste = $this->db->query("SELECT AvvikID,DatoRegistrert,DatoEndret,DatoSlettet,Beskrivelse,BrukerID,UtstyrID FROM Avvik WHERE (AvvikID='".$AvvikID."')");
+      $rAvviksliste = $this->db->query("SELECT AvvikID,DatoRegistrert,DatoEndret,DatoSlettet,Kostnad,Beskrivelse,BrukerID,StatusID,UtstyrID,(SELECT CONCAT(Fornavn,' ',Etternavn) AS Navn FROM Brukere b WHERE (b.BrukerID=a.BrukerID)) AS BrukerNavn FROM Avvik a WHERE (AvvikID='".$AvvikID."')");
       if ($rAvvik = $rAvviksliste->row_array()) {
+        $rLogglinjer = $this->db->query("SELECT AvvikID,BrukerID,DatoRegistrert,Tekst,LoggtypeID,(SELECT CONCAT(Fornavn,' ',Etternavn) AS Navn FROM Brukere b WHERE (b.BrukerID=a.BrukerID)) AS BrukerNavn FROM Avvikslogg a WHERE (AvvikID='".$rAvvik['AvvikID']."') ORDER BY DatoRegistrert ASC");
+	foreach ($rLogglinjer->result_array() as $rLogglinje) {
+          $Logglinjer[] = $rLogglinje;
+	}
+	if (isset($Logglinjer)) {
+          $rAvvik['Logglinjer'] = $Logglinjer;
+        }
+        $rAvvik['Status'] = $this->AvvikStatus[$rAvvik['StatusID']];
         return $rAvvik;
       }
     }
 
-    function produsent_lagre($ProdusentID = null,$data) {
+    function avvik_lagre($AvvikID = null,$data) {
       $data['DatoEndret'] = date('Y-m-d H:i:s');
-      if ($ProdusentID == null) {
+      if ($AvvikID == null) {
         $data['DatoRegistrert'] = $data['DatoEndret'];
-        $this->db->query($this->db->insert_string('Produsenter',$data));
-        $data['ProdusentID'] = $this->db->insert_id();
+        $this->db->query($this->db->insert_string('Avvik',$data));
+        $data['AvvikID'] = $this->db->insert_id();
       } else {
-        $this->db->query($this->db->update_string('Produsenter',$data,"ProdusentID='".$ProdusentID."'"));
-        $data['ProdusentID'] = $ProdusentID;
+        $this->db->query($this->db->update_string('Avvik',$data,"AvvikID='".$AvvikID."'"));
+        $data['AvvikID'] = $AvvikID;
       }
       if ($this->db->affected_rows() > 0) {
-        $this->session->set_flashdata('Infomelding','Produsent '.$data['Navn'].' ble lagret.');
+        $this->session->set_flashdata('Infomelding','Avvik '.$data['AvvikID'].' ble lagret.');
       }
       return $data;
     }
 
     function avvik_slett($AvvikID) {
       $this->db->query("UPDATE Avvik SET DatoSlettet=Now() WHERE AvvikID='".$AvvikID."' LIMIT 1");
+    }
+
+    function avvik_lagrelogg($AvvikID,$data) {
+      $data['DatoRegistrert'] = date('Y-m-d H:i:s');
+      $data['AvvikID'] = $AvvikID;
+      $this->db->query($this->db->insert_string('Avvikslogg',$data));
     }
 
   }

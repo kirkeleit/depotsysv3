@@ -102,7 +102,9 @@
         $this->Utstyr_model->utstyr_slett($this->input->post('UtstyrID'));
         redirect('utstyr/utstyrsliste');
       } else {
-        $data['Utstyr'] = $this->Utstyr_model->utstyr_info($this->uri->segment(3));
+        $this->load->model('Vedlikehold_model');
+	$data['Utstyr'] = $this->Utstyr_model->utstyr_info($this->uri->segment(3));
+        $data['Avviksliste'] = $this->Vedlikehold_model->avviksliste(array('FilterUtstyrID' => $data['Utstyr']['UtstyrID']));
 	$data['Produsenter'] = $this->Utstyr_model->produsenter();
 	$data['Lokasjoner'] = $this->Utstyr_model->lokasjoner();
 	$data['Kasser'] = $this->Utstyr_model->kasser();
@@ -251,14 +253,43 @@
       $this->template->load('standard','vedlikehold/avviksliste',$data);
     }
 
+    public function nyttavvik() {
+      $this->load->model('Brukere_model');
+      $data['UtstyrID'] = $this->input->get('uid');
+      $data['Avvik'] = null;
+      $data['Brukere'] = $this->Brukere_model->brukere();
+      $this->template->load('standard','vedlikehold/avvik',$data);
+    }
+
     public function avvik() {
       $this->load->model('Vedlikehold_model');
       if ($this->input->post('AvvikLagre')) {
         $AvvikID = $this->input->post('AvvikID');
+        $Avvik['UtstyrID'] = $this->input->post('UtstyrID');
+        $Avvik['BrukerID'] = $this->input->post('BrukerID');
         $Avvik['Beskrivelse'] = $this->input->post('Beskrivelse');
-        $Avvik['Notater'] = $this->input->post('Notater');
-        $this->Vedlikehold_model->avvik_lagre($AvvikID,$Avvik);
-        redirect('utstyr/avviksliste');
+	$Avvik['Kostnad'] = $this->input->post('Kostnad');
+	$Avvik['StatusID'] = $this->input->post('StatusID');
+	$data = $this->Vedlikehold_model->avvik_lagre($AvvikID,$Avvik);
+	redirect('utstyr/avvik/'.$data['AvvikID']);
+      } elseif ($this->input->post('AvvikLagrelogg')) {
+	$AvvikID = $this->input->post('AvvikID');
+        $data['BrukerID'] = $_SESSION['BrukerID'];
+        $data['Tekst'] = $this->input->post('Loggtekst');
+        if ($this->input->post('AvvikLukk')) {
+          $data['LoggtypeID'] = 1;
+          $this->Vedlikehold_model->avvik_lagrelogg($AvvikID,$data);
+          unset($data);
+          $data['StatusID'] = 3;
+	  $this->Vedlikehold_model->avvik_lagre($AvvikID,$data);
+        } else {
+          $data['LoggtypeID'] = 0;
+          $this->Vedlikehold_model->avvik_lagrelogg($AvvikID,$data);
+          unset($data);
+          $data['StatusID'] = 1;
+	  $this->Vedlikehold_model->avvik_lagre($AvvikID,$data);
+        }
+        redirect('utstyr/avvik/'.$AvvikID);
       } elseif ($this->input->post('AvvikSlett')) {
         $this->Vedlikehold_model->avvik_slett($this->input->post('AvvikID'));
         redirect('utstyr/avviksliste');

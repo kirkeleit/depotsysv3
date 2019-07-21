@@ -53,10 +53,19 @@
         <a class="nav-link dropdown-toggle" href="#" id="navbarVedlikehold" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Vedlikehold
         </a>
-        <div class="dropdown-menu" aria-labelledby="navbarVedlikehold">
-	  <a class="dropdown-item" href="<?php echo site_url('vedlikehold/kontrolliste'); ?>">Kontrolliste</a>
+	<div class="dropdown-menu" aria-labelledby="navbarVedlikehold">
           <a class="dropdown-item" href="<?php echo site_url('utstyr/avviksliste'); ?>">Avviksliste</a>
+	  <a class="dropdown-item" href="<?php echo site_url('vedlikehold/kontrolliste'); ?>">Kontrolliste</a>
 	</div> 
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarOppsett" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Oppsett
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarOppsett">
+	  <a class="dropdown-item" href="<?php echo site_url('oppsett/brukere'); ?>">Brukere</a>
+          <a class="dropdown-item" href="<?php echo site_url('oppsett/roller'); ?>">Roller</a>
+        </div>
       </li>
     </ul>
   </div>
