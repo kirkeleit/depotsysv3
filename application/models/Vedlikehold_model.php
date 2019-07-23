@@ -45,6 +45,7 @@
     function kontroll_lagre($data) {
       $data['DatoRegistrert'] = date('Y-m-d H:i:s');
       $data['DatoEndret'] = $data['DatoRegistrert'];
+      $data['BrukerID'] = $_SESSION['BrukerID'];
       $this->db->query($this->db->insert_string('Kontrollogg',$data));
       if ($data['Tilstand'] != 0) {
         $avvik['DatoRegistrert'] = $data['DatoRegistrert'];

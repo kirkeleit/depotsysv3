@@ -1,4 +1,3 @@
-<form method="POST" action="<?php echo site_url('vedlikehold/avviksliste'); ?>">
 <div class="card">
   <div class="card-header">Avviksliste</div>
   <div class="table-responsive">
@@ -37,4 +36,3 @@
   </div>
   <div class="card-footer text-muted"><?php echo sizeof($Avviksliste); ?> avvik registrert</div>
 </div>
-</form>

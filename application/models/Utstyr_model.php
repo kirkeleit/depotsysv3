@@ -2,7 +2,7 @@
   class Utstyr_model extends CI_Model {
 
     function utstyrsliste($filter = null) {
-      $sql = "SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontrollogg l WHERE l.UtstyrID=u.UtstyrID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,Antall,(SELECT COUNT(*) FROM Avvik a WHERE (a.UtstyrID=u.UtstyrID) AND (StatusID<2) AND (DatoSlettet Is Null)) AS AntallAvvik FROM Utstyr u WHERE (DatoSlettet Is Null)";
+      $sql = "SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,AntallMin,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontrollogg l WHERE l.UtstyrID=u.UtstyrID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,(SELECT COUNT(*) FROM Avvik a WHERE (a.UtstyrID=u.UtstyrID) AND (StatusID<2) AND (DatoSlettet Is Null)) AS AntallAvvik,(SELECT SUM(Antall) FROM Utstyrslager l WHERE (l.UtstyrID=u.UtstyrID)) AS Antall FROM Utstyr u WHERE (DatoSlettet Is Null)";
       if (isset($filter['FilterUtstyrstypeID'])) {
         $sql .= " AND (UtstyrID Like '".$filter['FilterUtstyrstypeID']."%')";
       }
@@ -15,12 +15,19 @@
       if (isset($filter['FilterKasseID'])) {
         $sql .= " AND (KasseID='".$filter['FilterKasseID']."')";
       }
-      $sql .= " ORDER BY UtstyrID ASC";
-      $rutstyrsliste = $this->db->query($sql);
-      foreach ($rutstyrsliste->result_array() as $rutstyr) {
-        $Utstyrsliste[] = $rutstyr;
-        unset($rutstyr);
+      if (isset($filter['FilterForbruksmateriell'])) {
+        $sql .= " AND (UtstyrID Like '%T')";
       }
+      $sql .= " ORDER BY UtstyrID ASC";
+      $rUtstyrsliste = $this->db->query($sql);
+      foreach ($rUtstyrsliste->result_array() as $rUtstyr) {
+        if (!is_numeric($rUtstyr['Antall'])) {
+          $rUtstyr['Antall'] = 0;
+        }
+        $Utstyrsliste[] = $rUtstyr;
+        unset($rUtstyr);
+      }
+      unset($rUtstyrsliste);
       unset($rutstyrsliste);
       if (isset($Utstyrsliste)) {
         return $Utstyrsliste;
@@ -59,6 +66,13 @@
         //$this->session->set_flashdata('Infomelding','Lagerplassen "" ble vellykket oppdatert!');
       }
       return $data;
+    }
+
+    function utstyr_lagerlagre($data) {
+      $data['DatoRegistrert'] = date('Y-m-d H:i:s');
+      $data['BrukerID'] = $_SESSION['BrukerID'];
+      $this->db->query($this->db->insert_string('Utstyrslager',$data));
+      return true;
     }
 
     function utstyr_slett($UtstyrID) {

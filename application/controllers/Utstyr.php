@@ -317,4 +317,36 @@
       }
     }
 
+    public function telleliste() {
+      $this->load->model('Utstyr_model');
+      $this->load->model('Vedlikehold_model');
+      if ($this->input->post('LagreTelling')) {
+        $UtstyrID = $this->input->post('UtstyrID');
+	$Antall = $this->input->post('Antall');
+	$NyttAntall = $this->input->post('NyttAntall');
+	for ($x=0; $x<sizeof($UtstyrID); $x++) {
+          if (is_numeric($NyttAntall[$x])) {
+            $data['UtstyrID'] = $UtstyrID[$x];
+            $data['Antall'] = ($NyttAntall[$x]-$Antall[$x]);
+	    $data['Kommentar'] = 'Lageropptelling';
+	    $this->Utstyr_model->utstyr_lagerlagre($data);
+            unset($data);
+	    $data['UtstyrID'] = $UtstyrID[$x];
+	    $data['Tilstand'] = 0;
+	    $data['Kommentar'] = 'Lageropptelling';
+	    $this->Vedlikehold_model->kontroll_lagre($data);
+	    unset($data);
+          }
+	}
+      }
+      $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterForbruksmateriell' => 1));
+      $this->template->load('standard','vedlikehold/telleliste',$data);
+    }
+
+    public function bestillingsliste() {
+      $this->load->model('Utstyr_model');
+      $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterForbruksmateriell' => 1));
+      $this->template->load('standard','vedlikehold/bestillingsliste',$data);
+    }
+
   }
