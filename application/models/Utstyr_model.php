@@ -2,7 +2,8 @@
   class Utstyr_model extends CI_Model {
 
     function utstyrsliste($filter = null) {
-      $sql = "SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,AntallMin,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontrollogg l WHERE l.UtstyrID=u.UtstyrID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,(SELECT COUNT(*) FROM Avvik a WHERE (a.UtstyrID=u.UtstyrID) AND (StatusID<2) AND (DatoSlettet Is Null)) AS AntallAvvik,(SELECT SUM(Antall) FROM Utstyrslager l WHERE (l.UtstyrID=u.UtstyrID)) AS Antall FROM Utstyr u WHERE (DatoSlettet Is Null)";
+      //$sql = "SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,AntallMin,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontrollogg l WHERE l.UtstyrID=u.UtstyrID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,(SELECT COUNT(*) FROM Avvik a WHERE (a.UtstyrID=u.UtstyrID) AND (StatusID<2) AND (DatoSlettet Is Null)) AS AntallAvvik,(SELECT SUM(Antall) FROM Utstyrslager l WHERE (l.UtstyrID=u.UtstyrID)) AS Antall FROM Utstyr u WHERE (DatoSlettet Is Null)";
+      $sql = "SELECT UtstyrID,u.DatoRegistrert,u.DatoEndret,u.DatoSlettet,LokasjonID,KasseID,u.Beskrivelse,AntallMin,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontrollogg l WHERE l.UtstyrID=u.UtstyrID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,(SELECT COUNT(*) FROM Avvik a WHERE (a.UtstyrID=u.UtstyrID) AND (StatusID<2) AND (DatoSlettet Is Null)) AS AntallAvvik,(SELECT SUM(Antall) FROM Utstyrslager l WHERE (l.UtstyrID=u.UtstyrID)) AS Antall,AnsvarligRolleID,KontrollDager FROM Utstyr u LEFT JOIN Utstyrstyper ut ON SUBSTR(u.UtstyrID,02)=ut.UtstyrstypeID WHERE (u.DatoSlettet Is Null)";
       if (isset($filter['FilterUtstyrstypeID'])) {
         $sql .= " AND (UtstyrID Like '".$filter['FilterUtstyrstypeID']."%')";
       }
@@ -16,13 +17,30 @@
         $sql .= " AND (KasseID='".$filter['FilterKasseID']."')";
       }
       if (isset($filter['FilterForbruksmateriell'])) {
-        $sql .= " AND (UtstyrID Like '%T')";
+        if ($filter['FilterForbruksmateriell'] == 1) {
+          $sql .= " AND (UtstyrID Like '%T')";
+	} else {
+          $sql .= " AND (UtstyrID Not Like '%T')";
+	}
       }
       $sql .= " ORDER BY UtstyrID ASC";
       $rUtstyrsliste = $this->db->query($sql);
       foreach ($rUtstyrsliste->result_array() as $rUtstyr) {
         if (!is_numeric($rUtstyr['Antall'])) {
           $rUtstyr['Antall'] = 0;
+	}
+	if ($rUtstyr['KasseID'] == '') {
+          $rUtstyr['Plassering'] = '+'.$rUtstyr['LokasjonID'];
+          $rLokasjoner = $this->db->query("SELECT Navn FROM Lokasjoner WHERE (LokasjonID='".$rUtstyr['LokasjonID']."') LIMIT 1");
+          if ($rLokasjon = $rLokasjoner->row_array()) {
+            $rUtstyr['Plassering'] .= " ".$rLokasjon['Navn'];
+          }
+        } else {
+          $rUtstyr['Plassering'] = '='.$rUtstyr['KasseID'];
+          $rKasser = $this->db->query("SELECT Navn FROM Kasser WHERE (KasseID='".$rUtstyr['KasseID']."') LIMIT 1");
+          if ($rKasse = $rKasser->row_array()) {
+            $rUtstyr['Plassering'] .= " ".$rKasse['Navn'];
+          }
         }
         $Utstyrsliste[] = $rUtstyr;
         unset($rUtstyr);
@@ -46,7 +64,7 @@
     }
 
     function utstyr_info($UtstyrID = null) {
-      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,ProdusentID,Notater FROM Utstyr WHERE (UtstyrID='".$UtstyrID."') LIMIT 1");
+      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,ProdusentID,Notater,AntallMin FROM Utstyr WHERE (UtstyrID='".$UtstyrID."') LIMIT 1");
       if ($rutstyr = $rutstyrsliste->row_array()) {
 	return $rutstyr;
       }
@@ -81,7 +99,7 @@
 
 
     function utstyrstyper() {
-      $rutstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,Beskrivelse,(SELECT COUNT(*) FROM Utstyr u WHERE (u.UtstyrID Like CONCAT(ut.UtstyrstypeID,'%'))) AS AntallUtstyr FROM Utstyrstyper ut WHERE (DatoSlettet Is Null) ORDER BY UtstyrstypeID ASC");
+      $rutstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,Beskrivelse,(SELECT COUNT(*) FROM Utstyr u WHERE (u.UtstyrID Like CONCAT(ut.UtstyrstypeID,'%'))) AS AntallUtstyr,AnsvarligRolleID,(SELECT Navn FROM Roller r WHERE (r.RolleID=ut.AnsvarligRolleID) LIMIT 1) AS AnsvarligRolle FROM Utstyrstyper ut WHERE (DatoSlettet Is Null) ORDER BY UtstyrstypeID ASC");
       foreach ($rutstyrstyper->result_array() as $rutstyrstype) {
         $Utstyrstyper[] = $rutstyrstype;
         unset($rutstyrstype);
@@ -93,7 +111,7 @@
     }
 
     function utstyrstype_info($UtstyrstypeID = null) {
-      $rutstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,Beskrivelse,Notater FROM Utstyrstyper WHERE (UtstyrstypeID='".$UtstyrstypeID."') LIMIT 1");
+      $rutstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,AnsvarligRolleID,Beskrivelse,Notater FROM Utstyrstyper WHERE (UtstyrstypeID='".$UtstyrstypeID."') LIMIT 1");
       if ($rutstyrstype = $rutstyrstyper->row_array()) {
         return $rutstyrstype;
       }

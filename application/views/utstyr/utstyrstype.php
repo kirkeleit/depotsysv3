@@ -23,6 +23,21 @@
       </div>
     </div>
     <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="AnsvarligRolleID">Ansvarlig:</label>
+      <div class="col-sm-10">
+        <select class="custom-select custom-select-sm" id="AnsvarligRolleID" name="AnsvarligRolleID">
+          <option value="0">[ingen]</option>
+<?php
+  foreach ($Roller as $Rolle) {
+?>
+          <option value="<?php echo $Rolle['RolleID']; ?>"<?php if ($Utstyrstype['AnsvarligRolleID'] == $Rolle['RolleID']) { echo " selected"; } ?>><?php echo $Rolle['Navn']; ?></option>
+<?php
+  }
+?>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="Notater">Notater:</label>
       <div class="col-sm-10">
         <textarea class="form-control" id="Notater" name="Notater" rows="3"><?php echo set_value('Notater',$Utstyrstype['Notater']); ?></textarea>

@@ -95,7 +95,10 @@
 	  }
 	}
         $Utstyr['ProdusentID'] = $this->input->post('ProdusentID');
-        $Utstyr['Notater'] = $this->input->post('Notater');
+	$Utstyr['Notater'] = $this->input->post('Notater');
+	if ($this->input->post('AntallMin')) {
+          $Utstyr['AntallMin'] = $this->input->post('AntallMin');
+	}
         $this->Utstyr_model->utstyr_lagre($UtstyrID,$Utstyr);
         redirect('utstyr/utstyrsliste');
       } elseif ($this->input->post('UtstyrSlett')) {
@@ -120,17 +123,21 @@
     }
 
     public function nyutstyrstype() {
+      $this->load->model('Brukere_model');
       $data['Utstyrstype'] = null;
+      $data['Roller'] = $this->Brukere_model->roller();
       $this->template->load('standard','utstyr/utstyrstype',$data);
     }
 
     public function utstyrstype() {
       $this->load->model('Utstyr_model');
+      $this->load->model('Brukere_model');
       if ($this->input->post('UtstyrstypeLagre')) {
         $UtstyrstypeID = $this->input->post('UtstyrstypeID');
         if ($this->input->post('NyUtstyrstypeID')) {
           $Utstyrstype['UtstyrstypeID'] = $this->input->post('NyUtstyrstypeID');
-        }
+	}
+	$Utstyrstype['AnsvarligRolleID'] = $this->input->post('AnsvarligRolleID');
         $Utstyrstype['Beskrivelse'] = $this->input->post('Beskrivelse');
         $Utstyrstype['Notater'] = $this->input->post('Notater');
         $this->Utstyr_model->utstyrstype_lagre($UtstyrstypeID,$Utstyrstype);
@@ -139,6 +146,7 @@
         $this->Utstyr_model->utstyrstype_slett($this->input->post('UtstyrstypeID'));
         redirect('utstyr/utstyrstyper');
       } else {
+        $data['Roller'] = $this->Brukere_model->roller();
         $data['Utstyrstype'] = $this->Utstyr_model->utstyrstype_info($this->uri->segment(3));
         $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterUtstyrstypeID' => $data['Utstyrstype']['UtstyrstypeID']));
         $this->template->load('standard','utstyr/utstyrstype',$data);
@@ -341,6 +349,37 @@
       }
       $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterForbruksmateriell' => 1));
       $this->template->load('standard','vedlikehold/telleliste',$data);
+    }
+
+    public function kontrolliste() {
+	    $this->load->model('Utstyr_model');
+	    $this->load->model('Vedlikehold_model');
+      if ($this->input->post('KontrollLagre')) {
+        $UtstyrID = $this->input->post('UtstyrID');
+        $Tilstand = $this->input->post('Tilstand');
+	$Kommentar = $this->input->post('Kommentar');
+	for ($x=0; $x<sizeof($UtstyrID); $x++) {
+          if (is_numeric($Tilstand[$x])) {
+            $data['UtstyrID'] = $UtstyrID[$x];
+            $data['Tilstand'] = $Tilstand[$x];
+            $data['Kommentar'] = $Kommentar[$x];
+            $this->Vedlikehold_model->kontroll_lagre($data);
+            unset($data);
+	  }
+	}
+      }
+      $data['Kasser'] = $this->Utstyr_model->kasser();
+      $data['Lokasjoner'] = $this->Utstyr_model->lokasjoner();
+      if ($this->input->get('filterplassering')) {
+        if (substr($this->input->get('filterplassering'),0,1) == '=') {
+          $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterKasseID' => substr($this->input->get('filterplassering'),1), 'FilterForbruksmateriell' => 0));
+        } elseif (substr($this->input->get('filterplassering'),0,1) == '+') {
+          $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterLokasjonID' => substr($this->input->get('filterplassering'),1), 'FilterForbruksmateriell' => 0));
+        }
+      } else {
+        $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterForbruksmateriell' => 0));
+      }
+      $this->template->load('standard','vedlikehold/kontrolliste',$data);
     }
 
     public function bestillingsliste() {

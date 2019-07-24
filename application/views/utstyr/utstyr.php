@@ -58,6 +58,14 @@
 	</select>
       </div>
     </div>
+<?php if (substr($Utstyr['UtstyrID'],-1,1) == 'T') { ?>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="AntallMin">Antall minimum:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="AntallMin" name="AntallMin" value="<?php echo set_value('AntallMin',$Utstyr['AntallMin']); ?>">
+      </div>
+    </div>
+<?php } ?>
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="Notater">Notater:</label>
       <div class="col-sm-10">

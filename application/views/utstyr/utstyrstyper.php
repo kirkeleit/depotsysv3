@@ -6,7 +6,8 @@
         <tr>
 	  <th>ID</th>
 	  <th>Beskrivelse</th>
-          <th>Endret</th>
+	  <th>Endret</th>
+          <th>Ansvarlig</th>
           <th>Utstyr</th>
         </tr>
       </thead>
@@ -19,8 +20,8 @@
         <tr class="table-dark">
           <th><a href="<?php echo site_url('utstyr/utstyrstype/'.$Utstyrstype['UtstyrstypeID']); ?>"><?php echo $Utstyrstype['UtstyrstypeID']; ?></a></th>
           <td><b><?php echo strtoupper($Utstyrstype['Beskrivelse']); ?></b></td>
-          <td><?php echo date('d.m.Y',strtotime($Utstyrstype['DatoEndret'])); ?></td>
-          <td>&nbsp;</td>
+	  <td><?php echo date('d.m.Y',strtotime($Utstyrstype['DatoEndret'])); ?></td>
+          <td colspan="2">&nbsp;</td>
         </tr>
 <?php
       } else {
@@ -28,7 +29,8 @@
         <tr>
 	  <th><a href="<?php echo site_url('utstyr/utstyrstype/'.$Utstyrstype['UtstyrstypeID']); ?>"><?php echo $Utstyrstype['UtstyrstypeID']; ?></a></th>
 	  <td><?php echo $Utstyrstype['Beskrivelse']; ?></td>
-          <td><?php echo date('d.m.Y',strtotime($Utstyrstype['DatoEndret'])); ?></td>
+	  <td><?php echo date('d.m.Y',strtotime($Utstyrstype['DatoEndret'])); ?></td>
+          <td><?php echo $Utstyrstype['AnsvarligRolle']; ?></td>
 	  <td><?php if ($Utstyrstype['AntallUtstyr'] > 0) { echo $Utstyrstype['AntallUtstyr']." stk"; } else { echo "&nbsp;"; } ?></td>
         </tr>
 <?php

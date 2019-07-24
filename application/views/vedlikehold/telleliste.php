@@ -17,12 +17,12 @@
   if (isset($Utstyrsliste)) {
     foreach ($Utstyrsliste as $Utstyr) {
 ?>
-        <tr>
+	<tr<?php if ($Utstyr['Antall'] < $Utstyr['AntallMin']) { echo ' class="bg-warning"'; } ?>>
 	  <th><a href="<?php echo site_url('utstyr/utstyr/'.$Utstyr['UtstyrID']); ?>"><?php echo '-'.$Utstyr['UtstyrID']; ?></a><input type="hidden" name="UtstyrID[]" value="<?php echo $Utstyr['UtstyrID']; ?>"></th>
           <td><?php if ($Utstyr['DatoKontrollert'] != '') { echo date("d.m.Y",strtotime($Utstyr['DatoKontrollert'])); } else { echo "&nbsp;"; } ?></td>
 	  <td><?php echo $Utstyr['AntallMin']; ?></td>
 	  <td><?php echo $Utstyr['Antall']; ?></td>
-	  <td><input type="number" class="form-control" name="NyttAntall[]" size="6"><input type="hidden" name="Antall[]" value="<?php echo $Utstyr['Antall']; ?>"></td>
+	  <td><input type="number" class="form-control" name="NyttAntall[]" ><input type="hidden" name="Antall[]" value="<?php echo $Utstyr['Antall']; ?>"></td>
         </tr>
 <?php
     }
