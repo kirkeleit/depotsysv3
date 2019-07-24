@@ -49,6 +49,7 @@
 <?php if (isset($Utstyrstype['UtstyrstypeID'])) { ?>
     <input type="submit" class="btn btn-secondary" value="Slett" name="UtstyrstypeSlett" />
     <a href="<?php echo site_url('utstyr/nyttutstyr/'.$Utstyrstype['UtstyrstypeID']); ?>" class="btn btn-success" tabindex="-1" role="button">Nytt utstyr</a>
+    <a href="<?php echo site_url('utstyr/nyttforbruksmateriell/'.$Utstyrstype['UtstyrstypeID']); ?>" class="btn btn-success" tabindex="-1" role="button">Nytt forbruksmateriell</a>
 <?php } ?>
   </div>
 </div>

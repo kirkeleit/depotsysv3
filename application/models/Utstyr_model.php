@@ -3,7 +3,7 @@
 
     function utstyrsliste($filter = null) {
       //$sql = "SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,AntallMin,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontrollogg l WHERE l.UtstyrID=u.UtstyrID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,(SELECT COUNT(*) FROM Avvik a WHERE (a.UtstyrID=u.UtstyrID) AND (StatusID<2) AND (DatoSlettet Is Null)) AS AntallAvvik,(SELECT SUM(Antall) FROM Utstyrslager l WHERE (l.UtstyrID=u.UtstyrID)) AS Antall FROM Utstyr u WHERE (DatoSlettet Is Null)";
-      $sql = "SELECT UtstyrID,u.DatoRegistrert,u.DatoEndret,u.DatoSlettet,LokasjonID,KasseID,u.Beskrivelse,AntallMin,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontrollogg l WHERE l.UtstyrID=u.UtstyrID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,(SELECT COUNT(*) FROM Avvik a WHERE (a.UtstyrID=u.UtstyrID) AND (StatusID<2) AND (DatoSlettet Is Null)) AS AntallAvvik,(SELECT SUM(Antall) FROM Utstyrslager l WHERE (l.UtstyrID=u.UtstyrID)) AS Antall,AnsvarligRolleID,KontrollDager FROM Utstyr u LEFT JOIN Utstyrstyper ut ON SUBSTR(u.UtstyrID,02)=ut.UtstyrstypeID WHERE (u.DatoSlettet Is Null)";
+      $sql = "SELECT UtstyrID,u.DatoRegistrert,u.DatoEndret,u.DatoSlettet,LokasjonID,KasseID,u.Beskrivelse,AntallMin,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontrollogg l WHERE l.UtstyrID=u.UtstyrID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,(SELECT COUNT(*) FROM Avvik a WHERE (a.UtstyrID=u.UtstyrID) AND (StatusID<2) AND (DatoSlettet Is Null)) AS AntallAvvik,(SELECT SUM(Antall) FROM Utstyrslager l WHERE (l.UtstyrID=u.UtstyrID)) AS Antall FROM Utstyr u WHERE (u.DatoSlettet Is Null)";
       if (isset($filter['FilterUtstyrstypeID'])) {
         $sql .= " AND (UtstyrID Like '".$filter['FilterUtstyrstypeID']."%')";
       }
@@ -29,19 +29,14 @@
         if (!is_numeric($rUtstyr['Antall'])) {
           $rUtstyr['Antall'] = 0;
 	}
-	if ($rUtstyr['KasseID'] == '') {
-          $rUtstyr['Plassering'] = '+'.$rUtstyr['LokasjonID'];
-          $rLokasjoner = $this->db->query("SELECT Navn FROM Lokasjoner WHERE (LokasjonID='".$rUtstyr['LokasjonID']."') LIMIT 1");
-          if ($rLokasjon = $rLokasjoner->row_array()) {
-            $rUtstyr['Plassering'] .= " ".$rLokasjon['Navn'];
-          }
-        } else {
-          $rUtstyr['Plassering'] = '='.$rUtstyr['KasseID'];
-          $rKasser = $this->db->query("SELECT Navn FROM Kasser WHERE (KasseID='".$rUtstyr['KasseID']."') LIMIT 1");
-          if ($rKasse = $rKasser->row_array()) {
-            $rUtstyr['Plassering'] .= " ".$rKasse['Navn'];
-          }
-        }
+	$rUtstyrstyper = $this->db->query("SELECT KontrollDager,AnsvarligRolleID FROM Utstyrstyper WHERE (UtstyrstypeID='".substr($rUtstyr['UtstyrID'],0,2)."') LIMIT 1");
+	if ($rUtstyrstype = $rUtstyrstyper->row_array()) {
+          $rUtstyr['KontrollDager'] = $rUtstyrstype['KontrollDager'];
+          $rUtstyr['AnsvarligRolleID'] = $rUtstyrstype['AnsvarligRolleID'];
+	} else {
+          $rUtstyr['KontrollDager'] = 0;
+          $rUtstyr['AnsvarligRolleID'] = 0;
+	}
         $Utstyrsliste[] = $rUtstyr;
         unset($rUtstyr);
       }

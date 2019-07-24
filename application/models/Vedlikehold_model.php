@@ -2,6 +2,7 @@
   class Vedlikehold_model extends CI_Model {
 
     var $AvvikStatus = array(0 => 'Registrert', 1 => 'Under arbeid', 2 => 'På vent', 3 => 'Lukket');
+    var $UtstyrTilstand = array(0 => 'Alt ok!', 1 => 'Trenger vedlikehold', 2 => 'Mangler', 3 => 'Ødelagt');
 
     function kontrolliste($filter = null) {
       $sql = "SELECT KomponentID,Beskrivelse,LokasjonID,KasseID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=k.ProdusentID)) AS ProdusentNavn,Antall FROM Komponenter k WHERE 1";
@@ -47,7 +48,7 @@
       $data['DatoEndret'] = $data['DatoRegistrert'];
       $data['BrukerID'] = $_SESSION['BrukerID'];
       $this->db->query($this->db->insert_string('Kontrollogg',$data));
-      if ($data['Tilstand'] != 0) {
+      /*if ($data['Tilstand'] != 0) {
         $avvik['DatoRegistrert'] = $data['DatoRegistrert'];
         $avvik['DatoEndret'] = $data['DatoRegistrert'];
 	$avvik['KomponentID'] = $data['KomponentID'];
@@ -64,19 +65,22 @@
 	}
         $avvik['Beskrivelse'] .= $data['Kommentar'];
         $this->avvik_registrere($avvik);
-      }
+      }*/
     }
 
     function avvik_registrere($data) {
+      $data['DatoRegistrert'] = date('Y-m-d H:i:s');
+      $data['DatoEndret'] = $data['DatoRegistrert'];
+      $data['BrukerID'] = $_SESSION['BrukerID'];
       $this->db->query($this->db->insert_string('Avvik',$data));
-      define('SLACK_WEBHOOK', 'https://hooks.slack.com/services/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');
+      /*define('SLACK_WEBHOOK', 'https://hooks.slack.com/services/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');
       $message = array('payload' => json_encode(array('channel' => '#depottest', 'text' => "Nytt avvik registrert på '-".$data['KomponentID']."': ".$data['Beskrivelse'])));
       $c = curl_init(SLACK_WEBHOOK);
       curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
       curl_setopt($c, CURLOPT_POST, true);
       curl_setopt($c, CURLOPT_POSTFIELDS, $message);
       curl_exec($c);
-      curl_close($c);
+      curl_close($c);*/
     }
 
     function avviksliste($filter = null) {

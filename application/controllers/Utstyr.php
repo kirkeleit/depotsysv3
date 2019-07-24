@@ -75,6 +75,14 @@
       redirect('utstyr/utstyr/'.$data['Utstyr']['UtstyrID']);
     }
 
+    public function nyttforbruksmateriell() {
+      $this->load->model('Utstyr_model');
+      $ID = $this->Utstyr_model->nyttutstyrid($this->uri->segment(3));
+      $Utstyr['UtstyrID'] = $ID.'T';
+      $data['Utstyr'] = $this->Utstyr_model->utstyr_lagre(null,$Utstyr);
+      redirect('utstyr/utstyr/'.$data['Utstyr']['UtstyrID']);
+    }
+
     public function utstyr() {
       $this->load->model('Utstyr_model');
       if ($this->input->post('UtstyrLagre')) {
@@ -328,12 +336,14 @@
     public function telleliste() {
       $this->load->model('Utstyr_model');
       $this->load->model('Vedlikehold_model');
-      if ($this->input->post('LagreTelling')) {
+      if ($this->input->post('TellingLagre')) {
+        $y = 0;
         $UtstyrID = $this->input->post('UtstyrID');
 	$Antall = $this->input->post('Antall');
 	$NyttAntall = $this->input->post('NyttAntall');
 	for ($x=0; $x<sizeof($UtstyrID); $x++) {
           if (is_numeric($NyttAntall[$x])) {
+            $y++;
             $data['UtstyrID'] = $UtstyrID[$x];
             $data['Antall'] = ($NyttAntall[$x]-$Antall[$x]);
 	    $data['Kommentar'] = 'Lageropptelling';
@@ -346,44 +356,89 @@
 	    unset($data);
           }
 	}
+	$this->session->set_flashdata('Infomelding',$y.' stk utstyr er nå registrert med ny opptelling.');
       }
-      $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterForbruksmateriell' => 1));
+      $Filter = array('FilterForbruksmateriell' => 1);
+      if ($this->input->post('FilterKasseID')) {
+        $Filter['FilterKasseID'] = $this->input->post('FilterKasseID');
+        $data['FilterKasseID'] = $this->input->post('FilterKasseID');
+      }
+      if ($this->input->post('FilterLokasjonID')) {
+        $Filter['FilterLokasjonID'] = $this->input->post('FilterLokasjonID');
+        $data['FilterLokasjonID'] = $this->input->post('FilterLokasjonID');
+      }
+      $data['Kasser'] = $this->Utstyr_model->kasser();
+      $data['Lokasjoner'] = $this->Utstyr_model->lokasjoner();
+      $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste($Filter);
       $this->template->load('standard','vedlikehold/telleliste',$data);
     }
 
     public function kontrolliste() {
-	    $this->load->model('Utstyr_model');
-	    $this->load->model('Vedlikehold_model');
+      $this->load->model('Utstyr_model');
+      $this->load->model('Vedlikehold_model');
       if ($this->input->post('KontrollLagre')) {
+        $y1 = 0;
+        $y2 = 0;
         $UtstyrID = $this->input->post('UtstyrID');
         $Tilstand = $this->input->post('Tilstand');
 	$Kommentar = $this->input->post('Kommentar');
 	for ($x=0; $x<sizeof($UtstyrID); $x++) {
           if (is_numeric($Tilstand[$x])) {
+            $y1++;
             $data['UtstyrID'] = $UtstyrID[$x];
             $data['Tilstand'] = $Tilstand[$x];
             $data['Kommentar'] = $Kommentar[$x];
             $this->Vedlikehold_model->kontroll_lagre($data);
-            unset($data);
+	    unset($data);
+            if ($Tilstand[$x] > 0) {
+              $data['UtstyrID'] = $UtstyrID[$x];
+	      $data['StatusID'] = 0;
+	      $data['Kostnad'] = 0;
+	      $data['Beskrivelse'] = $this->Vedlikehold_model->UtstyrTilstand[$Tilstand[$x]].": ".$Kommentar[$x];
+	      $AvvikID = $this->Vedlikehold_model->avvik_opprett($data);
+	      if ($AvvikID != false) {
+                $y2++;
+                $this->slack->sendmessage("Avvik *#".$AvvikID."* på utstyret *'-".$data['UtstyrID']."'* er nå registrert med følgende beskrivelse:\n>".$data['Beskrivelse']."\n<".site_url('utstyr/avvik/'.$AvvikID)."|Trykk her> for å åpne avviket.");
+	      }
+	      unset($data);
+            }
 	  }
 	}
+	$this->session->set_flashdata('Infomelding',$y1.' stk utstyr er nå registrert som kontrollert. <b>'.$y2.'</b> avvik ble opprettet.');
       }
       $data['Kasser'] = $this->Utstyr_model->kasser();
       $data['Lokasjoner'] = $this->Utstyr_model->lokasjoner();
-      if ($this->input->get('filterplassering')) {
-        if (substr($this->input->get('filterplassering'),0,1) == '=') {
-          $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterKasseID' => substr($this->input->get('filterplassering'),1), 'FilterForbruksmateriell' => 0));
-        } elseif (substr($this->input->get('filterplassering'),0,1) == '+') {
-          $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterLokasjonID' => substr($this->input->get('filterplassering'),1), 'FilterForbruksmateriell' => 0));
-        }
-      } else {
-        $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterForbruksmateriell' => 0));
+      $Filter = array('FilterForbruksmateriell' => 0);
+      if ($this->input->post('FilterKasseID')) {
+        $Filter['FilterKasseID'] = $this->input->post('FilterKasseID');
+        $data['FilterKasseID'] = $this->input->post('FilterKasseID');
       }
+      if ($this->input->post('FilterLokasjonID')) {
+        $Filter['FilterLokasjonID'] = $this->input->post('FilterLokasjonID');
+        $data['FilterLokasjonID'] = $this->input->post('FilterLokasjonID');
+      }
+      $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste($Filter);
       $this->template->load('standard','vedlikehold/kontrolliste',$data);
     }
 
     public function bestillingsliste() {
       $this->load->model('Utstyr_model');
+      if ($this->input->post('MottakLagre')) {
+        $y = 0;
+        $UtstyrID = $this->input->post('UtstyrID');
+        $MottattAntall = $this->input->post('MottattAntall');
+        for ($x=0; $x<sizeof($UtstyrID); $x++) {
+          if (is_numeric($MottattAntall[$x])) {
+            $y++;
+            $data['UtstyrID'] = $UtstyrID[$x];
+            $data['Antall'] = ($MottattAntall[$x]);
+            $data['Kommentar'] = 'Varemottak';
+            $this->Utstyr_model->utstyr_lagerlagre($data);
+	    unset($data);
+	  }
+	}
+	$this->session->set_flashdata('Infomelding',$y.' stk utstyr er nå oppdatert med ny lagerstatus.');
+      }
       $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterForbruksmateriell' => 1));
       $this->template->load('standard','vedlikehold/bestillingsliste',$data);
     }
