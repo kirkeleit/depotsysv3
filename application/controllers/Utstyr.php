@@ -142,16 +142,38 @@
     public function utstyrstype() {
       $this->load->model('Utstyr_model');
       $this->load->model('Brukere_model');
-      if ($this->input->post('UtstyrstypeLagre')) {
-        $UtstyrstypeID = $this->input->post('UtstyrstypeID');
-        if ($this->input->post('NyUtstyrstypeID')) {
-          $Utstyrstype['UtstyrstypeID'] = $this->input->post('NyUtstyrstypeID');
+      if (($this->input->post('SkjemaLagre')) or ($this->input->post('SkjemaLagreLukk'))) {
+        $this->form_validation->set_rules('UtstyrstypeID','Utstyrstype ID','trim|integer');
+	$this->form_validation->set_rules('Navn', 'Navn', 'required|trim');
+        $this->form_validation->set_rules('AnsvarligRolleID', 'Ansvarlig rolle','required|integer');
+        $this->form_validation->set_rules('KontrollDager', 'Kontrolldager', 'required|integer');
+        $this->form_validation->set_rules('Notater','Notater','trim');
+	if ($this->form_validation->run() == TRUE) {
+          $UtstyrstypeID = $this->input->post('UtstyrstypeID');
+          if ($this->input->post('Kode')) {
+            $data['Kode'] = $this->input->post('Kode');
+          }
+          $data['Navn'] = $this->input->post('Navn');
+          $data['AnsvarligRolleID'] = $this->input->post('AnsvarligRolleID');
+          $data['KontrollDager'] = $this->input->post('KontrollDager');
+          $data['Notater'] = $this->input->post('Notater');
+          $UtstyrstypeID = $this->Utstyr_model->utstyrstype_lagre($UtstyrstypeID,$data);
+          if ($UtstyrstypeID != false) {
+            $this->session->set_flashdata('Infomelding',"Utstyrstype '".$data['Navn']."' ble vellykket lagret.");
+            if ($this->input->post('SkjemaLagre')) {
+              redirect('utstyr/utstyrstype/'.$UtstyrstypeID);
+            } elseif ($this->input->post('SkjemaLagreLukk')) {
+              redirect('utstyr/utstyrstyper');
+            }
+          } else {
+            redirect('utstyr/utstyrstyper');
+	  }
+	} else {
+          $data['Roller'] = $this->Brukere_model->roller();
+          $data['Utstyrstype'] = $this->Utstyr_model->utstyrstype_info($this->uri->segment(3));
+          $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterUtstyrstypeID' => $data['Utstyrstype']['UtstyrstypeID']));
+          $this->template->load('standard','utstyr/utstyrstype',$data);
 	}
-	$Utstyrstype['AnsvarligRolleID'] = $this->input->post('AnsvarligRolleID');
-        $Utstyrstype['Beskrivelse'] = $this->input->post('Beskrivelse');
-        $Utstyrstype['Notater'] = $this->input->post('Notater');
-        $this->Utstyr_model->utstyrstype_lagre($UtstyrstypeID,$Utstyrstype);
-        redirect('utstyr/utstyrstyper');
       } elseif ($this->input->post('UtstyrstypeSlett')) {
         $this->Utstyr_model->utstyrstype_slett($this->input->post('UtstyrstypeID'));
         redirect('utstyr/utstyrstyper');

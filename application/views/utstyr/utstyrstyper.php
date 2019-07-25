@@ -11,10 +11,11 @@ En utstyrstype definerer en type/kategori med utstyr, for eks lommelykter, redni
   <table class="table table-bordered table-striped table-hover table-sm">
     <thead>
       <tr>
-        <th>#</th>
-        <th>Beskrivelse</th>
+        <th>Kode</th>
+        <th>Navn</th>
         <th>Endret</th>
         <th>Ansvarlig</th>
+	<th>Kontroll</th>
         <th>Utstyr</th>
       </tr>
     </thead>
@@ -22,22 +23,21 @@ En utstyrstype definerer en type/kategori med utstyr, for eks lommelykter, redni
 <?php
   if (isset($Utstyrstyper)) {
     foreach ($Utstyrstyper as $Utstyrstype) {
-      if (strlen($Utstyrstype['UtstyrstypeID']) == 1) {
+      if (strlen($Utstyrstype['Kode']) == 1) {
 ?>
-        <tr class="table-dark">
-          <th><a href="<?php echo site_url('utstyr/utstyrstype/'.$Utstyrstype['UtstyrstypeID']); ?>"><?php echo $Utstyrstype['UtstyrstypeID']; ?></a></th>
-          <td><b><?php echo strtoupper($Utstyrstype['Beskrivelse']); ?></b></td>
-	  <td><?php echo date('d.m.Y',strtotime($Utstyrstype['DatoEndret'])); ?></td>
-          <td colspan="2">&nbsp;</td>
+        <tr class="table-info">
+          <th colspan="2" class="text-uppercase"><a href="<?php echo site_url('utstyr/utstyrstype/'.$Utstyrstype['UtstyrstypeID']); ?>"><?php echo $Utstyrstype['Kode'].' '.$Utstyrstype['Navn']; ?></a></th>
+          <td colspan="4">&nbsp;</td>
         </tr>
 <?php
       } else {
 ?>
       <tr>
-        <th><a href="<?php echo site_url('utstyr/utstyrstype/'.$Utstyrstype['UtstyrstypeID']); ?>"><?php echo $Utstyrstype['UtstyrstypeID']; ?></a></th>
-        <td><?php echo $Utstyrstype['Beskrivelse']; ?></td>
+        <th><a href="<?php echo site_url('utstyr/utstyrstype/'.$Utstyrstype['UtstyrstypeID']); ?>"><?php echo $Utstyrstype['Kode']; ?></a></th>
+        <td><?php echo $Utstyrstype['Navn']; ?></td>
         <td><?php echo date('d.m.Y',strtotime($Utstyrstype['DatoEndret'])); ?></td>
-        <td><?php echo $Utstyrstype['AnsvarligRolle']; ?></td>
+	<td><?php echo $Utstyrstype['AnsvarligRolle']; ?></td>
+        <td><?php if ($Utstyrstype['KontrollDager'] > 0) { echo $Utstyrstype['KontrollDager'].' dager'; } else { echo "&nbsp;"; } ?></td>
         <td><?php if ($Utstyrstype['AntallUtstyr'] > 0) { echo $Utstyrstype['AntallUtstyr']." stk"; } else { echo "&nbsp;"; } ?></td>
       </tr>
 <?php
@@ -46,7 +46,7 @@ En utstyrstype definerer en type/kategori med utstyr, for eks lommelykter, redni
   } else {
 ?>
       <tr>
-        <td colspan="5" class="text-center">Ingen utstyrstyper er registrert enda.</td>
+        <td colspan="6" class="text-center">Ingen utstyrstyper er registrert enda.</td>
       </tr>
 <?php
   }

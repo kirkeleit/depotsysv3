@@ -93,21 +93,23 @@
 
 
     function utstyrstyper() {
-      $rutstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,Beskrivelse,(SELECT COUNT(*) FROM Utstyr u WHERE (u.UtstyrID Like CONCAT(ut.UtstyrstypeID,'%'))) AS AntallUtstyr,AnsvarligRolleID,(SELECT Navn FROM Roller r WHERE (r.RolleID=ut.AnsvarligRolleID) LIMIT 1) AS AnsvarligRolle FROM Utstyrstyper ut WHERE (DatoSlettet Is Null) ORDER BY UtstyrstypeID ASC");
-      foreach ($rutstyrstyper->result_array() as $rutstyrstype) {
-        $Utstyrstyper[] = $rutstyrstype;
+      $rUtstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,(SELECT COUNT(*) FROM Utstyr u WHERE (u.UtstyrID Like CONCAT(ut.Kode,'%'))) AS AntallUtstyr,AnsvarligRolleID,(SELECT Navn FROM Roller r WHERE (r.RolleID=ut.AnsvarligRolleID) LIMIT 1) AS AnsvarligRolle,KontrollDager FROM Utstyrstyper ut WHERE (DatoSlettet Is Null) ORDER BY Kode ASC");
+      foreach ($rUtstyrstyper->result_array() as $rUtstyrstype) {
+        $Utstyrstyper[] = $rUtstyrstype;
         unset($rutstyrstype);
       }
-      unset($rutstyrstyper);
+      unset($rUtstyrstyper);
       if (isset($Utstyrstyper)) {
         return $Utstyrstyper;
       }
     }
 
     function utstyrstype_info($UtstyrstypeID = null) {
-      $rutstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,AnsvarligRolleID,Beskrivelse,Notater FROM Utstyrstyper WHERE (UtstyrstypeID='".$UtstyrstypeID."') LIMIT 1");
-      if ($rutstyrstype = $rutstyrstyper->row_array()) {
-        return $rutstyrstype;
+      $rUtstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,AnsvarligRolleID,KontrollDager,Notater FROM Utstyrstyper WHERE (UtstyrstypeID='".$UtstyrstypeID."') LIMIT 1");
+      if ($rUtstyrstype = $rUtstyrstyper->row_array()) {
+        return $rUtstyrstype;
+      } else {
+        return false;
       }
     }
 
@@ -121,10 +123,7 @@
         $this->db->query($this->db->update_string('Utstyrstyper',$data,"UtstyrstypeID='".$UtstyrstypeID."'"));
         $data['UtstyrstypeID'] = $UtstyrstypeID;
       }
-      if ($this->db->affected_rows() > 0) {
-        $this->session->set_flashdata('Infomelding','Komponenttype '.$data['KomponenttypeID'].' ble lagret.');
-      }
-      return $data;
+      return $UtstyrstypeID;
     }
 
     function utstyrstype_slett($UtstyrstypeID) {
