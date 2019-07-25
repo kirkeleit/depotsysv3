@@ -69,23 +69,20 @@
 
     public function nyttutstyr() {
       $this->load->model('Utstyr_model');
-      $ID = $this->Utstyr_model->nyttutstyrid($this->uri->segment(3));
-      $Utstyr['UtstyrID'] = $ID;
-      $data['Utstyr'] = $this->Utstyr_model->utstyr_lagre(null,$Utstyr);
-      redirect('utstyr/utstyr/'.$data['Utstyr']['UtstyrID']);
-    }
-
-    public function nyttforbruksmateriell() {
-      $this->load->model('Utstyr_model');
-      $ID = $this->Utstyr_model->nyttutstyrid($this->uri->segment(3));
-      $Utstyr['UtstyrID'] = $ID.'T';
+      $ID = $this->Utstyr_model->nyttutstyrid($this->input->get('kode'));
+      if ($this->input->get('forbruk') == 1) {
+        $Utstyr['UtstyrID'] = $ID.'T';
+      } else {
+        $Utstyr['UtstyrID'] = $ID;
+      }
+      $Utstyr['Beskrivelse'] = $this->input->get('navn');
       $data['Utstyr'] = $this->Utstyr_model->utstyr_lagre(null,$Utstyr);
       redirect('utstyr/utstyr/'.$data['Utstyr']['UtstyrID']);
     }
 
     public function utstyr() {
       $this->load->model('Utstyr_model');
-      if ($this->input->post('UtstyrLagre')) {
+      if ($this->input->post('SkjemaLagre') or $this->input->post('SkjemaLagreLukk')) {
         $UtstyrID = $this->input->post('UtstyrID');
 	$Utstyr['Beskrivelse'] = $this->input->post('Beskrivelse');
 	if ($this->input->post('Plassering')) {
@@ -109,11 +106,12 @@
 	if ($this->input->post('AntallMin')) {
           $Utstyr['AntallMin'] = $this->input->post('AntallMin');
 	}
-        $this->Utstyr_model->utstyr_lagre($UtstyrID,$Utstyr);
-        redirect('utstyr/utstyr/'.$UtstyrID);
-      } elseif ($this->input->post('UtstyrSlett')) {
-        $this->Utstyr_model->utstyr_slett($this->input->post('UtstyrID'));
-        redirect('utstyr/utstyrsliste');
+	$this->Utstyr_model->utstyr_lagre($UtstyrID,$Utstyr);
+	if ($this->input->post('SkjemaLagre')) {
+          redirect('utstyr/utstyr/'.$UtstyrID);
+	} else {
+          redirect('utstyr/utstyrsliste');
+	}
       } else {
         $this->load->model('Vedlikehold_model');
 	$data['Utstyr'] = $this->Utstyr_model->utstyr_info($this->uri->segment(3));
@@ -123,6 +121,12 @@
 	$data['Kasser'] = $this->Utstyr_model->kasser();
         $this->template->load('standard','utstyr/utstyr',$data);
       }
+    }
+
+    public function slettutstyr() {
+      $this->load->model('Utstyr_model');
+      $this->Utstyr_model->utstyr_slett($this->input->get('utstyrid'));
+      redirect('utstyr/utstyrsliste');
     }
 
 
@@ -174,17 +178,19 @@
           $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterUtstyrstypeID' => $data['Utstyrstype']['UtstyrstypeID']));
           $this->template->load('standard','utstyr/utstyrstype',$data);
 	}
-      } elseif ($this->input->post('UtstyrstypeSlett')) {
-        $this->Utstyr_model->utstyrstype_slett($this->input->post('UtstyrstypeID'));
-        redirect('utstyr/utstyrstyper');
       } else {
         $data['Roller'] = $this->Brukere_model->roller();
         $data['Utstyrstype'] = $this->Utstyr_model->utstyrstype_info($this->uri->segment(3));
-        $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterUtstyrstypeID' => $data['Utstyrstype']['UtstyrstypeID']));
+        $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterUtstyrstype' => $data['Utstyrstype']['Kode']));
         $this->template->load('standard','utstyr/utstyrstype',$data);
       }
     }
 
+    public function slettutstyrstype() {
+      $this->load->model('Utstyr_model');
+      $this->Utstyr_model->utstyrstype_slett($this->input->get('utstyrstypeid'));
+      redirect('utstyr/utstyrstyper');
+    }
 
     public function produsenter() {
       $this->load->model('Utstyr_model');
@@ -199,21 +205,28 @@
 
     public function produsent() {
       $this->load->model('Utstyr_model');
-      if ($this->input->post('ProdusentLagre')) {
+      if ($this->input->post('SkjemaLagre') or $this->input->post('SkjemaLagreLukk')) {
         $ProdusentID = $this->input->post('ProdusentID');
         $Produsent['Navn'] = $this->input->post('Navn');
         $Produsent['Nettsted'] = $this->input->post('Nettsted');
         $Produsent['Notater'] = $this->input->post('Notater');
-        $this->Utstyr_model->produsent_lagre($ProdusentID,$Produsent);
-        redirect('utstyr/produsenter');
-      } elseif ($this->input->post('ProdusentSlett')) {
-        $this->Utstyr_model->produsent_slett($this->input->post('ProdusentID'));
-        redirect('utstyr/produsenter');
+	$this->Utstyr_model->produsent_lagre($ProdusentID,$Produsent);
+	if ($this->input->post('SkjemaLagre')) {
+          redirect('utstyr/produsent/'.$ProdusentID);
+	} elseif ($this->input->post('SkjemaLagreLukk')) {
+          redirect('utstyr/produsenter');
+	}
       } else {
         $data['Produsent'] = $this->Utstyr_model->produsent_info($this->uri->segment(3));
         $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterProdusentID' => $data['Produsent']['ProdusentID']));
         $this->template->load('standard','utstyr/produsent',$data);
       }
+    }
+
+    public function slettprodusent() {
+      $this->load->model('Utstyr_model');
+      $this->Utstyr_model->produsent_slett($this->input->get('produsentid'));
+      redirect('utstyr/produsenter');
     }
 
 

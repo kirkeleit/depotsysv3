@@ -60,11 +60,16 @@
       <input type="submit" class="btn btn-primary" value="Lagre" name="SkjemaLagre" />
       <input type="submit" class="btn btn-primary" value=">>" name="SkjemaLagreLukk" />
     </div>
-<?php if (isset($Utstyrstype['UtstyrstypeID'])) { ?>
-    <input type="submit" class="btn btn-light" value="Slett" name="UtstyrstypeSlett" />
-    <a href="<?php echo site_url('utstyr/nyttutstyr/'.$Utstyrstype['Kode']); ?>" class="btn btn-success" tabindex="-1" role="button">Nytt utstyr</a>
-    <a href="<?php echo site_url('utstyr/nyttforbruksmateriell/'.$Utstyrstype['Kode']); ?>" class="btn btn-success" tabindex="-1" role="button">Nytt forbruksmateriell</a>
-<?php } ?>
+    <div class="btn-group" role="group">
+      <button id="SkjemaAvansert" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Flere valg
+      </button>
+      <div class="dropdown-menu" aria-labelledby="SkjemaAvansert">
+	<a href="<?php echo site_url('utstyr/slettutstyrstype?utstyrstypeid='.$Utstyrstype['UtstyrstypeID']); ?>" class="dropdown-item">Slett utstyrstypen</a>
+        <a href="<?php echo site_url('utstyr/nyttutstyr/?kode='.$Utstyrstype['Kode'].'&navn='.$Utstyrstype['Navn'].'&forbruk=0'); ?>" class="dropdown-item">Nytt utstyr</a>
+        <a href="<?php echo site_url('utstyr/nyttutstyr/?kode='.$Utstyrstype['Kode'].'&navn='.$Utstyrstype['Navn'].'&forbruk=1'); ?>" class="dropdown-item">Nytt forbruksmateriell</a>
+      </div>
+    </div>
   </div>
 </div>
 </form>

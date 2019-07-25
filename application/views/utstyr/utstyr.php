@@ -2,16 +2,16 @@
 <input type="hidden" name="UtstyrID" value="<?php echo set_value('UtstyrID',$Utstyr['UtstyrID']); ?>" />
 
 <div class="card">
-  <div class="card-header"><b>Utstyr -<?php echo $Utstyr['UtstyrID']; ?></b></div>
+  <h5 class="card-header">Utstyr</h5>
   <div class="card-body">
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="UtstyrID">Utstyr ID:</label>
+      <label class="col-sm-2 col-form-label" for="UtstyrID"><b>Utstyr ID:</b></label>
       <div class="col-sm-10">
         <input type="text" class="form-control-plaintext" id="UtstyrID" value="-<?php echo $Utstyr['UtstyrID']; ?>" readonly>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="Plassering">Plassering:</label>
+      <label class="col-sm-2 col-form-label" for="Plassering"><b>Plassering:</b></label>
       <div class="col-sm-10">
         <select class="custom-select custom-select-sm" id="Plassering" name="Plassering">
           <option value="">[ukjent/ingen plass]</option>
@@ -38,16 +38,16 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label">Beskrivelse:</label>
+      <label class="col-sm-2 col-form-label"><b>Beskrivelse:</b></label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" id="Beskrivelse" name="Beskrivelse" value="<?php echo set_value('Beskrivelse',$Utstyr['Beskrivelse']); ?>">
+        <input type="text" class="form-control" id="Beskrivelse" name="Beskrivelse" value="<?php echo set_value('Beskrivelse',$Utstyr['Beskrivelse']); ?>" required>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="ProdusentID">Produsent:</label>
+      <label class="col-sm-2 col-form-label" for="ProdusentID"><b>Produsent:</b></label>
       <div class="col-sm-10">
         <select class="custom-select custom-select-sm" id="ProdusentID" name="ProdusentID">
-          <option value="0">[ingen]</option>
+          <option value="0">(ingen valgt)</option>
 <?php
   foreach ($Produsenter as $Produsent) {
 ?>
@@ -60,16 +60,16 @@
     </div>
 <?php if (substr($Utstyr['UtstyrID'],-1,1) == 'T') { ?>
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="AntallMin">Antall minimum:</label>
+      <label class="col-sm-2 col-form-label" for="AntallMin"><b>Antall minimum:</b></label>
       <div class="col-sm-10">
         <input type="text" class="form-control" id="AntallMin" name="AntallMin" value="<?php echo set_value('AntallMin',$Utstyr['AntallMin']); ?>">
       </div>
     </div>
 <?php } ?>
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="BatteriType">Batteriyype:</label>
+      <label class="col-sm-2 col-form-label" for="BatteriType"><b>Batteritype:</b></label>
       <div class="col-sm-10">
-        <select class="custom-select custom-select-cm" id="BatteriType" name="BatteriType">
+        <select class="custom-select custom-select-sm" id="BatteriType" name="BatteriType">
 	  <option value=""<?php if ($Utstyr['BatteriType'] == '') { echo ' selected'; } ?>>Trenger ikke batteri</option>
 	  <option value="AA"<?php if ($Utstyr['BatteriType'] == 'AA') { echo ' selected'; } ?>>AA batterier</option>
 	  <option value="AAA"<?php if ($Utstyr['BatteriType'] == 'AAA') { echo ' selected'; } ?>>AAA batterier</option>
@@ -78,58 +78,71 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="BatteriAntall">Antall batterier:</label>
+      <label class="col-sm-2 col-form-label" for="BatteriAntall"><b>Antall batterier:</b></label>
       <div class="col-sm-10">
         <input type="number" class="form-control" id="BatteriAntall" name="BatteriAntall" value="<?php echo set_value('BatteriAntall',$Utstyr['BatteriAntall']); ?>">
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="Notater">Notater:</label>
+      <label class="col-sm-2 col-form-label" for="Notater"><b>Notater:</b></label>
       <div class="col-sm-10">
         <textarea class="form-control" id="Notater" name="Notater" rows="3"><?php echo set_value('Notater',$Utstyr['Notater']); ?></textarea>
       </div>
     </div>
   </div>
   <div class="card-footer">
-    <input type="submit" class="btn btn-primary" value="Lagre" name="UtstyrLagre" />
-    <input type="submit" class="btn btn-secondary" value="Slett" name="UtstyrSlett" />
-    <a href="<?php echo site_url('utstyr/nyttavvik?uid='.$Utstyr['UtstyrID']); ?>" class="btn btn-warning" tabindex="-1" role="button">Nytt avvik</a>
+    <div class="btn-group" role="group" aria-label="Skjema lagre">
+      <input type="submit" class="btn btn-primary" value="Lagre" name="SkjemaLagre" />
+      <input type="submit" class="btn btn-primary" value=">>" name="SkjemaLagreLukk" />
+    </div>
+    <div class="btn-group" role="group">
+      <button id="SkjemaAvansert" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Flere valg
+      </button>
+      <div class="dropdown-menu" aria-labelledby="SkjemaAvansert">
+        <a href="<?php echo site_url('utstyr/slettutstyr?utstyrid='.$Utstyr['UtstyrID']); ?>" class="dropdown-item">Slett utstyret</a>
+        <a href="<?php echo site_url('utstyr/nyttavvik?utstyrid='.$Utstyr['UtstyrID']); ?>" class="dropdown-item">Nytt avvik</a>
+      </div>
+    </div>
   </div>
 </div>
+</form>
 <br />
 
-<div class="card">
-  <div class="card-header"><b>Avviksliste</b></div>
-  <div class="table-responsive">
-    <table class="table table-sm table-striped table-hover">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Registrert dato</th>
-	  <th>Registrert av</th>
-          <th>Beskrivelse</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-<?php if (isset($Avviksliste)) { ?>
+<h5>Avviksliste</h5>
+<div class="table-responsive">
+  <table class="table table-bordered table-sm table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Avvik ID</th>
+        <th>Registrert dato</th>
+        <th>Registrert av</th>
+        <th>Beskrivelse</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
 <?php
-  foreach ($Avviksliste as $Avvik) {
+  if (isset($Avviksliste)) {
+    foreach ($Avviksliste as $Avvik) {
 ?>
-        <tr>
-	  <th><a href="<?php echo site_url('utstyr/avvik/'.$Avvik['AvvikID']); ?>"><?php echo $Avvik['AvvikID']; ?></a></th>
-          <td><?php echo date('d.m.Y',strtotime($Avvik['DatoRegistrert'])); ?></td>
-          <td><?php echo $Avvik['BrukerNavn']; ?></td>
-          <td><?php echo $Avvik['Beskrivelse']; ?></td>
-          <td><?php echo $Avvik['Status']; ?></td>
-        </tr>
+      <tr>
+        <th><a href="<?php echo site_url('utstyr/avvik/'.$Avvik['AvvikID']); ?>"><?php echo $Avvik['AvvikID']; ?></a></th>
+        <td><?php echo date('d.m.Y',strtotime($Avvik['DatoRegistrert'])); ?></td>
+        <td><?php echo $Avvik['BrukerNavn']; ?></td>
+        <td><?php echo $Avvik['Beskrivelse']; ?></td>
+        <td><?php echo $Avvik['Status']; ?></td>
+      </tr>
+<?php
+    }
+  } else {
+?>
+      <tr>
+        <td colspan="5" class="text-center">Ingen åpne avvik registrert på utstyret.</td>
+      </tr>
 <?php
   }
 ?>
-<?php } ?>
-      </tbody>
-    </table>
-  </div>
+    </tbody>
+  </table>
 </div>
-
-</form>
