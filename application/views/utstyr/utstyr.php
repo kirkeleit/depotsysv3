@@ -67,6 +67,23 @@
     </div>
 <?php } ?>
     <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="BatteriType">Batteriyype:</label>
+      <div class="col-sm-10">
+        <select class="custom-select custom-select-cm" id="BatteriType" name="BatteriType">
+	  <option value=""<?php if ($Utstyr['BatteriType'] == '') { echo ' selected'; } ?>>Trenger ikke batteri</option>
+	  <option value="AA"<?php if ($Utstyr['BatteriType'] == 'AA') { echo ' selected'; } ?>>AA batterier</option>
+	  <option value="AAA"<?php if ($Utstyr['BatteriType'] == 'AAA') { echo ' selected'; } ?>>AAA batterier</option>
+          <option value="C"<?php if ($Utstyr['BatteriType'] == 'C') { echo ' selected'; } ?>>C/LR6 batterier</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="BatteriAntall">Antall batterier:</label>
+      <div class="col-sm-10">
+        <input type="number" class="form-control" id="BatteriAntall" name="BatteriAntall" value="<?php echo set_value('BatteriAntall',$Utstyr['BatteriAntall']); ?>">
+      </div>
+    </div>
+    <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="Notater">Notater:</label>
       <div class="col-sm-10">
         <textarea class="form-control" id="Notater" name="Notater" rows="3"><?php echo set_value('Notater',$Utstyr['Notater']); ?></textarea>

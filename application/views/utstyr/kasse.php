@@ -53,36 +53,49 @@
 
 </form>
 
-<?php if (isset($Utstyrsliste)) { ?>
-<div class="card">
-  <div class="card-header">Utstyrsliste</div>
-  <div class="table-responsive">
-    <table class="table table-sm table-striped table-hover">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Produsent</th>
-          <th>Beskrivelse</th>
-          <th>Antall</th>
-          <th>Plassering</th>
-          <th>Endret</th>
-          <th>Kontrollert</th>
-        </tr>
-      </thead>
-      <tbody>
-<?php foreach ($Utstyrsliste as $Utstyr) { ?>
-        <tr>
-          <th><a href="<?php echo site_url('utstyr/utstyr/'.$Utstyr['UtstyrID']); ?>"><?php echo "-".$Utstyr['UtstyrID']; ?></a></th>
-          <td><?php echo $Utstyr['ProdusentNavn']; ?></td>
-          <td><?php echo $Utstyr['Beskrivelse']; ?></td>
-          <td><?php if (substr($Utstyr['UtstyrID'],-1,1) == 'T') { echo $Utstyr['Antall']." stk"; } else { echo "&nbsp;"; } ?></td>
-          <td><?php if (strlen($Utstyr['LokasjonID']) > 0) { echo "+".$Utstyr['LokasjonID']; } else { echo "&nbsp;"; } ?><?php if (strlen($Utstyr['KasseID']) > 0) { echo "=".$Utstyr['KasseID']; } else { echo "&nbsp;"; } ?></td>
-          <td><?php echo date("d.m.Y",strtotime($Utstyr['DatoEndret'])); ?></td>
-          <td><?php if ($Utstyr['DatoKontrollert'] != '') { echo date("d.m.Y",strtotime($Utstyr['DatoKontrollert'])); } else { echo "&nbsp;"; } ?></td>
-        </tr>
+<div class="table-responsive">
+  <table class="table table-bordered table-sm table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Utstyr ID</th>
+        <th>Produsent</th>
+	<th>Beskrivelse</th>
+	<th>Antall</th>
+	<th>Minimum antall</th>
+        <th>Endret</th>
+	<th>Kontrollert</th>
+        <th>Avvik</th>
+      </tr>
+    </thead>
+    <tbody>
+<?php
+  if (isset($Utstyrsliste)) {
+    foreach ($Utstyrsliste as $Utstyr) {
+?>
+      <tr<?php if ($Utstyr['AntallAvvik'] > 0) { echo ' class="bg-danger"'; } elseif ($Utstyr['Antall'] < $Utstyr['AntallMin']) { echo ' class="bg-warning"'; } ?>>
+        <th><a href="<?php echo site_url('utstyr/utstyr/'.$Utstyr['UtstyrID']); ?>"><?php echo "-".$Utstyr['UtstyrID']; ?></a></th>
+        <td><?php echo $Utstyr['ProdusentNavn']; ?></td>
+	<td><?php echo $Utstyr['Beskrivelse']; ?></td>
+<?php if (substr($Utstyr['UtstyrID'],-1,1) == 'T') { ?>
+	<td><?php echo $Utstyr['Antall']." stk"; ?></td>
+	<td><?php echo $Utstyr['AntallMin']." stk"; ?></td>
+<?php } else { ?>
+        <td colspan="2">&nbsp;</td>
 <?php } ?>
-      </tbody>
-    </table>
-  </div>
+        <td><?php echo date("d.m.Y",strtotime($Utstyr['DatoEndret'])); ?></td>
+	<td><?php if ($Utstyr['DatoKontrollert'] != '') { echo date("d.m.Y",strtotime($Utstyr['DatoKontrollert'])); } else { echo "&nbsp;"; } ?></td>
+        <td><?php echo $Utstyr['AntallAvvik']." stk"; ?></td>
+      </tr>
+<?php
+    }
+  } else {
+?>
+      <tr>
+        <td colspan="8" class="text-center">Ingen utstyr registrert i denne kassen.</td>
+      </tr>
+<?php
+  }
+?>
+    </tbody>
+  </table>
 </div>
-<?php } ?>

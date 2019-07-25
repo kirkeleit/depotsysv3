@@ -102,13 +102,15 @@
 	    }
 	  }
 	}
-        $Utstyr['ProdusentID'] = $this->input->post('ProdusentID');
+	$Utstyr['ProdusentID'] = $this->input->post('ProdusentID');
+	$Utstyr['BatteriType'] = $this->input->post('BatteriType');
+	$Utstyr['BatteriAntall'] = $this->input->post('BatteriAntall');
 	$Utstyr['Notater'] = $this->input->post('Notater');
 	if ($this->input->post('AntallMin')) {
           $Utstyr['AntallMin'] = $this->input->post('AntallMin');
 	}
         $this->Utstyr_model->utstyr_lagre($UtstyrID,$Utstyr);
-        redirect('utstyr/utstyrsliste');
+        redirect('utstyr/utstyr/'.$UtstyrID);
       } elseif ($this->input->post('UtstyrSlett')) {
         $this->Utstyr_model->utstyr_slett($this->input->post('UtstyrID'));
         redirect('utstyr/utstyrsliste');

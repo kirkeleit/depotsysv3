@@ -2,7 +2,6 @@
   class Utstyr_model extends CI_Model {
 
     function utstyrsliste($filter = null) {
-      //$sql = "SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,AntallMin,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontrollogg l WHERE l.UtstyrID=u.UtstyrID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,(SELECT COUNT(*) FROM Avvik a WHERE (a.UtstyrID=u.UtstyrID) AND (StatusID<2) AND (DatoSlettet Is Null)) AS AntallAvvik,(SELECT SUM(Antall) FROM Utstyrslager l WHERE (l.UtstyrID=u.UtstyrID)) AS Antall FROM Utstyr u WHERE (DatoSlettet Is Null)";
       $sql = "SELECT UtstyrID,u.DatoRegistrert,u.DatoEndret,u.DatoSlettet,LokasjonID,KasseID,u.Beskrivelse,AntallMin,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontrollogg l WHERE l.UtstyrID=u.UtstyrID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,(SELECT COUNT(*) FROM Avvik a WHERE (a.UtstyrID=u.UtstyrID) AND (StatusID<2) AND (DatoSlettet Is Null)) AS AntallAvvik,(SELECT SUM(Antall) FROM Utstyrslager l WHERE (l.UtstyrID=u.UtstyrID)) AS Antall FROM Utstyr u WHERE (u.DatoSlettet Is Null)";
       if (isset($filter['FilterUtstyrstypeID'])) {
         $sql .= " AND (UtstyrID Like '".$filter['FilterUtstyrstypeID']."%')";
@@ -59,7 +58,7 @@
     }
 
     function utstyr_info($UtstyrID = null) {
-      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,ProdusentID,Notater,AntallMin FROM Utstyr WHERE (UtstyrID='".$UtstyrID."') LIMIT 1");
+      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,ProdusentID,Notater,AntallMin,BatteriType,BatteriAntall FROM Utstyr WHERE (UtstyrID='".$UtstyrID."') LIMIT 1");
       if ($rutstyr = $rutstyrsliste->row_array()) {
 	return $rutstyr;
       }

@@ -10,8 +10,10 @@
       curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
       curl_setopt($c, CURLOPT_POST, true);
       curl_setopt($c, CURLOPT_POSTFIELDS, $message);
-      curl_exec($c);
-      curl_close($c);
+      if ($this->CI->config->item('depot.slack.aktiv')) {
+        curl_exec($c);
+        curl_close($c);
+      }
     }
     
   }
