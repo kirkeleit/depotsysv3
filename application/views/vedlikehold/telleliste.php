@@ -1,10 +1,13 @@
 <h2>Telleliste</h2>
 <br />
-<div class="card card-body">Tellelisten brukes for å raskt telle over forbruksmateriell. Alt materiell som er listet opp med et minimumsantall hvor registrert antall er mindre, er merket med gult. Skriv inn antall forbruksmateriell du teller på relevant linje, og trykk på lagre. Dersom nytt antall er mindre enn minimumsantall så vil forbruksmateriellet bli listet opp på bestillingslisten.</div>
+
+<div class="card card-body">
+Tellelisten brukes for å raskt telle over forbruksmateriell. Alt materiell som er listet opp med et minimumsantall hvor registrert antall er mindre, er merket med gult. Skriv inn antall forbruksmateriell du teller på relevant linje, og trykk på lagre. Dersom nytt antall er mindre enn minimumsantall så vil forbruksmateriellet bli listet opp på bestillingslisten.
+<a data-toggle="collapse" href="#ListeFilter" role="button" aria-expanded="false" aria-controls="ListeFilter">Trykk her for å vise filter for listen.</a></div>
+</div>
 <br />
 
 <form method="POST" action="<?php echo site_url('utstyr/telleliste'); ?>">
-<a class="btn btn-primary btn-sm" data-toggle="collapse" href="#ListeFilter" role="button" aria-expanded="false" aria-controls="ListeFilter">Filter</a></div>
 <div class="card card-body collapse" id="ListeFilter">
   <div class="form-group row">
     <label class="col-sm-2 col-form-label" for="LokasjonID"><b>Lokasjon:</b></label>
@@ -85,6 +88,12 @@
       </tr>
 <?php
     }
+  } else {
+?>
+      <tr>
+        <td colspan="8" class="text-center">Ingen utstyr tilgjengelig for telling.</td>
+      </tr>
+<?php
   }
 ?>
     </tbody>

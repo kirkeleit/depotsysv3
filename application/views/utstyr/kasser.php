@@ -1,17 +1,24 @@
-<div class="card">
-  <div class="card-header text-right"><a href="<?php echo site_url('utstyr/nykasse'); ?>" class="btn btn-success btn-sm" tabindex="-1" role="button">Ny kasse</a></div>
-  <div class="table-responsive">
-    <table class="table table-striped table-hover table-sm">
-      <thead>
-        <tr>
-	  <th>ID</th>
-	  <th>Navn</th>
-          <th>Plassering</th>
-	  <th>Endret</th>
-          <th>Utstyr</th>
-        </tr>
-      </thead>
-      <tbody>
+<h2>Kasser</h2>
+<br />
+
+<div class="card card-body">
+En kasse er en fysisk kasse(eller sekk, boks etc) som en lagrer <u>og transporterer</u> utstyr i. Hver kasse må ha en egen uni ID som en setter selv. Dette kan være et eller flere tall, bokstaver eller en kombinasjon. Vær obs på at alle kasse ID'er vil listes opp med et = forran seg, så ikke bruk tegn i ID'en.
+<a href="<?php echo site_url('utstyr/nykasse'); ?>">Trykk her for å registrere en ny kasse.</a>
+</div>
+<br />
+
+<div class="table-responsive">
+  <table class="table table-bordered table-striped table-hover table-sm">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Navn</th>
+        <th>Plassering</th>
+        <th>Endret</th>
+        <th>Utstyr</th>
+      </tr>
+    </thead>
+    <tbody>
 <?php
   if (isset($Kasser)) {
     foreach ($Kasser as $Kasse) {
@@ -25,10 +32,14 @@
         </tr>
 <?php
     }
+  } else {
+?>
+      <tr>
+        <td colspan="5" class="text-center">Ingen kasser er registrert enda.</td>
+      </tr>
+<?php
   }
 ?>
-      </tbody>
-    </table>
-  </div>
-  <div class="card-footer text-muted"><?php echo sizeof($Kasser); ?> kasser</div>
+    </tbody>
+  </table>
 </div>

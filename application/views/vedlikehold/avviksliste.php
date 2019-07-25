@@ -1,11 +1,16 @@
 <h2>Avviksliste</h2>
 <br />
 
+<div class="card card-body">
+Et avvik registreres på utstyr dersom det oppdages feil, problemer eller utstyr trenger vedlikehold. Avvik registreres direkte fra siden for selve utstyret.
+</div>
+<br />
+
 <div class="table-responsive">
   <table class="table table-bordered table-striped table-hover table-sm">
     <thead>
       <tr>
-        <th>ID</th>
+        <th>#</th>
         <th>Registrert den</th>
         <th>Registrert av</th>
         <th>Utstyr ID</th>
@@ -30,6 +35,12 @@
       </tr>
 <?php
     }
+  } else {
+?>
+      <tr>
+        <td colspan="7" class="text-center">Ingen åpne avvik registrert.</td>
+      </tr>
+<?php
   }
 ?>
     </tbody>

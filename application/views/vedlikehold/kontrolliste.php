@@ -1,8 +1,12 @@
 <h2>Kontrolliste</h2>
 <br />
 
+<div class="card card-body">
+<a data-toggle="collapse" href="#ListeFilter" role="button" aria-expanded="false" aria-controls="ListeFilter">Trykk her for å vise filter for listen.</a></div>
+</div>
+<br />
+
 <form method="POST" action="<?php echo site_url('utstyr/kontrolliste'); ?>">
-<a class="btn btn-primary btn-sm" data-toggle="collapse" href="#ListeFilter" role="button" aria-expanded="false" aria-controls="ListeFilter">Filter</a></div>
 <div class="card card-body collapse" id="ListeFilter">
   <div class="form-group row">
     <label class="col-sm-2 col-form-label" for="LokasjonID"><b>Lokasjon:</b></label>
@@ -91,6 +95,12 @@
 <?php
       }
     }
+  } else {
+?>
+      <tr>
+        <td colspan="8" class="text-center">Ingen utstyr er tilgjengelig for kontroll.</td>
+      </tr>
+<?php
   }
 ?>
     </tbody>

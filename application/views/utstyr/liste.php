@@ -5,7 +5,7 @@
   <table class="table table-bordered table-striped table-hover table-sm">
     <thead>
       <tr>
-        <th>ID</th>
+        <th>Utstyr ID</th>
         <th>Produsent</th>
         <th>Beskrivelse</th>
         <th>Antall</th>
@@ -32,6 +32,12 @@
       </tr>
 <?php
     }
+  } else {
+?>
+      <tr>
+        <td colspan="8" class="text-center">Ingen utstyr er registrert enda.</td>
+      </tr>
+<?php
   }
 ?>
     </tbody>

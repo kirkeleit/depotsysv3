@@ -1,32 +1,44 @@
-<div class="card">
-  <div class="card-header text-right"><a href="<?php echo site_url('oppsett/nybruker'); ?>" class="btn btn-success btn-sm" tabindex="-1" role="button">Ny bruker</a></div>
-  <div class="table-responsive">
-    <table class="table table-striped table-hover table-sm">
-      <thead>
-        <tr>
-	  <th>Navn</th>
-          <th>E-post</th>
-	  <th>Mobilnummer</th>
-          <th>Rolle</th>
-        </tr>
-      </thead>
-      <tbody>
+<h2>Brukere</h2>
+<br />
+
+<div class="card card-body">
+<a href="<?php echo site_url('oppsett/nybruker'); ?>">Trykk her for å registrere ny bruker.</a>
+</div>
+<br />
+
+<div class="table-responsive">
+  <table class="table table-bordered table-striped table-hover table-sm">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Navn</th>
+        <th>E-post</th>
+        <th>Mobilnummer</th>
+        <th>Rolle</th>
+      </tr>
+    </thead>
+    <tbody>
 <?php
   if (isset($Brukere)) {
     foreach ($Brukere as $Bruker) {
 ?>
-        <tr>
-	  <th><a href="<?php echo site_url('oppsett/bruker/'.$Bruker['BrukerID']); ?>"><?php echo $Bruker['Fornavn'].' '.$Bruker['Etternavn']; ?></a></th>
-          <td><?php echo $Bruker['Epostadresse']; ?></td>
-	  <td><?php echo $Bruker['Mobilnummer']; ?></td>
-          <td><?php if ($Bruker['RolleID'] > 0) { echo $Bruker['Rolle']; } else { echo "&nbsp;"; } ?></td>
-        </tr>
+      <tr>
+        <th><a href="<?php echo site_url('oppsett/bruker/'.$Bruker['BrukerID']); ?>"><?php echo $Bruker['BrukerID']; ?></a></th>
+        <td><?php echo $Bruker['Fornavn'].' '.$Bruker['Etternavn']; ?></td>
+        <td><?php echo $Bruker['Epostadresse']; ?></td>
+        <td><?php echo $Bruker['Mobilnummer']; ?></td>
+        <td><?php if ($Bruker['RolleID'] > 0) { echo $Bruker['Rolle']; } else { echo "&nbsp;"; } ?></td>
+      </tr>
 <?php
     }
+  } else {
+?>
+      <tr>
+        <td colspan="5" class="text-center">Ingen brukere er registrert enda.</td>
+      </tr>
+<?php
   }
 ?>
-      </tbody>
-    </table>
-  </div>
-  <div class="card-footer text-muted"><?php echo sizeof($Brukere); ?> brukere</div>
+    </tbody>
+  </table>
 </div>

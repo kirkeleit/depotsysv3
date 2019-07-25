@@ -1,7 +1,9 @@
 <h2>Bestillingsliste</h2>
 <br />
+
 <div class="card card-body">Liste over forbruksmateriell som det er mindre av enn satt minsteantall. Denne listen er kun ment som et verktøy for å vise hva som mangler, og for å raskt kunne registrere inn nytt antall når en mottar varer. Det vil kunne være behov for annet utstyr i tillegg til denne listen.</div>
 <br />
+
 <form method="POST" action="<?php echo site_url('utstyr/bestillingsliste'); ?>">
 <div class="table-responsive">
   <table class="table table-bordered table-striped table-hover table-sm">
@@ -36,6 +38,12 @@
 <?php
       }
     }
+  } else {
+?>
+      <tr>
+        <td colspan="8" class="text-center">Ingen forbruksmateriell på bestillingslisten.</td>
+      </tr>
+<?php
   }
 ?>
     </tbody>

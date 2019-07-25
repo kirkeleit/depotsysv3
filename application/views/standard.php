@@ -43,9 +43,9 @@
         <div class="dropdown-menu" aria-labelledby="navbarUtstyr">
 	  <a class="dropdown-item" href="<?php echo site_url('utstyr/utstyrsliste'); ?>">Utstyrsliste</a>
 	  <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="<?php echo site_url('utstyr/utstyrstyper'); ?>">Utstyrstyper</a>
           <a class="dropdown-item" href="<?php echo site_url('utstyr/lokasjoner'); ?>">Lokasjoner</a>
 	  <a class="dropdown-item" href="<?php echo site_url('utstyr/kasser'); ?>">Kasser</a>
-          <a class="dropdown-item" href="<?php echo site_url('utstyr/utstyrstyper'); ?>">Utstyrstyper</a>
 	  <a class="dropdown-item" href="<?php echo site_url('utstyr/produsenter'); ?>">Produsenter</a>
         </div>
       </li>
