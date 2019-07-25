@@ -1,7 +1,7 @@
 <form method="POST" action="<?php echo site_url('utstyr/utstyrstype/'.$Utstyrstype['UtstyrstypeID']); ?>">
 <input type="hidden" name="UtstyrstypeID" value="<?php echo set_value('UtstyrstypeID',$Utstyrstype['UtstyrstypeID']); ?>" />
 
-<?php echo validation_errors("<div class="alert alert-danger" role="alert">","</div>"); ?>
+<?php echo validation_errors('<div class="alert alert-danger" role="alert">','</div>'); ?>
 
 <div class="card">
   <h5 class="card-header">Utstyrstype</h5>
