@@ -1,37 +1,50 @@
+<h2>Kontrolliste</h2>
+<br />
+
 <form method="POST" action="<?php echo site_url('utstyr/kontrolliste'); ?>">
 <a class="btn btn-primary btn-sm" data-toggle="collapse" href="#ListeFilter" role="button" aria-expanded="false" aria-controls="ListeFilter">Filter</a></div>
 <div class="card card-body collapse" id="ListeFilter">
-  <div class="form-group">
-    <label for="LokasjonID">Lokasjon:</label>
-    <select class="form-control" id="FilterLokasjonID" name="FilterLokasjonID">
-      <option value="">[ingen filter]</option>
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label" for="LokasjonID"><b>Lokasjon:</b></label>
+    <div class="col-sm-10">
+      <select class="form-control" id="FilterLokasjonID" name="FilterLokasjonID">
+        <option value="">[ingen filter]</option>
 <?php
   foreach ($Lokasjoner as $Lokasjon) {
 ?>
-      <option value="<?php echo $Lokasjon['LokasjonID']; ?>"<?php if ($Lokasjon['LokasjonID'] == substr($this->input->get('filterplassering'),1)) { echo " selected"; } ?>><?php echo "+".$Lokasjon['LokasjonID']." ".$Lokasjon['Navn']; ?></option>
+        <option value="<?php echo $Lokasjon['LokasjonID']; ?>"<?php if ($Lokasjon['LokasjonID'] == substr($this->input->get('filterplassering'),1)) { echo " selected"; } ?>><?php echo "+".$Lokasjon['LokasjonID']." ".$Lokasjon['Navn']; ?></option>
 
 <?php
   }
 ?>
-    </select>
+      </select>
+    </div>
   </div>
-  <div class="form-group">
-    <label for="KasseID">Kasse:</label>
-    <select class="form-control" id="FilterKasseID" name="FilterKasseID">
-      <option value="">[ingen filter]</option>
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label" for="KasseID"><b>Kasse:</b></label>
+    <div class="col-sm-10">
+      <select class="form-control" id="FilterKasseID" name="FilterKasseID">
+        <option value="">[ingen filter]</option>
 <?php
   foreach ($Kasser as $Kasse) {
 ?>
-      <option value="<?php echo $Kasse['KasseID']; ?>"<?php if ($Kasse['KasseID'] == substr($this->input->get('filterplassering'),1)) { echo " selected"; } ?>><?php echo "=".$Kasse['KasseID']." ".$Kasse['Navn']; ?></option>
+        <option value="<?php echo $Kasse['KasseID']; ?>"<?php if ($Kasse['KasseID'] == substr($this->input->get('filterplassering'),1)) { echo " selected"; } ?>><?php echo "=".$Kasse['KasseID']." ".$Kasse['Navn']; ?></option>
 <?php
   }
 ?>
-    </select>
-    <input type="submit" class="btn btn-primary" name="FiltrerListe" value="Filtrer" />
+      </select>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label">&nbsp;</label>
+    <div class="col-sm-10">
+      <input type="submit" class="btn btn-primary" name="FiltrerListe" value="Filtrer" />
+    </div>
   </div>
 </div>
 </form>
 <br />
+
 <form method="POST" action="<?php echo site_url('utstyr/kontrolliste'); ?>">
 <?php if (isset($FilterKasseID)) { ?>
 <input type="hidden" name="FilterKasseID" value="<?php echo $FilterKasseID; ?>">
