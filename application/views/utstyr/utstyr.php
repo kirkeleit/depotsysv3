@@ -19,7 +19,7 @@
 <?php
   foreach ($Kasser as $Kasse) {
 ?>
-            <option value="=<?php echo $Kasse['KasseID']; ?>"<?php if ($Utstyr['KasseID'] == $Kasse['KasseID']) { echo " selected"; } ?>><?php echo '='.$Kasse['KasseID']." ".$Kasse['Navn']; ?></option>
+            <option value="=<?php echo $Kasse['KasseID']; ?>"<?php if ($Utstyr['KasseID'] == $Kasse['KasseID']) { echo " selected"; } ?>><?php echo '='.$Kasse['Kode']." ".$Kasse['Navn']; ?></option>
 <?php
   }
 ?>
@@ -28,7 +28,7 @@
 <?php
   foreach ($Lokasjoner as $Lokasjon) {
 ?>
-            <option value="+<?php echo $Lokasjon['LokasjonID']; ?>"<?php if ($Utstyr['LokasjonID'] == $Lokasjon['LokasjonID']) { echo " selected"; } ?>><?php echo '+'.$Lokasjon['LokasjonID']." ".$Lokasjon['Navn']; ?></option>
+            <option value="+<?php echo $Lokasjon['LokasjonID']; ?>"<?php if ($Utstyr['LokasjonID'] == $Lokasjon['LokasjonID']) { echo " selected"; } ?>><?php echo '+'.$Lokasjon['Kode']." ".$Lokasjon['Navn']; ?></option>
 <?php
   }
 ?>

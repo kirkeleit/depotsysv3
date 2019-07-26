@@ -5,15 +5,9 @@
   <h5 class="card-header">Produsent</h5>
   <div class="card-body">
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="ProdusentID"><b>Produsent ID:</b></label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control-plaintext" id="ProdusentID" value="<?php echo $Produsent['ProdusentID']; ?>" readonly>
-      </div>
-    </div>
-    <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="Navn"><b>Navn:</b></label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" id="Navn" name="Navn" value="<?php echo set_value('Navn',$Produsent['Navn']); ?>">
+        <input type="text" class="form-control" id="Navn" name="Navn" value="<?php echo set_value('Navn',$Produsent['Navn']); ?>" required>
       </div>
     </div>
     <div class="form-group row">
@@ -52,7 +46,7 @@
   <table class="table table-bordered table-sm table-striped table-hover">
     <thead>
       <tr>
-        <th>ID</th>
+        <th>Utstyr ID</th>
         <th>Produsent</th>
         <th>Beskrivelse</th>
         <th>Antall</th>
@@ -71,7 +65,7 @@
         <td><?php echo $Utstyr['ProdusentNavn']; ?></td>
         <td><?php echo $Utstyr['Beskrivelse']; ?></td>
         <td><?php if (substr($Utstyr['UtstyrID'],-1,1) == 'T') { echo $Utstyr['Antall']." stk"; } else { echo "&nbsp;"; } ?></td>
-        <td><?php if (strlen($Utstyr['LokasjonID']) > 0) { echo "+".$Utstyr['LokasjonID']; } else { echo "&nbsp;"; } ?><?php if (strlen($Utstyr['KasseID']) > 0) { echo "=".$Utstyr['KasseID']; } else { echo "&nbsp;"; } ?></td>
+        <td><?php if (strlen($Utstyr['LokasjonID']) > 0) { echo $Utstyr['Lokasjon']; } else { echo "&nbsp;"; } ?><?php if (strlen($Utstyr['KasseID']) > 0) { echo $Utstyr['Kasse']; } else { echo "&nbsp;"; } ?></td>
         <td><?php echo date("d.m.Y",strtotime($Utstyr['DatoEndret'])); ?></td>
         <td><?php if ($Utstyr['DatoKontrollert'] != '') { echo date("d.m.Y",strtotime($Utstyr['DatoKontrollert'])); } else { echo "&nbsp;"; } ?></td>
       </tr>

@@ -148,6 +148,7 @@
       $this->load->model('Brukere_model');
       if (($this->input->post('SkjemaLagre')) or ($this->input->post('SkjemaLagreLukk'))) {
         $this->form_validation->set_rules('UtstyrstypeID','Utstyrstype ID','trim|integer');
+        $this->form_validation->set_rules('Kode','Kode','trim|required');
 	$this->form_validation->set_rules('Navn', 'Navn', 'required|trim');
         $this->form_validation->set_rules('AnsvarligRolleID', 'Ansvarlig rolle','required|integer');
         $this->form_validation->set_rules('KontrollDager', 'Kontrolldager', 'required|integer');
@@ -243,23 +244,37 @@
 
     public function lokasjon() {
       $this->load->model('Utstyr_model');
-      if ($this->input->post('LokasjonLagre')) {
+      if ($this->input->post('SkjemaLagre') or $this->input->post('SkjemaLagreLukk')) {
         $LokasjonID = $this->input->post('LokasjonID');
-        if ($this->input->post('NyLokasjonID')) {
-          $Lokasjon['LokasjonID'] = str_replace('+','',$this->input->post('NyLokasjonID'));
+        $data['Kode'] = str_replace('+','',$this->input->post('Kode'));
+        $data['Navn'] = $this->input->post('Navn');
+	$data['Notater'] = $this->input->post('Notater');
+	if (is_numeric($LokasjonID)) {
+          $LokasjonID = $this->Utstyr_model->lokasjon_lagre($LokasjonID,$data);
+          $this->session->set_flashdata('Infomelding','Lokasjon \''.str_pad($data['Kode'],2,'0',STR_PAD_LEFT).'\' ble vellykket lagret.');
+	} else {
+          $LokasjonID = $this->Utstyr_model->lokasjon_opprett($data);
+          $this->session->set_flashdata('Infomelding','Lokasjon \'='.str_pad($data['Kode'],2,'0',STR_PAD_LEFT).'\' ble vellykket opprettet.');
+	}
+	if ($LokasjonID != false) {
+          if ($this->input->post('SkjemaLagre')) {
+            redirect('utstyr/lokasjon/'.$LokasjonID);
+          } else {
+            redirect('utstyr/lokasjoner');
+          }
         }
-        $Lokasjon['Navn'] = $this->input->post('Navn');
-        $Lokasjon['Notater'] = $this->input->post('Notater');
-        $this->Utstyr_model->lokasjon_lagre($LokasjonID,$Lokasjon);
-        redirect('utstyr/lokasjoner');
-      } elseif ($this->input->post('LokasjonSlett')) {
-        $this->Utstyr_model->lokasjon_slett($this->input->post('LokasjonID'));
-        redirect('utstyr/lokasjoner');
       } else {
         $data['Lokasjon'] = $this->Utstyr_model->lokasjon_info($this->uri->segment(3));
+        $data['Kasser'] = $this->Utstyr_model->kasser(array('FilterLokasjonID' => $data['Lokasjon']['LokasjonID']));
         $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterLokasjonID' => $data['Lokasjon']['LokasjonID']));
         $this->template->load('standard','utstyr/lokasjon',$data);
       }
+    }
+
+    public function slettlokasjon() {
+      $this->load->model('Utstyr_model');
+      $this->Utstyr_model->lokasjon_slett($this->input->get('lokasjonid'));
+      redirect('utstyr/lokasjoner');
     }
 
 
@@ -278,25 +293,38 @@
 
     public function kasse() {
       $this->load->model('Utstyr_model');
-      if ($this->input->post('KasseLagre')) {
+      if ($this->input->post('SkjemaLagre') or $this->input->post('SkjemaLagreLukk')) {
         $KasseID = $this->input->post('KasseID');
-        if ($this->input->post('NyKasseID')) {
-          $Kasse['KasseID'] = str_replace('=','',$this->input->post('NyKasseID'));
-        }
-	$Kasse['Navn'] = $this->input->post('Navn');
-	$Kasse['LokasjonID'] = $this->input->post('LokasjonID');
-        $Kasse['Notater'] = $this->input->post('Notater');
-        $this->Utstyr_model->kasse_lagre($KasseID,$Kasse);
-        redirect('utstyr/kasser');
-      } elseif ($this->input->post('KasseSlett')) {
-        $this->Utstyr_model->kasse_slett($this->input->post('KasseID'));
-        redirect('utstyr/kasser');
+        $data['Kode'] = $this->input->post('Kode');
+	$data['Navn'] = $this->input->post('Navn');
+	$data['LokasjonID'] = $this->input->post('LokasjonID');
+	$data['Notater'] = $this->input->post('Notater');
+	if (is_numeric($KasseID)) {
+          $KasseID = $this->Utstyr_model->kasse_lagre($KasseID,$data);
+          $this->session->set_flashdata('Infomelding','Kasse \''.str_pad($data['Kode'],2,'0',STR_PAD_LEFT).'\' ble vellykket lagret.');
+	} else {
+          $KasseID = $this->Utstyr_model->kasse_opprett($data);
+          $this->session->set_flashdata('Infomelding','Kasse \'='.str_pad($data['Kode'],2,'0',STR_PAD_LEFT).'\' ble vellykket opprettet.');
+	}
+	if ($KasseID != false) {
+          if ($this->input->post('SkjemaLagre')) {
+            redirect('utstyr/kasse/'.$KasseID);
+          } else {
+            redirect('utstyr/kasser');
+          }
+	}
       } else {
         $data['Kasse'] = $this->Utstyr_model->kasse_info($this->uri->segment(3));
         $data['Lokasjoner'] = $this->Utstyr_model->lokasjoner();
         $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterKasseID' => $data['Kasse']['KasseID']));
         $this->template->load('standard','utstyr/kasse',$data);
       }
+    }
+
+    public function slettkasse() {
+      $this->load->model('Utstyr_model');
+      $this->Utstyr_model->kasse_slett($this->input->get('kasseid'));
+      redirect('utstyr/kasser');
     }
 
 

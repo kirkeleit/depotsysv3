@@ -11,7 +11,6 @@ En produsent brukes for å samle sammen alt utstyr en har fra et og samme merke/
   <table class="table table-bordered table-striped table-hover table-sm">
     <thead>
       <tr>
-        <th>#</th>
         <th>Navn</th>
         <th>Endret</th>
         <th>Nettsted</th>
@@ -24,8 +23,7 @@ En produsent brukes for å samle sammen alt utstyr en har fra et og samme merke/
     foreach ($Produsenter as $Produsent) {
 ?>
       <tr>
-        <th><a href="<?php echo site_url('utstyr/produsent/'.$Produsent['ProdusentID']); ?>"><?php echo $Produsent['ProdusentID']; ?></a></th>
-        <td><?php echo $Produsent['Navn']; ?></td>
+        <th><a href="<?php echo site_url('utstyr/produsent/'.$Produsent['ProdusentID']); ?>"><?php echo $Produsent['Navn']; ?></a></th>
         <td><?php echo date('d.m.Y',strtotime($Produsent['DatoEndret'])); ?></td>
         <td><?php echo $Produsent['Nettsted']; ?></td>
         <td><?php if ($Produsent['UtstyrAntall'] > 0) { echo $Produsent['UtstyrAntall']." stk"; } else { echo "&nbsp;"; } ?></td>

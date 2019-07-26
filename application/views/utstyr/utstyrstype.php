@@ -10,7 +10,7 @@
       <label class="col-sm-2 col-form-label" for="Kode"><b>Kode:</b></label>
       <div class="col-sm-10">
 <?php if (isset($Utstyrstype['UtstyrstypeID'])) { ?>
-        <input type="text" class="form-control-plaintext" id="Kode" value="<?php echo $Utstyrstype['Kode']; ?>" aria-describedby="KodeHjelp" readonly>
+        <input type="text" class="form-control-plaintext" id="Kode" name="Kode" value="<?php echo $Utstyrstype['Kode']; ?>" aria-describedby="KodeHjelp" readonly>
 <?php } else { ?>
         <input type="text" class="form-control" id="Kode" name="Kode" maxlength="2" value="<?php echo set_value('Kode'); ?>" aria-describedby="KodeHjelp" required>
 <?php } ?>
@@ -80,7 +80,7 @@
   <table class="table table-bordered table-sm table-striped table-hover">
     <thead>
       <tr>
-        <th>ID</th>
+        <th>Utstyr ID</th>
         <th>Produsent</th>
         <th>Beskrivelse</th>
         <th>Antall</th>
@@ -96,10 +96,10 @@
 ?>
       <tr>
         <th><a href="<?php echo site_url('utstyr/utstyr/'.$Utstyr['UtstyrID']); ?>"><?php echo "-".$Utstyr['UtstyrID']; ?></a></th>
-        <td><?php echo $Utstyr['ProdusentNavn']; ?></td>
+	<td><?php echo $Utstyr['ProdusentNavn']; ?>&nbsp;<a href="<?php echo site_url('utstyr/produsent/'.$Utstyr['ProdusentID']); ?>" target="_new"><img src="/res/open_in_new_window.png" height="16" width="16"></a></td>
         <td><?php echo $Utstyr['Beskrivelse']; ?></td>
         <td><?php if (substr($Utstyr['UtstyrID'],-1,1) == 'T') { echo $Utstyr['Antall']." stk"; } else { echo "&nbsp;"; } ?></td>
-        <td><?php if (strlen($Utstyr['LokasjonID']) > 0) { echo "+".$Utstyr['LokasjonID']; } else { echo "&nbsp;"; } ?><?php if (strlen($Utstyr['KasseID']) > 0) { echo "=".$Utstyr['KasseID']; } else { echo "&nbsp;"; } ?></td>
+        <td><?php if (strlen($Utstyr['LokasjonID']) > 0) { echo $Utstyr['Lokasjon']; } else { echo "&nbsp;"; } ?><?php if (strlen($Utstyr['KasseID']) > 0) { echo $Utstyr['Kasse']; } else { echo "&nbsp;"; } ?></td>
         <td><?php echo date("d.m.Y",strtotime($Utstyr['DatoEndret'])); ?></td>
         <td><?php if ($Utstyr['DatoKontrollert'] != '') { echo date("d.m.Y",strtotime($Utstyr['DatoKontrollert'])); } else { echo "&nbsp;"; } ?></td>
       </tr>
