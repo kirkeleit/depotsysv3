@@ -118,6 +118,7 @@
         $data['Avviksliste'] = $this->Vedlikehold_model->avviksliste(array('FilterUtstyrID' => $data['Utstyr']['UtstyrID']));
 	$data['Produsenter'] = $this->Utstyr_model->produsenter();
 	$data['Lokasjoner'] = $this->Utstyr_model->lokasjoner();
+	$data['Kontrollogg'] = $this->Vedlikehold_model->kontroller($this->uri->segment(3));
 	$data['Kasser'] = $this->Utstyr_model->kasser();
         $this->template->load('standard','utstyr/utstyr',$data);
       }

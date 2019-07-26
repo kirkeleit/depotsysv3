@@ -146,3 +146,37 @@
     </tbody>
   </table>
 </div>
+
+<h5>Kontroller</h5>
+<div class="table-responsive">
+  <table class="table table-bordered table-sm table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Registrert</th>
+        <th>Bruker</th>
+        <th>Kommentar</th>
+      </tr>
+    </thead>
+    <tbody>
+<?php
+  if (isset($Kontrollogg)) {
+    foreach ($Kontrollogg as $Logg) {
+?>
+      <tr>
+        <td><?php echo date('d.m.Y',strtotime($Logg['DatoRegistrert'])); ?></td>
+        <td><?php echo $Logg['BrukerNavn']; ?></td>
+        <td><?php echo $Logg['Kommentar']; ?></td>
+      </tr>
+<?php
+    }
+  } else {
+?>
+      <tr>
+        <td colspan="5" class="text-center">Ingen kontroller er gjennomført av utstyret.</td>
+      </tr>
+<?php
+  }
+?>
+    </tbody>
+  </table>
+</div>

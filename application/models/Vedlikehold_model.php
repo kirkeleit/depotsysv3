@@ -68,6 +68,18 @@
       }*/
     }
 
+    function kontroller($UtstyrID) {
+      $rLoggliste = $this->db->query("SELECT LoggID,DatoRegistrert,UtstyrID,BrukerID,(SELECT CONCAT(Fornavn,' ',Etternavn) FROM Brukere b WHERE (b.BrukerID=l.BrukerID) LIMIT 1) AS BrukerNavn,Tilstand,Kommentar FROM Kontrollogg l WHERE (UtstyrID='".$UtstyrID."') ORDER BY DatoRegistrert ASC");
+      foreach ($rLoggliste->result_array() as $rLogg) {
+        $Loggliste[] = $rLogg;
+	unset($rLogg);
+      }
+      unset($rLoggliste);
+      if (isset($Loggliste)) {
+        return $Loggliste;
+      }
+    }
+
     function avvik_registrere($data) {
       $data['DatoRegistrert'] = date('Y-m-d H:i:s');
       $data['DatoEndret'] = $data['DatoRegistrert'];
