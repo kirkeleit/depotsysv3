@@ -327,6 +327,18 @@
       redirect('utstyr/kasser');
     }
 
+    public function innholdsliste() {
+      $this->load->model('Utstyr_model');
+      if (is_numeric($this->input->get('kasseid'))) {
+        $data['Kasse'] = $this->Utstyr_model->kasse_info($this->input->get('kasseid'));
+        $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterKasseID' => $this->input->get('kasseid')));
+      } elseif ($this->input->get('lokasjonid')) {
+        $data['Lokasjon'] = $this->Utstyr_model->lokasjon_info($this->input->get('lokasjonid'));
+        $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterLokasjonID' => $this->input->get('lokasjonid')));
+      }
+      $this->template->load('utskrift','utstyr/innholdsliste',$data);
+    }
+
 
     public function avviksliste() {
       $this->load->model('Vedlikehold_model');
