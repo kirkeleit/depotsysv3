@@ -216,14 +216,20 @@
     }
 
 
-    function kasser() {
-      $rkasser = $this->db->query("SELECT KasseID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,(SELECT CONCAT('+',Kode,' ',Navn) FROM Lokasjoner l WHERE (l.LokasjonID=ka.LokasjonID) LIMIT 1) AS Lokasjon,Kode,Navn,(SELECT COUNT(*) FROM Utstyr u WHERE (u.KasseID=ka.KasseID)) AS UtstyrAntall FROM Kasser ka WHERE (DatoSlettet Is Null) ORDER BY Kode ASC");
-      foreach ($rkasser->result_array() as $rkasse) {
-        $kasser[] = $rkasse;
-        unset($rkasse);
+    function kasser($filter = null) {
+      $sql = "SELECT KasseID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,(SELECT CONCAT('+',Kode,' ',Navn) FROM Lokasjoner l WHERE (l.LokasjonID=ka.LokasjonID) LIMIT 1) AS Lokasjon,Kode,Navn,(SELECT COUNT(*) FROM Utstyr u WHERE (u.KasseID=ka.KasseID)) AS UtstyrAntall FROM Kasser ka WHERE (DatoSlettet Is Null)";
+      if (isset($filter['FilterLokasjonID'])) {
+        $sql .= " AND (LokasjonID='".$filter['FilterLokasjonID']."')";
       }
-      if (isset($kasser)) {
-        return $kasser;
+      $sql .= " ORDER BY Kode ASC";
+      $rKasser = $this->db->query($sql);
+      foreach ($rKasser->result_array() as $rKasse) {
+        $Kasser[] = $rKasse;
+        unset($rKasse);
+      }
+      unset($rKasser);
+      if (isset($Kasser)) {
+        return $Kasser;
       }
     }
 

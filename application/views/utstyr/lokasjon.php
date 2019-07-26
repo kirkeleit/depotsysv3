@@ -65,7 +65,7 @@
         <th><a href="<?php echo site_url('utstyr/kasse/'.$Kasse['KasseID']); ?>"><?php echo "=".$Kasse['Kode']; ?></a></th>
         <td><?php echo $Kasse['Navn']; ?></td>
         <td><?php echo date("d.m.Y",strtotime($Kasse['DatoEndret'])); ?></td>
-        <td><?php if ($Kasse['UtstyrAntall'] > 0) { echo $Utstyr['UtstyrAntall']; } else { echo "&nbsp;"; } ?></td>
+        <td><?php if ($Kasse['UtstyrAntall'] > 0) { echo $Kasse['UtstyrAntall'].' stk'; } else { echo "&nbsp;"; } ?></td>
       </tr>
 <?php
     }
@@ -90,8 +90,8 @@
         <th>Utstyr ID</th>
         <th>Produsent</th>
         <th>Beskrivelse</th>
-        <th>Antall</th>
-        <th>Plassering</th>
+	<th>Antall</th>
+        <th>Minimum antall</th>
         <th>Endret</th>
         <th>Kontrollert</th>
       </tr>
@@ -105,8 +105,8 @@
         <th><a href="<?php echo site_url('utstyr/utstyr/'.$Utstyr['UtstyrID']); ?>"><?php echo "-".$Utstyr['UtstyrID']; ?></a></th>
         <td><?php echo $Utstyr['ProdusentNavn']; ?></td>
         <td><?php echo $Utstyr['Beskrivelse']; ?></td>
-        <td><?php if (substr($Utstyr['UtstyrID'],-1,1) == 'T') { echo $Utstyr['Antall']." stk"; } else { echo "&nbsp;"; } ?></td>
-        <td><?php if (strlen($Utstyr['LokasjonID']) > 0) { echo "+".$Utstyr['LokasjonID']; } else { echo "&nbsp;"; } ?><?php if (strlen($Utstyr['KasseID']) > 0) { echo "=".$Utstyr['KasseID']; } else { echo "&nbsp;"; } ?></td>
+	<td><?php if (substr($Utstyr['UtstyrID'],-1,1) == 'T') { echo $Utstyr['Antall']." stk"; } else { echo "&nbsp;"; } ?></td>
+        <td><?php echo $Utstyr['AntallMin']; ?></td>
         <td><?php echo date("d.m.Y",strtotime($Utstyr['DatoEndret'])); ?></td>
         <td><?php if ($Utstyr['DatoKontrollert'] != '') { echo date("d.m.Y",strtotime($Utstyr['DatoKontrollert'])); } else { echo "&nbsp;"; } ?></td>
       </tr>
