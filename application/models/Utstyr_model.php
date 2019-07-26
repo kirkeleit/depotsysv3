@@ -113,78 +113,110 @@
       }
     }
 
-    function utstyrstype_lagre($UtstyrstypeID = null,$data) {
-      $data['DatoEndret'] = date('Y-m-d H:i:s');
-      if ($UtstyrstypeID == null) {
-        $data['DatoRegistrert'] = $data['DatoEndret'];
-        $this->db->query($this->db->insert_string('Utstyrstyper',$data));
-        $data['UtstyrstypeID'] = $this->db->insert_id();
+    function utstyrstype_opprett($data) {
+      $data['DatoRegistrert'] = date('Y-m-d H:i:s');
+      $data['DatoEndret'] = $data['DatoRegistrert'];
+      if ($this->db->query($this->db->insert_string('Utstyrstyper',$data))) {
+        $UtstyrstypeID = $this->db->insert_id();
+        return $UtstyrstypeID;
       } else {
-        $this->db->query($this->db->update_string('Utstyrstyper',$data,"UtstyrstypeID='".$UtstyrstypeID."'"));
-        $data['UtstyrstypeID'] = $UtstyrstypeID;
+        return false;
       }
-      return $UtstyrstypeID;
     }
 
-    function utstyrstype_slett($UtstyrstypeID) {
-      $this->db->query("UPDATE Utstyrstyper SET DatoSlettet=Now() WHERE UtstyrstypeID='".$UtstyrstypeID."' LIMIT 1");
+    function utstyrstype_lagre($UtstyrstypeID = null,$data) {
+      if ($UtstyrstypeID != null) {
+        $data['DatoEndret'] = date('Y-m-d H:i:s');
+	if ($this->db->query($this->db->update_string('Utstyrstyper',$data,'UtstyrstypeID='.$UtstyrstypeID))) {
+          return $UtstyrstypeID;
+	} else {
+          return false;
+	}
+      }
+    }
+
+    function utstyrstype_slett($UtstyrstypeID = null) {
+      if ($UtstyrstypeID != null) {
+        $this->db->query("UPDATE Utstyrstyper SET DatoSlettet=Now() WHERE UtstyrstypeID='".$UtstyrstypeID."' LIMIT 1");
+        if ($this->db->affected_rows() > 0) {
+          return true;
+        } else {
+          return false;
+        }
+      }
     }
 
 
     function produsenter() {
-      $rprodusenter = $this->db->query("SELECT ProdusentID,DatoRegistrert,DatoEndret,DatoSlettet,Navn,Nettsted,(SELECT COUNT(*) FROM Utstyr u WHERE (u.ProdusentID=p.ProdusentID)) AS UtstyrAntall FROM Produsenter p WHERE (DatoSlettet Is Null) ORDER BY Navn ASC");
-      foreach ($rprodusenter->result_array() as $rprodusent) {
-        $produsenter[] = $rprodusent;
-        unset($rprodusent);
+      $rProdusenter = $this->db->query("SELECT ProdusentID,DatoRegistrert,DatoEndret,DatoSlettet,Navn,Nettsted,(SELECT COUNT(*) FROM Utstyr u WHERE (u.ProdusentID=p.ProdusentID)) AS UtstyrAntall FROM Produsenter p WHERE (DatoSlettet Is Null) ORDER BY Navn ASC");
+      foreach ($rProdusenter->result_array() as $rProdusent) {
+        $Produsenter[] = $rProdusent;
+        unset($rProdusent);
       }
-      if (isset($produsenter)) {
-        return $produsenter;
+      unset($rProdusenter);
+      if (isset($Produsenter)) {
+        return $Produsenter;
       }
     }
 
     function produsent_info($ProdusentID = null) {
-      $rprodusenter = $this->db->query("SELECT ProdusentID,DatoRegistrert,DatoEndret,DatoSlettet,Navn,Nettsted,Notater FROM Produsenter WHERE (ProdusentID='".$ProdusentID."')");
-      if ($rprodusent = $rprodusenter->row_array()) {
-        return $rprodusent;
+      $rProdusenter = $this->db->query("SELECT ProdusentID,DatoRegistrert,DatoEndret,DatoSlettet,Navn,Nettsted,Notater FROM Produsenter WHERE (ProdusentID='".$ProdusentID."') LIMIT 1");
+      if ($rProdusent = $rProdusenter->row_array()) {
+        return $rProdusent;
+      }
+    }
+
+    function produsent_opprett($data) {
+      $data['DatoRegistrert'] = date('Y-m-d H:i:s');
+      $data['DatoEndret'] = $data['DatoRegistrert'];
+      if ($this->db->query($this->db->insert_string('Produsenter',$data))) {
+        $ProdusentID = $this->db->insert_id();
+        return $ProdusentID;
+      } else {
+        return false;
       }
     }
 
     function produsent_lagre($ProdusentID = null,$data) {
-      $data['DatoEndret'] = date('Y-m-d H:i:s');
-      if ($ProdusentID == null) {
-        $data['DatoRegistrert'] = $data['DatoEndret'];
-        $this->db->query($this->db->insert_string('Produsenter',$data));
-        $data['ProdusentID'] = $this->db->insert_id();
-      } else {
-        $this->db->query($this->db->update_string('Produsenter',$data,"ProdusentID='".$ProdusentID."'"));
-        $data['ProdusentID'] = $ProdusentID;
+      if ($ProdusentID != null) {
+        $data['DatoEndret'] = date('Y-m-d H:i:s');
+	if ($this->db->query($this->db->update_string('Produsenter',$data,'ProdusentID='.$ProdusentID))) {
+          return $ProdusentID;
+	} else {
+          return false;
+	}
       }
-      if ($this->db->affected_rows() > 0) {
-        $this->session->set_flashdata('Infomelding','Produsent '.$data['Navn'].' ble lagret.');
-      }
-      return $data;
     }
 
-    function produsent_slett($ProdusentID) {
-      $this->db->query("UPDATE Produsenter SET DatoSlettet=Now() WHERE ProdusentID='".$ProdusentID."' LIMIT 1");
+    function produsent_slett($ProdusentID = null) {
+      if ($ProdusentID != null) {
+        $this->db->query("UPDATE Utstyr SET ProdusentID=0 WHERE ProdusentID=".$ProdusentID);
+        $this->db->query("UPDATE Produsenter SET DatoSlettet=Now() WHERE ProdusentID='".$ProdusentID."' LIMIT 1");
+        if ($this->db->affected_rows() > 0) {
+          return true;
+        } else {
+          return false;
+        }
+      }
     }
 
 
     function lokasjoner() {
-      $rlokasjoner = $this->db->query("SELECT LokasjonID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,(SELECT COUNT(*) FROM Kasser ka WHERE (ka.LokasjonID=l.LokasjonID)) AS KasserAntall,(SELECT COUNT(*) FROM Utstyr u WHERE (u.LokasjonID=l.LokasjonID)) AS UtstyrAntall FROM Lokasjoner l WHERE (DatoSlettet Is Null) ORDER BY Kode ASC");
-      foreach ($rlokasjoner->result_array() as $rlokasjon) {
-        $lokasjoner[] = $rlokasjon;
-        unset($rlokasjon);
+      $rLokasjoner = $this->db->query("SELECT LokasjonID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,(SELECT COUNT(*) FROM Kasser ka WHERE (ka.LokasjonID=l.LokasjonID)) AS KasserAntall,(SELECT COUNT(*) FROM Utstyr u WHERE (u.LokasjonID=l.LokasjonID)) AS UtstyrAntall FROM Lokasjoner l WHERE (DatoSlettet Is Null) ORDER BY Kode ASC");
+      foreach ($rLokasjoner->result_array() as $rLokasjon) {
+        $Lokasjoner[] = $rLokasjon;
+        unset($rLokasjon);
       }
-      if (isset($lokasjoner)) {
-        return $lokasjoner;
+      unset($rLokasjoner);
+      if (isset($Lokasjoner)) {
+        return $Lokasjoner;
       }
     }
 
     function lokasjon_info($LokasjonID = null) {
-      $rlokasjoner = $this->db->query("SELECT LokasjonID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,Notater FROM Lokasjoner WHERE (LokasjonID='".$LokasjonID."') LIMIT 1");
-      if ($rlokasjon = $rlokasjoner->row_array()) {
-        return $rlokasjon;
+      $rLokasjoner = $this->db->query("SELECT LokasjonID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,Notater FROM Lokasjoner WHERE (LokasjonID='".$LokasjonID."') LIMIT 1");
+      if ($rLokasjon = $rLokasjoner->row_array()) {
+        return $rLokasjon;
       }
     }
 
@@ -200,10 +232,10 @@
     }
 
     function lokasjon_lagre($LokasjonID = null,$data) {
-      $data['DatoEndret'] = date('Y-m-d H:i:s');
-      unset($data['Kode']);
       if ($LokasjonID != null) {
-        if ($this->db->query($this->db->update_string('Lokasjoner',$data,"LokasjonID='".$LokasjonID."'"))) {
+        $data['DatoEndret'] = date('Y-m-d H:i:s');
+        unset($data['Kode']);
+        if ($this->db->query($this->db->update_string('Lokasjoner',$data,'LokasjonID='.$LokasjonID))) {
           return $LokasjonID;
         } else {
           return false;
@@ -211,8 +243,17 @@
       }
     }
 
-    function lokasjon_slett($LokasjonID) {
-      $this->db->query("UPDATE Lokasjoner SET DatoSlettet=Now() WHERE LokasjonID='".$LokasjonID."' LIMIT 1");
+    function lokasjon_slett($LokasjonID = null) {
+      if ($LokasjonID != null) {
+        $this->db->query("UPDATE Utstyr SET LokasjonID=0 WHERE LokasjonID=".$LokasjonID);
+        $this->db->query("UPDATE Kasser SET LokasjonID=0 WHERE LokasjonID=".$LokasjonID);
+        $this->db->query("UPDATE Lokasjoner SET DatoSlettet=Now() WHERE LokasjonID='".$LokasjonID."' LIMIT 1");
+        if ($this->db->affected_rows() > 0) {
+          return true;
+	} else {
+          return false;
+        }
+      }
     }
 
 
@@ -234,9 +275,9 @@
     }
 
     function kasse_info($KasseID = null) {
-      $rkasser = $this->db->query("SELECT KasseID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,Kode,Navn,Notater FROM Kasser WHERE (KasseID='".$KasseID."')");
-      if ($rkasse = $rkasser->row_array()) {
-        return $rkasse;
+      $rKasser = $this->db->query("SELECT KasseID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,Kode,Navn,Notater FROM Kasser WHERE (KasseID='".$KasseID."') LIMIT 1");
+      if ($rKasse = $rKasser->row_array()) {
+        return $rKasse;
       }
     }
 
@@ -252,27 +293,28 @@
     }
 
     function kasse_lagre($KasseID = null,$data) {
-      $data['DatoEndret'] = date('Y-m-d H:i:s');
-      unset($data['Kode']);
       if ($KasseID != null) {
-        if ($this->db->query($this->db->update_string('Kasser',$data,"KasseID='".$KasseID."'"))) {
+        $data['DatoEndret'] = date('Y-m-d H:i:s');
+        unset($data['Kode']);
+        if ($this->db->query($this->db->update_string('Kasser',$data,'KasseID='.$KasseID))) {
           return $KasseID;
 	} else {
           return false;
 	}
       }
-      if ($this->db->affected_rows() > 0) {
-        $this->session->set_flashdata('Infomelding','Kasse ='.str_pad($data['KasseID'],2,'0',STR_PAD_LEFT).' ble vellykket lagret.');
-      } else {
-        $this->session->set_flashdata('Feilmelding','En feil oppstod. Feilmelding: '.$this->db->error());
+    }
+
+    function kasse_slett($KasseID = null) {
+      if ($KasseID != null) {
+        $this->db->query("UPDATE Utstyr SET KasseID=0 WHERE KasseID=".$KasseID);
+        $this->db->query("UPDATE Kasser SET DatoSlettet=Now() WHERE KasseID='".$KasseID."' LIMIT 1");
+        if ($this->db->affected_rows() > 0) {
+          return true;
+        } else {
+          return false;
+        }
       }
-      return $data;
     }
-
-    function kasse_slett($KasseID) {
-      $this->db->query("UPDATE Kasser SET DatoSlettet=Now() WHERE KasseID='".$KasseID."' LIMIT 1");
-    }
-
 
   }
 ?>
