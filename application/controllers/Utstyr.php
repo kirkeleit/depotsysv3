@@ -119,6 +119,7 @@
 	$data['Produsenter'] = $this->Utstyr_model->produsenter();
 	$data['Lokasjoner'] = $this->Utstyr_model->lokasjoner();
 	$data['Kontrollogg'] = $this->Vedlikehold_model->kontroller($this->uri->segment(3));
+	$data['Lagerendringer'] = $this->Vedlikehold_model->lagerendringer($data['Utstyr']['UtstyrID']);
 	$data['Kasser'] = $this->Utstyr_model->kasser();
         $this->template->load('standard','utstyr/utstyr',$data);
       }
@@ -440,6 +441,23 @@
         $data['Brukere'] = $this->Brukere_model->brukere();
         $this->template->load('standard','vedlikehold/avvik',$data);
       }
+    }
+
+    public function utstyrtelling() {
+      $this->load->model('Utstyr_model');
+      $this->load->model('Vedlikehold_model');
+      if ($this->input->post('SkjemaLagre')){
+        $data['UtstyrID'] = $this->input->post('UtstyrID');
+	$data['Antall'] = ($this->input->post('NyttAntall')-$this->input->post('Antall'));
+	$data['EndringTypeID'] = 1;
+	if ($this->Vedlikehold_model->lagerendring_lagre($data)) {
+          $this->session->set_flashdata('Infomelding','Lagerstatus for \''.$data['UtstyrID'].'\' er nå oppdatert.');
+	  redirect('utstyr/utstyr/'.$data['UtstyrID']);
+	}
+      }
+      $data['Utstyr'] = $this->Utstyr_model->utstyr_info($this->input->get('utstyrid'));
+      $data['Lagerendringer'] = $this->Vedlikehold_model->lagerendringer($data['Utstyr']['UtstyrID']);
+      $this->template->load('standard','vedlikehold/utstyrtelling',$data);
     }
 
     public function telleliste() {

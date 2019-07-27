@@ -2,7 +2,7 @@
   class Utstyr_model extends CI_Model {
 
     function utstyrsliste($filter = null) {
-      $sql = "SELECT UtstyrID,u.DatoRegistrert,u.DatoEndret,u.DatoSlettet,LokasjonID,(SELECT CONCAT('+',Kode,' ',Navn) FROM Lokasjoner l WHERE (l.LokasjonID=u.LokasjonID) LIMIT 1) AS Lokasjon,KasseID,(SELECT CONCAT('=',Kode,' ',Navn) FROM Kasser ka WHERE (ka.KasseID=u.KasseID) LIMIT 1) AS Kasse,u.Beskrivelse,AntallMin,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontrollogg l WHERE l.UtstyrID=u.UtstyrID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,(SELECT COUNT(*) FROM Avvik a WHERE (a.UtstyrID=u.UtstyrID) AND (StatusID<2) AND (DatoSlettet Is Null)) AS AntallAvvik,(SELECT SUM(Antall) FROM Utstyrslager l WHERE (l.UtstyrID=u.UtstyrID)) AS Antall FROM Utstyr u WHERE (u.DatoSlettet Is Null)";
+      $sql = "SELECT UtstyrID,u.DatoRegistrert,u.DatoEndret,u.DatoSlettet,LokasjonID,(SELECT CONCAT('+',Kode,' ',Navn) FROM Lokasjoner l WHERE (l.LokasjonID=u.LokasjonID) LIMIT 1) AS Lokasjon,KasseID,(SELECT CONCAT('=',Kode,' ',Navn) FROM Kasser ka WHERE (ka.KasseID=u.KasseID) LIMIT 1) AS Kasse,u.Beskrivelse,AntallMin,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontrollogg l WHERE l.UtstyrID=u.UtstyrID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,(SELECT COUNT(*) FROM Avvik a WHERE (a.UtstyrID=u.UtstyrID) AND (StatusID<2) AND (DatoSlettet Is Null)) AS AntallAvvik,(SELECT SUM(Antall) FROM Lagerendringer l WHERE (l.UtstyrID=u.UtstyrID)) AS Antall FROM Utstyr u WHERE (u.DatoSlettet Is Null)";
       if (isset($filter['FilterUtstyrstype'])) {
         $sql .= " AND (UtstyrID Like '".$filter['FilterUtstyrstype']."%')";
       }
@@ -58,7 +58,7 @@
     }
 
     function utstyr_info($UtstyrID = null) {
-      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,KasseID,Beskrivelse,ProdusentID,Notater,AntallMin,BatteriType,BatteriAntall FROM Utstyr WHERE (UtstyrID='".$UtstyrID."') LIMIT 1");
+      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,(SELECT CONCAT('+',Kode,' ',Navn) FROM Lokasjoner l WHERE (l.LokasjonID=u.LokasjonID) LIMIT 1) AS Lokasjon,KasseID,(SELECT CONCAT('=',Kode,' ',Navn) FROM Kasser k WHERE (k.KasseID=u.KasseID) LIMIT 1) AS Kasse,Beskrivelse,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID) LIMIT 1) AS ProdusentNavn,Notater,(SELECT SUM(Antall) FROM Lagerendringer le WHERE (le.UtstyrID=u.UtstyrID)) AS Antall,AntallMin,BatteriType,BatteriAntall FROM Utstyr u WHERE (UtstyrID='".$UtstyrID."') LIMIT 1");
       if ($rutstyr = $rutstyrsliste->row_array()) {
 	return $rutstyr;
       }

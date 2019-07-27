@@ -101,7 +101,8 @@
       </button>
       <div class="dropdown-menu" aria-labelledby="SkjemaAvansert">
         <a href="<?php echo site_url('utstyr/slettutstyr?utstyrid='.$Utstyr['UtstyrID']); ?>" class="dropdown-item">Slett utstyret</a>
-        <a href="<?php echo site_url('utstyr/nyttavvik?utstyrid='.$Utstyr['UtstyrID']); ?>" class="dropdown-item">Nytt avvik</a>
+	<a href="<?php echo site_url('utstyr/nyttavvik?utstyrid='.$Utstyr['UtstyrID']); ?>" class="dropdown-item">Nytt avvik</a>
+        <a href="<?php echo site_url('utstyr/utstyrtelling?utstyrid='.$Utstyr['UtstyrID']); ?>" class="dropdown-item">Telling</a>
       </div>
     </div>
   </div>
@@ -180,3 +181,43 @@
     </tbody>
   </table>
 </div>
+
+<?php if (substr($Utstyr['UtstyrID'],-1,1) == 'T') { ?>
+<h5>Lagerendringer</h5>
+<div class="table-responsive">
+  <table class="table table-bordered table-sm table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Dato</th>
+        <th>Bruker</th>
+        <th>Antall</th>
+        <th>Endring</th>
+        <th>Kommentar</th>
+      </tr>
+    </thead>
+    <tbody>
+<?php
+  if (isset($Lagerendringer)) {
+    foreach ($Lagerendringer as $Lagerendring) {
+?>
+      <tr>
+        <td><?php echo date('d.m.Y',strtotime($Lagerendring['DatoRegistrert'])); ?></td>
+        <td><?php echo $Lagerendring['BrukerNavn']; ?></td>
+        <td><?php echo $Lagerendring['Antall']; ?></td>
+        <td><?php echo $Lagerendring['EndringType']; ?></td>
+        <td><?php echo $Lagerendring['Kommentar']; ?></td>
+      </tr>
+<?php
+    }
+  } else {
+?>
+      <tr>
+        <td colspan="5" class="text-center">Ingen endringer er gjort på lageret for utstyret.</td>
+      </tr>
+<?php
+  }
+?>
+    </tbody>
+  </table>
+</div>
+<?php } ?>

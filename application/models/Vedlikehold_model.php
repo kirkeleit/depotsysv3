@@ -3,6 +3,7 @@
 
     var $AvvikStatus = array(0 => 'Registrert', 1 => 'Under arbeid', 2 => 'På vent', 3 => 'Lukket');
     var $UtstyrTilstand = array(0 => 'Alt ok!', 1 => 'Trenger vedlikehold', 2 => 'Mangler', 3 => 'Ødelagt');
+    var $LagerendringType = array(0 => 'Ukjent', 1 => 'Varetelling', 2 => 'Innkjøp', 3 => 'Forbruk');
 
     function kontrolliste($filter = null) {
       $sql = "SELECT KomponentID,Beskrivelse,LokasjonID,KasseID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=k.ProdusentID)) AS ProdusentNavn,Antall FROM Komponenter k WHERE 1";
@@ -166,6 +167,27 @@
       } else {
         return false;
       }
+    }
+
+    function lagerendringer($UtstyrID) {
+      $rLagerendringer = $this->db->query("SELECT ID,DatoRegistrert,BrukerID,(SELECT CONCAT(Fornavn,' ',Etternavn) FROM Brukere b WHERE (b.BrukerID=l.BrukerID)) AS BrukerNavn,Antall,EndringTypeID,Kommentar FROM Lagerendringer l WHERE (UtstyrID='".$UtstyrID."') ORDER BY DatoRegistrert DESC LIMIT 20");
+      foreach ($rLagerendringer->result_array() as $rLagerendring) {
+        $rLagerendring['EndringType'] = $this->LagerendringType[$rLagerendring['EndringTypeID']];
+        $Lagerendringer[] = $rLagerendring;
+        unset($rLagerendring);
+      }
+      unset($rLagerendringer);
+      if (isset($Lagerendringer)) {
+        return $Lagerendringer;
+      }
+    }
+
+
+    function lagerendring_lagre($data) {
+      $data['DatoRegistrert'] = date('Y-m-d H:i:s');
+      $data['BrukerID'] = $_SESSION['BrukerID'];
+      $this->db->query($this->db->insert_string('Lagerendringer',$data));
+      return true;
     }
 
   }
