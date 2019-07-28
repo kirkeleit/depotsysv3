@@ -21,16 +21,23 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="UtstyrID"><b>Utstyr ID</b></label>
+      <label class="col-sm-2 col-form-label" for="UtstyrID"><b>Utstyr ID:</b></label>
       <div class="col-sm-10">
         <input type="text" class="form-control-plaintext" id="UtstyrID" value="<?php if (isset($Avvik['UtstyrID'])) { echo '-'.$Avvik['UtstyrID']; } else { echo '-'.$UtstyrID; } ?>" readonly>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="BrukerID"><b>Rapportert av</b></label>
+      <label class="col-sm-2 col-form-label" for="UtstyrNavn"><b>Utstyr:</b></label>
+      <div class="col-sm-10">
+	<input type="text" class="form-control-plaintext" id="UtstyrNavn" value="<?php if ($Utstyr['ProdusentID'] > 0) { echo $Utstyr['ProdusentNavn'].' '; } ?><?php echo $Utstyr['Beskrivelse']; ?>" readonly>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="BrukerID"><b>Rapportert av:</b></label>
       <div class="col-sm-10">
         <select class="custom-select custom-select-sm" id="BrukerID" name="BrukerID" required>
-          <option value="">[ingen]</option>
+	  <option value="0">(ikke valgt)</option>
+          <option disabled>──────</option>
 <?php
   foreach ($Brukere as $Bruker) {
 ?>
@@ -42,7 +49,7 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="StatusID"><b>Status</b></label>
+      <label class="col-sm-2 col-form-label" for="StatusID"><b>Status:</b></label>
 <?php if (isset($Avvik)) { ?>
       <div class="col-sm-10">
         <select class="custom-select custom-select-sm" id="StatusID" name="StatusID">
@@ -74,8 +81,18 @@
   </div>
 <?php if ($Avvik['DatoSlettet'] == '') { ?>
   <div class="card-footer">
-    <input type="submit" class="btn btn-primary" value="Lagre" name="AvvikLagre" />
-    <input type="submit" class="btn btn-secondary" value="Slett" name="AvvikSlett" />
+    <div class="btn-group" role="group" aria-label="Skjema lagre">
+      <input type="submit" class="btn btn-primary" value="Lagre" name="SkjemaLagre" />
+      <input type="submit" class="btn btn-primary" value=">>" name="SkjemaLagreLukk" />
+    </div>
+    <div class="btn-group" role="group">
+      <button id="SkjemaAvansert" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Flere valg
+      </button>
+      <div class="dropdown-menu" aria-labelledby="SkjemaAvansert">
+        <a href="<?php echo site_url('utstyr/slettavvik?avvikid='.$Avvik['AvvikID']); ?>" class="dropdown-item">Slett avvik</a>
+      </div>
+    </div>
   </div>
 <?php } ?>
 </div>

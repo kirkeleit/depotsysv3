@@ -480,8 +480,10 @@
         }
         redirect('utstyr/avviksliste');
       } else {
-        $this->load->model('Brukere_model');
-        $data['Avvik'] = $this->Vedlikehold_model->avvik_info($this->uri->segment(3));
+	      $this->load->model('Brukere_model');
+	      $this->load->model('Utstyr_model');
+	$data['Avvik'] = $this->Vedlikehold_model->avvik_info($this->uri->segment(3));
+	$data['Utstyr'] = $this->Utstyr_model->utstyr_info($data['Avvik']['UtstyrID']);
         $data['Brukere'] = $this->Brukere_model->brukere();
         $this->template->load('standard','vedlikehold/avvik',$data);
       }
@@ -597,6 +599,64 @@
       echo $Keyword;
       $data['Utstyr'] = $this->Utstyr_model->utstyr_info($Keyword);
       redirect('utstyr/utstyr/'.$data['Utstyr']['UtstyrID']);
+    }
+
+    public function plukklister() {
+      $this->load->model('Aktivitet_model');
+      $data['Plukklister'] = $this->Aktivitet_model->plukklister();
+      $this->template->load('standard','aktivitet/plukklister',$data);
+    }
+
+    public function nyplukkliste() {
+      $this->load->model('Brukere_model');
+      $data['Plukkliste'] = null;
+      $data['Brukere'] = $this->Brukere_model->brukere();
+      $this->template->load('standard','aktivitet/plukkliste',$data);
+    }
+
+    public function plukkliste() {
+      $this->load->model('Aktivitet_model');
+      $this->load->model('Brukere_model');
+      if ($this->input->post('SkjemaLagre') or $this->input->post('SkjemaLagreLukk')) {
+        $PlukklisteID = $this->input->post('PlukklisteID');
+	$data['Beskrivelse'] = $this->input->post('Beskrivelse');
+	$data['AnsvarligBrukerID'] = $this->input->post('AnsvarligBrukerID');
+
+	if (is_numeric($PlukklisteID)) {
+          $PlukklisteID = $this->Aktivitet_model->plukkliste_lagre($PlukklisteID,$data);
+          if ($PlukklisteID != false) {
+            $this->session->set_flashdata('Infomelding','Plukkliste #'.$PlukklisteID.' ble vellykket lagret.');
+          }
+        } else {
+          $PlukklisteID = $this->Aktivitet_model->plukkliste_opprett($data);
+          if ($PlukklisteID != false) {
+            $this->session->set_flashdata('Infomelding','Plukkliste #'.$PlukklisteID.' ble vellykket opprettet.');
+          }
+        }
+        if ($PlukklisteID != false) {
+          if ($this->input->post('SkjemaLagre')) {
+            redirect('utstyr/plukkliste/'.$PlukklisteID);
+          } else {
+            redirect('utstyr/plukklister');
+          }
+        }
+      } else {
+        $data['Plukkliste'] = $this->Aktivitet_model->plukkliste_info($this->uri->segment(3));
+        $data['Utstyrsliste'] = $this->Aktivitet_model->utstyrsliste($data['Plukkliste']['PlukklisteID']);
+        $data['Brukere'] = $this->Brukere_model->brukere();
+        $this->template->load('standard','aktivitet/plukkliste',$data);
+      }
+    }
+
+    public function utregistrering() {
+      $this->load->model('Aktivitet_model');
+      if ($this->input->post('UtstyrID')) {
+	$PlukklisteID = $this->input->post('PlukklisteID');
+        $this->Aktivitet_model->plukkliste_leggtilutstyr($PlukklisteID,$this->input->post('UtstyrID'));
+      }
+      $data['Plukkliste'] = $this->Aktivitet_model->plukkliste_info($this->uri->segment(3));
+      $data['Utstyrsliste'] = $this->Aktivitet_model->utstyrsliste($data['Plukkliste']['PlukklisteID']);
+      $this->template->load('standard','aktivitet/utregistrering',$data);
     }
 
   }

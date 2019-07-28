@@ -37,6 +37,16 @@
     <a class="navbar-brand" href="#">DepotSYS</a>
     <ul class="navbar-nav mr-auto">
       <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarAktivitet" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Aktivitet
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarAktivitet">
+          <a class="dropdown-item" href="<?php echo site_url('utstyr/'); ?>">Ny plukkliste</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="<?php echo site_url('utstyr/plukklister'); ?>">Plukklister</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarUtstyr" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Utstyr
         </a>
@@ -72,7 +82,7 @@
       </li>
     </ul>
     <form class="form-inline" method="POST" action="<?php echo site_url('utstyr/utstyrssok'); ?>">
-    <input class="form-control mr-sm-2" type="search" name="Sokestreng" placeholder="Søk etter" aria-label="Search" autofocus>
+    <input class="form-control mr-sm-2" type="search" name="Sokestreng" placeholder="Søk etter" aria-label="Search">
     <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Finn</button>
     </form>
   </div>

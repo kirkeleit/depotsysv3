@@ -1,4 +1,4 @@
-<h2>Batterityper</h2>
+<h2>Batterityper<small class="text-muted"> - Totalt <?php echo sizeof($Batterityper); ?> batterityper</h2>
 <br />
 
 <div class="table-responsive">

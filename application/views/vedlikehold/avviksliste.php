@@ -29,7 +29,7 @@ Et avvik registreres på utstyr dersom det oppdages feil, problemer eller utstyr
         <td><?php echo date("d.m.Y",strtotime($Avvik['DatoRegistrert'])); ?></td>
         <td><?php echo $Avvik['BrukerNavn']; ?></td>
         <td><a href="<?php echo site_url('utstyr/utstyr/'.$Avvik['UtstyrID']); ?>"><?php echo "-".$Avvik['UtstyrID']; ?></a></td>
-        <td><?php echo $Avvik['Beskrivelse']; ?></td>
+        <td><?php echo word_limiter($Avvik['Beskrivelse'],10); ?></td>
         <td><?php if ($Avvik['Kostnad'] > 0) { echo 'kr '.$Avvik['Kostnad']; } else { echo "&nbsp;"; } ?></td>
         <td><?php echo $Avvik['Status']; ?></td>
       </tr>
