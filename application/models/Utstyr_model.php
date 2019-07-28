@@ -321,7 +321,7 @@
     }
 
     function batterityper() {
-      $rBatterityper = $this->db->query("SELECT BatteriID,Type,Navn FROM Batterityper ORDER BY Type ASC");
+      $rBatterityper = $this->db->query("SELECT BatteritypeID,Type,Navn,(SELECT COUNT(*) FROM Utstyr u WHERE (u.BatteritypeID=b.BatteritypeID)) AS UtstyrAntall,(SELECT SUM(BatteriAntall) FROM Utstyr u WHERE (u.BatteritypeID=b.BatteritypeID)) AS BehovAntall FROM Batterityper b ORDER BY Type ASC");
       foreach ($rBatterityper->result_array() as $rBatteritype) {
         $Batterityper[] = $rBatteritype;
         unset($rBatteritype);

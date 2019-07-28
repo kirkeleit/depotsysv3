@@ -362,6 +362,12 @@
       redirect('utstyr/kasser');
     }
 
+    public function batterityper() {
+      $this->load->model('Utstyr_model');
+      $data['Batterityper'] = $this->Utstyr_model->batterityper();
+      $this->template->load('standard','utstyr/batterityper',$data);
+    }
+
 
     public function innholdsliste() {
       $this->load->model('Utstyr_model');

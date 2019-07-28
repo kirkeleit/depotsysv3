@@ -47,6 +47,7 @@
           <a class="dropdown-item" href="<?php echo site_url('utstyr/lokasjoner'); ?>">Lokasjoner</a>
 	  <a class="dropdown-item" href="<?php echo site_url('utstyr/kasser'); ?>">Kasser</a>
 	  <a class="dropdown-item" href="<?php echo site_url('utstyr/produsenter'); ?>">Produsenter</a>
+          <a class="dropdown-item" href="<?php echo site_url('utstyr/batterityper'); ?>">Batterityper</a>
         </div>
       </li>
       <li class="nav-item dropdown">
