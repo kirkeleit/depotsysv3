@@ -93,7 +93,7 @@
 
 
     function utstyrstyper() {
-      $rUtstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,(SELECT COUNT(*) FROM Utstyr u WHERE (u.UtstyrID Like CONCAT(ut.Kode,'%'))) AS AntallUtstyr,AnsvarligRolleID,(SELECT Navn FROM Roller r WHERE (r.RolleID=ut.AnsvarligRolleID) LIMIT 1) AS AnsvarligRolle,KontrollDager FROM Utstyrstyper ut WHERE (DatoSlettet Is Null) ORDER BY Kode ASC");
+      $rUtstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,Forbruksmateriell,(SELECT COUNT(*) FROM Utstyr u WHERE (u.UtstyrID Like CONCAT(ut.Kode,'%'))) AS AntallUtstyr,AnsvarligRolleID,(SELECT Navn FROM Roller r WHERE (r.RolleID=ut.AnsvarligRolleID) LIMIT 1) AS AnsvarligRolle,KontrollDager FROM Utstyrstyper ut WHERE (DatoSlettet Is Null) ORDER BY Kode ASC");
       foreach ($rUtstyrstyper->result_array() as $rUtstyrstype) {
         $Utstyrstyper[] = $rUtstyrstype;
         unset($rutstyrstype);
@@ -106,9 +106,9 @@
 
     function utstyrstype_info($UtstyrstypeID = null) {
       if (is_numeric($UtstyrstypeID)) {
-        $rUtstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,AnsvarligRolleID,KontrollDager,KontrollPunkter,Notater FROM Utstyrstyper WHERE (UtstyrstypeID='".$UtstyrstypeID."') LIMIT 1");
+        $rUtstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,Forbruksmateriell,AnsvarligRolleID,KontrollDager,KontrollPunkter,Notater FROM Utstyrstyper WHERE (UtstyrstypeID='".$UtstyrstypeID."') LIMIT 1");
       } else {
-        $rUtstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,AnsvarligRolleID,KontrollDager,KontrollPunkter,Notater FROM Utstyrstyper WHERE (Kode='".$UtstyrstypeID."') LIMIT 1");
+        $rUtstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,Forbruksmateriell,AnsvarligRolleID,KontrollDager,KontrollPunkter,Notater FROM Utstyrstyper WHERE (Kode='".$UtstyrstypeID."') LIMIT 1");
       }
       if ($rUtstyrstype = $rUtstyrstyper->row_array()) {
         return $rUtstyrstype;

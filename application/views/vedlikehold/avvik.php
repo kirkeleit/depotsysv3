@@ -1,3 +1,7 @@
+<?php if ($Avvik['DatoSlettet'] != '') { ?>
+<div class="card card-body bg-danger text-white">Dette avviket ble slettet den <?php echo date('d.m.Y',strtotime($Avvik['DatoSlettet'])); ?>. Endringer vil ikke bli lagret.</div>
+<br />
+<?php } ?>
 <form method="POST" action="<?php echo site_url('utstyr/avvik/'.$Avvik['AvvikID']); ?>">
 <?php if (isset($Avvik)) { ?>
 <input type="hidden" name="AvvikID" value="<?php echo $Avvik['AvvikID']; ?>" />
@@ -68,10 +72,12 @@
       </div>
     </div>
   </div>
+<?php if ($Avvik['DatoSlettet'] == '') { ?>
   <div class="card-footer">
     <input type="submit" class="btn btn-primary" value="Lagre" name="AvvikLagre" />
     <input type="submit" class="btn btn-secondary" value="Slett" name="AvvikSlett" />
   </div>
+<?php } ?>
 </div>
 <br />
 

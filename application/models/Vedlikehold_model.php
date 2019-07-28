@@ -100,7 +100,7 @@
       } else {
         $sql .= " AND (StatusID < 3)";
       }
-      $sql .= " ORDER BY UtstyrID,DatoRegistrert ASC";
+      $sql .= " ORDER BY AvvikID ASC";
       $rAvviksliste = $this->db->query($sql);
       foreach ($rAvviksliste->result_array() as $rAvvik) {
         $rAvvik['Status'] = $this->AvvikStatus[$rAvvik['StatusID']];

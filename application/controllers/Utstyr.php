@@ -153,7 +153,8 @@
       if (($this->input->post('SkjemaLagre')) or ($this->input->post('SkjemaLagreLukk'))) {
         $UtstyrstypeID = $this->input->post('UtstyrstypeID');
         $data['Kode'] = $this->input->post('Kode');
-        $data['Navn'] = $this->input->post('Navn');
+	$data['Navn'] = $this->input->post('Navn');
+	$data['Forbruksmateriell'] = $this->input->post('Forbruksmateriell');
         $data['AnsvarligRolleID'] = $this->input->post('AnsvarligRolleID');
 	$data['KontrollDager'] = $this->input->post('KontrollDager');
 	$data['KontrollPunkter'] = $this->input->post('KontrollPunkter');
@@ -378,8 +379,19 @@
 
     public function avviksliste() {
       $this->load->model('Vedlikehold_model');
-      $data['Avviksliste'] = $this->Vedlikehold_model->avviksliste();
-      $this->template->load('standard','vedlikehold/avviksliste',$data);
+      if ($this->input->get('filterutstyrid')) {
+        $Filter['FilterUtstyrID'] = $this->input->get('filterutstyrid');
+      }
+      if (isset($Filter)) {
+        $data['Avviksliste'] = $this->Vedlikehold_model->avviksliste($Filter);
+      } else {
+        $data['Avviksliste'] = $this->Vedlikehold_model->avviksliste();
+      }
+      if (sizeof($data['Avviksliste']) == 1) {
+        redirect('utstyr/avvik/'.$data['Avviksliste'][0]['AvvikID']);
+      } else {
+        $this->template->load('standard','vedlikehold/avviksliste',$data);
+      }
     }
 
     public function nyttavvik() {

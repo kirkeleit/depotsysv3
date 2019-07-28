@@ -13,7 +13,7 @@
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="Plassering"><b>Plassering:</b></label>
       <div class="col-sm-10">
-        <select class="custom-select custom-select-sm" id="Plassering" name="Plassering">
+        <select class="custom-select" id="Plassering" name="Plassering">
           <option value="">[ukjent/ingen plass]</option>
           <optgroup label="Kasser">
 <?php
@@ -46,7 +46,7 @@
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="ProdusentID"><b>Produsent:</b></label>
       <div class="col-sm-10">
-        <select class="custom-select custom-select-sm" id="ProdusentID" name="ProdusentID">
+        <select class="custom-select" id="ProdusentID" name="ProdusentID">
 	  <option value="0">(ingen valgt)</option>
           <option disabled>──────</option>
 <?php
@@ -67,6 +67,7 @@
       </div>
     </div>
 <?php } ?>
+<?php if (substr($Utstyr['UtstyrID'],-1,1) != 'T') { ?>
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="BatteriID"><b>Batteritype:</b></label>
       <div class="col-sm-10">
@@ -91,6 +92,7 @@
         <input type="number" class="form-control" id="BatteriAntall" name="BatteriAntall" value="<?php echo set_value('BatteriAntall',$Utstyr['BatteriAntall']); ?>">
       </div>
     </div>
+<?php } ?>
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="Notater"><b>Notater:</b></label>
       <div class="col-sm-10">
