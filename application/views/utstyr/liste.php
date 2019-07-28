@@ -1,9 +1,9 @@
-<h2>Utstyrsliste</h2>
+<h2>Utstyrsliste<small class="text-muted"> - Totalt <?php echo sizeof($Utstyrsliste); ?> stk utstyr</small></h2>
 <br />
 
 <div class="table-responsive">
   <table class="table table-bordered table-striped table-hover table-sm">
-    <thead>
+    <thead class="thead-dark">
       <tr>
         <th>Utstyr ID</th>
         <th>Produsent</th>

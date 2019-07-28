@@ -1,4 +1,4 @@
-<h2>Lokasjoner</h2>
+<h2>Lokasjoner<small class="text-muted"> - Totalt <?php echo sizeof($Lokasjoner); ?> lokasjoner</small></h2>
 <br />
 
 <div class="card card-body">
@@ -9,7 +9,7 @@ En lokasjon er et fysisk sted hvor en oppbevarer utstyr. En velger selv hvor det
 
 <div class="table-responsive">
   <table class="table table-bordered table-striped table-hover table-sm">
-    <thead>
+    <thead class="thead-dark">
       <tr>
         <th>Kode</th>
         <th>Navn</th>

@@ -1,4 +1,4 @@
-<h2>Produsenter</h2>
+<h2>Produsenter<small class="text-muted"> - Totalt <?php echo sizeof($Produsenter); ?> produsenter</small></h2>
 <br />
 
 <div class="card card-body">
@@ -9,7 +9,7 @@ En produsent brukes for å samle sammen alt utstyr en har fra et og samme merke/
 
 <div class="table-responsive">
   <table class="table table-bordered table-striped table-hover table-sm">
-    <thead>
+    <thead class="thead-dark">
       <tr>
         <th>Navn</th>
         <th>Endret</th>
