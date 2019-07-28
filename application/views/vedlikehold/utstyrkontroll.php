@@ -3,11 +3,11 @@
 Utstyr '-<?php echo $Utstyr['UtstyrID']; ?>' er registrert som forbruksmateriell, og kan derfor ikke kontrolleres.
 </div>
 <?php } else { ?>
-<form method="POST" action="<?php echo site_url('utstyr/utstyrtelling?utstyrid='.$Utstyr['UtstyrID']); ?>">
+<form method="POST" action="<?php echo site_url('utstyr/utstyrkontroll?utstyrid='.$Utstyr['UtstyrID']); ?>">
 <input type="hidden" name="UtstyrID" value="<?php echo set_value('UtstyrID',$Utstyr['UtstyrID']); ?>" />
 
 <div class="card">
-  <h5 class="card-header">Utstyr</h5>
+  <h5 class="card-header">Utstyrskontroll</h5>
   <div class="card-body">
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="UtstyrID"><b>Utstyr ID:</b></label>
@@ -44,20 +44,35 @@ Utstyr '-<?php echo $Utstyr['UtstyrID']; ?>' er registrert som forbruksmateriell
       </div>
     </div>
     <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="KontrollPunkter"><b>Kontrollpunkter:</b></label>
+      <div class="col-sm-10">
+        <ul class="list-group">
+<?php
+  $Utstyrstype['KontrollPunkter'] = nl2br($Utstyrstype['KontrollPunkter']);
+  $Punkter = explode('<br />',$Utstyrstype['KontrollPunkter']);
+  for ($x=0; $x<sizeof($Punkter); $x++) {
+?>
+	  <li class="list-group-item"><?php echo $Punkter[$x]; ?></li>
+<?php
+  }
+?>
+        </ul>
+      </div>
+    </div>
+    <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="TilstandID"><b>Tilstand:</b></label>
       <div class="col-sm-10">
-        <select class="custom-select" id="TilstandID" name="TilstandID">
-          <option value=""<?php if ($Utstyr['BatteriType'] == '') { echo ' selected'; } ?>>Trenger ikke batteri</option>
-          <option value="AA"<?php if ($Utstyr['BatteriType'] == 'AA') { echo ' selected'; } ?>>AA batterier</option>
-          <option value="AAA"<?php if ($Utstyr['BatteriType'] == 'AAA') { echo ' selected'; } ?>>AAA batterier</option>
-          <option value="C"<?php if ($Utstyr['BatteriType'] == 'C') { echo ' selected'; } ?>>C/LR6 batterier</option>
+	<select class="custom-select" id="TilstandID" name="TilstandID">
+<?php for ($x=0; $x<sizeof($Tilstander); $x++) { ?>
+          <option value="<?php echo $x; ?>"><?php echo $Tilstander[$x]; ?></option>
+<?php } ?>
         </select>
       </div>
     </div>
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="Kommentar"><b>Kommentar:</b></label>
       <div class="col-sm-10">
-        <textarea class="form-control" id="Kommentar" name="Kommentar" rows="3"><?php echo $Utstyr['Kommentar']; ?></textarea>
+        <textarea class="form-control" id="Kommentar" name="Kommentar" rows="3"></textarea>
       </div>
     </div>
   </div>
@@ -83,14 +98,14 @@ Utstyr '-<?php echo $Utstyr['UtstyrID']; ?>' er registrert som forbruksmateriell
     </thead>
     <tbody>
 <?php
-  if (isset($Lagerendringer)) {
-    foreach ($Lagerendringer as $Lagerendring) {
+  if (isset($Kontroller)) {
+    foreach ($Kontroller as $Kontroll) {
 ?>
       <tr>
-        <td><?php echo date('d.m.Y',strtotime($Lagerendring['DatoRegistrert'])); ?></td>
-	<td><?php echo $Lagerendring['BrukerNavn']; ?></td>
-        <td><?php echo $Lagerendring['Tilstand']; ?></td>
-        <td><?php echo $Lagerendring['Kommentar']; ?></td>
+        <td><?php echo date('d.m.Y',strtotime($Kontroll['DatoRegistrert'])); ?></td>
+	<td><?php echo $Kontroll['BrukerNavn']; ?></td>
+        <td><?php echo $Kontroll['Tilstand']; ?></td>
+        <td><?php echo $Kontroll['Kommentar']; ?></td>
       </tr>
 <?php
     }

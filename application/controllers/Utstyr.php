@@ -100,9 +100,10 @@
 	  }
 	}
 	$Utstyr['ProdusentID'] = $this->input->post('ProdusentID');
-	$Utstyr['BatteriType'] = $this->input->post('BatteriType');
+	$Utstyr['BatteriID'] = $this->input->post('BatteriID');
 	$Utstyr['BatteriAntall'] = $this->input->post('BatteriAntall');
 	$Utstyr['Notater'] = $this->input->post('Notater');
+	$Utstyr['StatusID'] = $this->input->post('StatusID');
 	if ($this->input->post('AntallMin')) {
           $Utstyr['AntallMin'] = $this->input->post('AntallMin');
 	}
@@ -118,7 +119,8 @@
         $data['Avviksliste'] = $this->Vedlikehold_model->avviksliste(array('FilterUtstyrID' => $data['Utstyr']['UtstyrID']));
 	$data['Produsenter'] = $this->Utstyr_model->produsenter();
 	$data['Lokasjoner'] = $this->Utstyr_model->lokasjoner();
-	$data['Kontrollogg'] = $this->Vedlikehold_model->kontroller($this->uri->segment(3));
+	$data['Batterityper'] = $this->Utstyr_model->batterityper();
+	$data['Kontroller'] = $this->Vedlikehold_model->kontroller($data['Utstyr']['UtstyrID']);
 	$data['Lagerendringer'] = $this->Vedlikehold_model->lagerendringer($data['Utstyr']['UtstyrID']);
 	$data['Kasser'] = $this->Utstyr_model->kasser();
         $this->template->load('standard','utstyr/utstyr',$data);
@@ -153,7 +155,8 @@
         $data['Kode'] = $this->input->post('Kode');
         $data['Navn'] = $this->input->post('Navn');
         $data['AnsvarligRolleID'] = $this->input->post('AnsvarligRolleID');
-        $data['KontrollDager'] = $this->input->post('KontrollDager');
+	$data['KontrollDager'] = $this->input->post('KontrollDager');
+	$data['KontrollPunkter'] = $this->input->post('KontrollPunkter');
 	$data['Notater'] = $this->input->post('Notater');
 	if (is_numeric($UtstyrstypeID)) {
           $UtstyrstypeID = $this->Utstyr_model->utstyrstype_lagre($UtstyrstypeID,$data);
@@ -469,11 +472,22 @@
         $data['Kommentar'] = $this->input->post('Kommentar');
         if ($this->Vedlikehold_model->kontroll_lagre($data)) {
           $this->session->set_flashdata('Infomelding','Kontroll av \''.$data['UtstyrID'].'\' er nå registrert.');
+          if ($data['TilstandID'] > 0) {
+            $data2['UtstyrID'] = $data['UtstyrID'];
+	    $data2['Beskrivelse'] = $data['Kommentar'];
+	    $data2['StatusID'] = 0;
+	    $AvvikID = $this->Vedlikehold_model->avvik_registrere($data2);
+	    if ($AvvikID != false) {
+              $this->slack->sendmessage("Avvik *#".$AvvikID."* på utstyret *'-".$data2['UtstyrID']."'* er nå registrert med følgende beskrivelse:\n>".$data2['Beskrivelse']."\n<".site_url('utstyr/avvik/'.$AvvikID)."|Trykk her> for å åpne avviket.");
+	    }
+          }
           redirect('utstyr/utstyr/'.$data['UtstyrID']);
         }
       }
       $data['Utstyr'] = $this->Utstyr_model->utstyr_info($this->input->get('utstyrid'));
+      $data['Utstyrstype'] = $this->Utstyr_model->utstyrstype_info(substr($data['Utstyr']['UtstyrID'],0,2));
       $data['Kontroller'] = $this->Vedlikehold_model->kontroller($data['Utstyr']['UtstyrID']);
+      $data['Tilstander'] = $this->Vedlikehold_model->KontrollTilstand;
       $this->template->load('standard','vedlikehold/utstyrkontroll',$data);
     }
 

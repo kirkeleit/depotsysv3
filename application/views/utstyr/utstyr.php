@@ -47,7 +47,8 @@
       <label class="col-sm-2 col-form-label" for="ProdusentID"><b>Produsent:</b></label>
       <div class="col-sm-10">
         <select class="custom-select custom-select-sm" id="ProdusentID" name="ProdusentID">
-          <option value="0">(ingen valgt)</option>
+	  <option value="0">(ingen valgt)</option>
+          <option disabled>──────</option>
 <?php
   foreach ($Produsenter as $Produsent) {
 ?>
@@ -67,13 +68,20 @@
     </div>
 <?php } ?>
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="BatteriType"><b>Batteritype:</b></label>
+      <label class="col-sm-2 col-form-label" for="BatteriID"><b>Batteritype:</b></label>
       <div class="col-sm-10">
-        <select class="custom-select custom-select-sm" id="BatteriType" name="BatteriType">
-	  <option value=""<?php if ($Utstyr['BatteriType'] == '') { echo ' selected'; } ?>>Trenger ikke batteri</option>
-	  <option value="AA"<?php if ($Utstyr['BatteriType'] == 'AA') { echo ' selected'; } ?>>AA batterier</option>
-	  <option value="AAA"<?php if ($Utstyr['BatteriType'] == 'AAA') { echo ' selected'; } ?>>AAA batterier</option>
-          <option value="C"<?php if ($Utstyr['BatteriType'] == 'C') { echo ' selected'; } ?>>C/LR6 batterier</option>
+        <select class="custom-select" id="BatteriID" name="BatteriID">
+	  <option value="0"<?php if ($Utstyr['BatteriID'] == 0) { echo ' selected'; } ?>>(ingen valgt)</option>
+	  <option disabled>──────</option>
+<?php
+  if (isset($Batterityper)) {
+    foreach ($Batterityper as $Batteritype) {
+?>
+	  <option value="<?php echo $Batteritype['BatteriID']; ?>"<?php if ($Utstyr['BatteriID'] == $Batteritype['BatteriID']) { echo " selected"; } ?>><?php echo $Batteritype['Navn']; ?></option>
+<?php
+    }
+  }
+?>
         </select>
       </div>
     </div>
@@ -87,6 +95,15 @@
       <label class="col-sm-2 col-form-label" for="Notater"><b>Notater:</b></label>
       <div class="col-sm-10">
         <textarea class="form-control" id="Notater" name="Notater" rows="3"><?php echo set_value('Notater',$Utstyr['Notater']); ?></textarea>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="StatusID"><b>Status:</b></label>
+      <div class="col-sm-10">
+        <select class="custom-select" id="StatusID" name="StatusID">
+	  <option value="1"<?php if ($Utstyr['StatusID'] == 1) { echo ' selected'; } ?>>Operativt</option>
+          <option value="0"<?php if ($Utstyr['StatusID'] == 0) { echo ' selected'; } ?>>IKKE operativt</option>
+        </select>
       </div>
     </div>
   </div>
@@ -111,6 +128,7 @@
 </form>
 <br />
 
+<?php if (substr($Utstyr['UtstyrID'],-1,1) != 'T') { ?>
 <h5>Avviksliste</h5>
 <div class="table-responsive">
   <table class="table table-bordered table-sm table-striped table-hover">
@@ -148,33 +166,37 @@
     </tbody>
   </table>
 </div>
+<?php } ?>
 
+<?php if (substr($Utstyr['UtstyrID'],-1,1) != 'T') { ?>
 <h5>Kontroller</h5>
 <div class="table-responsive">
   <table class="table table-bordered table-sm table-striped table-hover">
     <thead>
       <tr>
         <th>Registrert</th>
-        <th>Bruker</th>
+	<th>Bruker</th>
+        <th>Tilstand</th>
         <th>Kommentar</th>
       </tr>
     </thead>
     <tbody>
 <?php
-  if (isset($Kontrollogg)) {
-    foreach ($Kontrollogg as $Logg) {
+  if (isset($Kontroller)) {
+    foreach ($Kontroller as $Kontroll) {
 ?>
       <tr>
-        <td><?php echo date('d.m.Y',strtotime($Logg['DatoRegistrert'])); ?></td>
-        <td><?php echo $Logg['BrukerNavn']; ?></td>
-        <td><?php echo $Logg['Kommentar']; ?></td>
+        <td><?php echo date('d.m.Y',strtotime($Kontroll['DatoRegistrert'])); ?></td>
+	<td><?php echo $Kontroll['BrukerNavn']; ?></td>
+        <td><?php echo $Kontroll['Tilstand']; ?></td>
+        <td><?php echo $Kontroll['Kommentar']; ?></td>
       </tr>
 <?php
     }
   } else {
 ?>
       <tr>
-        <td colspan="5" class="text-center">Ingen kontroller er gjennomført av utstyret.</td>
+        <td colspan="4" class="text-center">Ingen kontroller er gjennomført av utstyret.</td>
       </tr>
 <?php
   }
@@ -182,6 +204,7 @@
     </tbody>
   </table>
 </div>
+<?php } ?>
 
 <?php if (substr($Utstyr['UtstyrID'],-1,1) == 'T') { ?>
 <h5>Lagerendringer</h5>

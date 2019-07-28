@@ -44,12 +44,12 @@
       }
     }
 
-    function kontroll_lagre($data) {
+    /*function kontroll_lagre($data) {
       $data['DatoRegistrert'] = date('Y-m-d H:i:s');
       $data['DatoEndret'] = $data['DatoRegistrert'];
       $data['BrukerID'] = $_SESSION['BrukerID'];
       $this->db->query($this->db->insert_string('Kontrollogg',$data));
-      /*if ($data['Tilstand'] != 0) {
+      if ($data['Tilstand'] != 0) {
         $avvik['DatoRegistrert'] = $data['DatoRegistrert'];
         $avvik['DatoEndret'] = $data['DatoRegistrert'];
 	$avvik['KomponentID'] = $data['KomponentID'];
@@ -66,10 +66,10 @@
 	}
         $avvik['Beskrivelse'] .= $data['Kommentar'];
         $this->avvik_registrere($avvik);
-      }*/
-    }
+      }
+    }*/
 
-    function kontroller($UtstyrID) {
+    /*function kontroller($UtstyrID) {
       $rLoggliste = $this->db->query("SELECT LoggID,DatoRegistrert,UtstyrID,BrukerID,(SELECT CONCAT(Fornavn,' ',Etternavn) FROM Brukere b WHERE (b.BrukerID=l.BrukerID) LIMIT 1) AS BrukerNavn,Tilstand,Kommentar FROM Kontrollogg l WHERE (UtstyrID='".$UtstyrID."') ORDER BY DatoRegistrert ASC");
       foreach ($rLoggliste->result_array() as $rLogg) {
         $Loggliste[] = $rLogg;
@@ -79,21 +79,18 @@
       if (isset($Loggliste)) {
         return $Loggliste;
       }
-    }
+    }*/
 
     function avvik_registrere($data) {
       $data['DatoRegistrert'] = date('Y-m-d H:i:s');
       $data['DatoEndret'] = $data['DatoRegistrert'];
       $data['BrukerID'] = $_SESSION['BrukerID'];
-      $this->db->query($this->db->insert_string('Avvik',$data));
-      /*define('SLACK_WEBHOOK', 'https://hooks.slack.com/services/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');
-      $message = array('payload' => json_encode(array('channel' => '#depottest', 'text' => "Nytt avvik registrert på '-".$data['KomponentID']."': ".$data['Beskrivelse'])));
-      $c = curl_init(SLACK_WEBHOOK);
-      curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
-      curl_setopt($c, CURLOPT_POST, true);
-      curl_setopt($c, CURLOPT_POSTFIELDS, $message);
-      curl_exec($c);
-      curl_close($c);*/
+      if ($this->db->query($this->db->insert_string('Avvik',$data))) {
+        $AvvikID = $this->db->insert_id();
+        return $AvvikID;
+      } else {
+        return false;
+      }
     }
 
     function avviksliste($filter = null) {
@@ -193,7 +190,7 @@
     function kontroller($UtstyrID) {
       $rKontroller = $this->db->query("SELECT ID,DatoRegistrert,BrukerID,(SELECT CONCAT(Fornavn,' ',Etternavn) FROM Brukere b WHERE (b.BrukerID=k.BrukerID)) AS BrukerNavn,TilstandID,Kommentar FROM Kontroller k WHERE (UtstyrID='".$UtstyrID."') ORDER BY DatoRegistrert DESC LIMIT 20");
       foreach ($rKontroller->result_array() as $rKontroll) {
-        $rKontroll['TilstandID'] = $this->KontrollTilstand[$rKontroll['TilstandID']];
+        $rKontroll['Tilstand'] = $this->KontrollTilstand[$rKontroll['TilstandID']];
         $Kontroller[] = $rKontroll;
         unset($rKontroll);
       }

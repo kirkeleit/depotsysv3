@@ -49,6 +49,13 @@
       </div>
     </div>
     <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="KontrollPunkter"><b>Kontrollpunkter:</b></label>
+      <div class="col-sm-10">
+	<textarea class="form-control" id="KontrollPunkter" name="KontrollPunkter" rows="5" aria-describedby="KontrollPunkterHjelp"><?php echo set_value('KontrollPunkter',$Utstyrstype['KontrollPunkter']); ?></textarea>
+        <small id="KontrollPunkterHjelp" class="form-text text-muted">Legg inn spesielle punkter som må sjekkes på denne type utstyr. Et kontrollpunkt pr linje.</small>
+      </div>
+    </div>
+    <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="Notater"><b>Notater:</b></label>
       <div class="col-sm-10">
         <textarea class="form-control" id="Notater" name="Notater" rows="3"><?php echo set_value('Notater',$Utstyrstype['Notater']); ?></textarea>
