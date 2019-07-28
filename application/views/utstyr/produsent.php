@@ -50,9 +50,11 @@
         <th>Produsent</th>
         <th>Beskrivelse</th>
         <th>Antall</th>
+        <th>Minimum antall</th>
         <th>Plassering</th>
-        <th>Endret</th>
         <th>Kontrollert</th>
+        <th>Avvik</th>
+        <th>Status</th>
       </tr>
     </thead>
     <tbody>
@@ -60,21 +62,23 @@
   if (isset($Utstyrsliste)) {
     foreach ($Utstyrsliste as $Utstyr) {
 ?>
-      <tr>
-        <th><a href="<?php echo site_url('utstyr/utstyr/'.$Utstyr['UtstyrID']); ?>"><?php echo "-".$Utstyr['UtstyrID']; ?></a></th>
-        <td><?php echo $Utstyr['ProdusentNavn']; ?></td>
+      <tr<?php if ($Utstyr['StatusID'] == 0) { echo ' class="bg-danger text-white"'; } ?>>
+        <th><a href="<?php echo site_url('utstyr/utstyr/'.$Utstyr['UtstyrID']); ?>"<?php if ($Utstyr['StatusID'] == 0) { echo ' class="text-white"'; } ?>><?php echo "-".$Utstyr['UtstyrID']; ?></a></th>
+        <td><?php if ($Utstyr['ProdusentID'] > 0) { echo $Utstyr['ProdusentNavn']; ?>&nbsp;<a href="<?php echo site_url('utstyr/produsent/'.$Utstyr['ProdusentID']); ?>" target="_new"><img src="/res/open_in_new_window.png" height="16" width="16"></a><?php } else { echo "&nbsp;"; } ?></td>
         <td><?php echo $Utstyr['Beskrivelse']; ?></td>
         <td><?php if (substr($Utstyr['UtstyrID'],-1,1) == 'T') { echo $Utstyr['Antall']." stk"; } else { echo "&nbsp;"; } ?></td>
-        <td><?php if (strlen($Utstyr['LokasjonID']) > 0) { echo $Utstyr['Lokasjon']; } else { echo "&nbsp;"; } ?><?php if (strlen($Utstyr['KasseID']) > 0) { echo $Utstyr['Kasse']; } else { echo "&nbsp;"; } ?></td>
-        <td><?php echo date("d.m.Y",strtotime($Utstyr['DatoEndret'])); ?></td>
-        <td><?php if ($Utstyr['DatoKontrollert'] != '') { echo date("d.m.Y",strtotime($Utstyr['DatoKontrollert'])); } else { echo "&nbsp;"; } ?></td>
+        <td><?php echo $Utstyr['AntallMin']; ?></td>
+        <td><?php if ($Utstyr['LokasjonID'] > 0) { echo $Utstyr['Lokasjon'].' <a href="'.site_url('utstyr/lokasjon/'.$Utstyr['LokasjonID']).'" target="_new"><img src="/res/open_in_new_window.png" height="16" width="16"></a>'; } else { echo "&nbsp;"; } ?><?php if ($Utstyr['KasseID'] > 0) { echo $Utstyr['Kasse'].' <a href="'.site_url('utstyr/kasse/'.$Utstyr['KasseID']).'" target="_new"><img src="/res/open_in_new_window.png" height="16" width="16"></a>'; } else { echo "&nbsp;"; } ?></td>
+        <td><?php if (substr($Utstyr['UtstyrID'],-1,1) == 'T') { if ($Utstyr['DatoTelling'] != '') { echo date('d.m.Y',strtotime($Utstyr['DatoTelling'])); } else { echo "&nbsp;"; } } else { if ($Utstyr['DatoKontrollert'] != '') { echo date("d.m.Y",strtotime($Utstyr['DatoKontrollert'])); } else { echo "&nbsp;"; } } ?></td>
+        <td<?php if ($Utstyr['AntallAvvik'] > 0) { echo ' class="bg-danger text-white"'; } ?>><?php if ($Utstyr['AntallAvvik'] > 0) { echo $Utstyr['AntallAvvik'].' stk'; } else { echo '&nbsp;'; } ?></td>
+        <td<?php if ($Utstyr['StatusID'] == 1) { echo ' class="bg-success text-white"'; } ?>><?php if ($Utstyr['StatusID'] == 1) { echo "Operativt"; } else { echo "IKKE operativt"; } ?></td>
       </tr>
 <?php
     }
   } else {
 ?>
       <tr>
-        <td colspan="7" class="text-center">Ingen utstyr registrert med denne produsenten.</td>
+        <td colspan="9" class="text-center">Ingen utstyr registrert med denne utstyrstypen enda.</td>
       </tr>
 <?php
   }

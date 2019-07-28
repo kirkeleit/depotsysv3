@@ -15,6 +15,9 @@
       if (isset($filter['FilterKasseID'])) {
         $sql .= " AND (KasseID='".$filter['FilterKasseID']."')";
       }
+      if (isset($filter['FilterBatteritypeID'])) {
+        $sql .= " AND (BatteritypeID='".$filter['FilterBatteritypeID']."')";
+      }
       if (isset($filter['FilterForbruksmateriell'])) {
         if ($filter['FilterForbruksmateriell'] == 1) {
           $sql .= " AND (UtstyrID Like '%T')";
