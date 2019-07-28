@@ -2,7 +2,7 @@
   class Vedlikehold_model extends CI_Model {
 
     var $AvvikStatus = array(0 => 'Registrert', 1 => 'Under arbeid', 2 => 'På vent', 3 => 'Lukket');
-    var $UtstyrTilstand = array(0 => 'Alt ok!', 1 => 'Trenger vedlikehold', 2 => 'Mangler', 3 => 'Ødelagt');
+    var $KontrollTilstand = array(0 => 'Alt ok!', 1 => 'Trenger vedlikehold', 2 => 'Mangler', 3 => 'Ødelagt');
     var $LagerendringType = array(0 => 'Ukjent', 1 => 'Varetelling', 2 => 'Innkjøp', 3 => 'Forbruk');
 
     function kontrolliste($filter = null) {
@@ -187,6 +187,26 @@
       $data['DatoRegistrert'] = date('Y-m-d H:i:s');
       $data['BrukerID'] = $_SESSION['BrukerID'];
       $this->db->query($this->db->insert_string('Lagerendringer',$data));
+      return true;
+    }
+
+    function kontroller($UtstyrID) {
+      $rKontroller = $this->db->query("SELECT ID,DatoRegistrert,BrukerID,(SELECT CONCAT(Fornavn,' ',Etternavn) FROM Brukere b WHERE (b.BrukerID=k.BrukerID)) AS BrukerNavn,TilstandID,Kommentar FROM Kontroller k WHERE (UtstyrID='".$UtstyrID."') ORDER BY DatoRegistrert DESC LIMIT 20");
+      foreach ($rKontroller->result_array() as $rKontroll) {
+        $rKontroll['TilstandID'] = $this->KontrollTilstand[$rKontroll['TilstandID']];
+        $Kontroller[] = $rKontroll;
+        unset($rKontroll);
+      }
+      unset($rKontroller);
+      if (isset($Kontroller)) {
+        return $Kontroller;
+      }
+    }
+
+    function kontroll_lagre($data) {
+      $data['DatoRegistrert'] = date('Y-m-d H:i:s');
+      $data['BrukerID'] = $_SESSION['BrukerID'];
+      $this->db->query($this->db->insert_string('Kontroller',$data));
       return true;
     }
 

@@ -102,7 +102,8 @@
       <div class="dropdown-menu" aria-labelledby="SkjemaAvansert">
         <a href="<?php echo site_url('utstyr/slettutstyr?utstyrid='.$Utstyr['UtstyrID']); ?>" class="dropdown-item">Slett utstyret</a>
 	<a href="<?php echo site_url('utstyr/nyttavvik?utstyrid='.$Utstyr['UtstyrID']); ?>" class="dropdown-item">Nytt avvik</a>
-        <a href="<?php echo site_url('utstyr/utstyrtelling?utstyrid='.$Utstyr['UtstyrID']); ?>" class="dropdown-item">Telling</a>
+	<a href="<?php echo site_url('utstyr/utstyrtelling?utstyrid='.$Utstyr['UtstyrID']); ?>" class="dropdown-item">Telling</a>
+        <a href="<?php echo site_url('utstyr/utstyrkontroll?utstyrid='.$Utstyr['UtstyrID']); ?>" class="dropdown-item">Kontroll</a>
       </div>
     </div>
   </div>

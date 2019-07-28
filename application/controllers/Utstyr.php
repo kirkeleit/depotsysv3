@@ -460,6 +460,23 @@
       $this->template->load('standard','vedlikehold/utstyrtelling',$data);
     }
 
+    public function utstyrkontroll() {
+      $this->load->model('Utstyr_model');
+      $this->load->model('Vedlikehold_model');
+      if ($this->input->post('SkjemaLagre')){
+        $data['UtstyrID'] = $this->input->post('UtstyrID');
+        $data['TilstandID'] = $this->input->post('TilstandID');
+        $data['Kommentar'] = $this->input->post('Kommentar');
+        if ($this->Vedlikehold_model->kontroll_lagre($data)) {
+          $this->session->set_flashdata('Infomelding','Kontroll av \''.$data['UtstyrID'].'\' er nå registrert.');
+          redirect('utstyr/utstyr/'.$data['UtstyrID']);
+        }
+      }
+      $data['Utstyr'] = $this->Utstyr_model->utstyr_info($this->input->get('utstyrid'));
+      $data['Kontroller'] = $this->Vedlikehold_model->kontroller($data['Utstyr']['UtstyrID']);
+      $this->template->load('standard','vedlikehold/utstyrkontroll',$data);
+    }
+
     public function telleliste() {
       $this->load->model('Utstyr_model');
       $this->load->model('Vedlikehold_model');
