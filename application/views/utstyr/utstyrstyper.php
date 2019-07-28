@@ -13,7 +13,6 @@ En utstyrstype definerer en type/kategori med utstyr, for eks lommelykter, redni
       <tr>
         <th>Kode</th>
 	<th>Navn</th>
-        <th>Forbruk</th>
         <th>Endret</th>
         <th>Ansvarlig</th>
 	<th>Kontroll</th>
@@ -36,7 +35,6 @@ En utstyrstype definerer en type/kategori med utstyr, for eks lommelykter, redni
       <tr>
         <th><a href="<?php echo site_url('utstyr/utstyrstype/'.$Utstyrstype['UtstyrstypeID']); ?>"><?php echo $Utstyrstype['Kode']; ?></a></th>
 	<td><?php echo $Utstyrstype['Navn']; ?></td>
-        <td><?php if ($Utstyrstype['Forbruksmateriell'] == 1) { echo "Ja"; } else { echo "Nei"; } ?></td>
         <td><?php echo date('d.m.Y',strtotime($Utstyrstype['DatoEndret'])); ?></td>
 	<td><?php echo $Utstyrstype['AnsvarligRolle']; ?></td>
         <td><?php if ($Utstyrstype['KontrollDager'] > 0) { echo $Utstyrstype['KontrollDager'].' dager'; } else { echo "&nbsp;"; } ?></td>

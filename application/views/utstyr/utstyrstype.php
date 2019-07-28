@@ -25,16 +25,6 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="Forbruksmateriell"><b>Forbruksmateriell:</b></label>
-      <div class="col-sm-10">
-        <select class="custom-select" id="Forbruksmateriell" name="Forbruksmateriell" aria-describedby="ForbruksmateriellHjelp">
-	  <option value="0"<?php echo set_select('Forbruksmateriell',0,($Utstyrstype['Forbruksmateriell']==0?TRUE:FALSE)); ?>>Nei, vanlig utstyr</option>
-          <option value="1"<?php echo set_select('Forbruksmateriell',1,($Utstyrstype['Forbruksmateriell']==1?TRUE:FALSE)); ?>>Ja, forbruksmateriell</option>
-        </select>
-        <small id="ForbruksmateriellHjelp" class="form-text text-muted">Utstyr som er registrert som forbruksmateriell kan telles og lagerbeholdning spores. Vanlig utstyr skal kontrolleres for feil og mangler.</small>
-      </div>
-    </div>
-    <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="AnsvarligRolleID"><b>Ansvarlig rolle:</b></label>
       <div class="col-sm-10">
         <select class="custom-select" id="AnsvarligRolleID" name="AnsvarligRolleID" aria-describedby="AnsvarligHjelp">
@@ -83,11 +73,8 @@
       </button>
       <div class="dropdown-menu" aria-labelledby="SkjemaAvansert">
 	<a href="<?php echo site_url('utstyr/slettutstyrstype?utstyrstypeid='.$Utstyrstype['UtstyrstypeID']); ?>" class="dropdown-item">Slett utstyrstypen</a>
-<?php if ($Utstyrstype['Forbruksmateriell'] == 0) { ?>
 	<a href="<?php echo site_url('utstyr/nyttutstyr/?kode='.$Utstyrstype['Kode'].'&navn='.$Utstyrstype['Navn'].'&forbruk=0'); ?>" class="dropdown-item">Nytt utstyr</a>
-<?php } elseif ($Utstyrstype['Forbruksmateriell'] == 1) { ?>
-        <a href="<?php echo site_url('utstyr/nyttutstyr/?kode='.$Utstyrstype['Kode'].'&navn='.$Utstyrstype['Navn'].'&forbruk=1'); ?>" class="dropdown-item">Nytt utstyr</a>
-<?php } ?>
+        <a href="<?php echo site_url('utstyr/nyttutstyr/?kode='.$Utstyrstype['Kode'].'&navn='.$Utstyrstype['Navn'].'&forbruk=1'); ?>" class="dropdown-item">Nytt forbruksmateriell</a>
       </div>
     </div>
   </div>

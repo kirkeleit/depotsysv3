@@ -154,7 +154,6 @@
         $UtstyrstypeID = $this->input->post('UtstyrstypeID');
         $data['Kode'] = $this->input->post('Kode');
 	$data['Navn'] = $this->input->post('Navn');
-	$data['Forbruksmateriell'] = $this->input->post('Forbruksmateriell');
         $data['AnsvarligRolleID'] = $this->input->post('AnsvarligRolleID');
 	$data['KontrollDager'] = $this->input->post('KontrollDager');
 	$data['KontrollPunkter'] = $this->input->post('KontrollPunkter');
