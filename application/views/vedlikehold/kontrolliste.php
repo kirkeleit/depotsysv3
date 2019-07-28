@@ -16,7 +16,7 @@
 <?php
   foreach ($Lokasjoner as $Lokasjon) {
 ?>
-        <option value="<?php echo $Lokasjon['LokasjonID']; ?>"<?php if ($Lokasjon['LokasjonID'] == substr($this->input->get('filterplassering'),1)) { echo " selected"; } ?>><?php echo "+".$Lokasjon['LokasjonID']." ".$Lokasjon['Navn']; ?></option>
+        <option value="<?php echo $Lokasjon['LokasjonID']; ?>"<?php if ($Lokasjon['LokasjonID'] == substr($this->input->get('filterplassering'),1)) { echo " selected"; } ?>><?php echo "+".$Lokasjon['Kode']." ".$Lokasjon['Navn']; ?></option>
 
 <?php
   }
@@ -32,7 +32,7 @@
 <?php
   foreach ($Kasser as $Kasse) {
 ?>
-        <option value="<?php echo $Kasse['KasseID']; ?>"<?php if ($Kasse['KasseID'] == substr($this->input->get('filterplassering'),1)) { echo " selected"; } ?>><?php echo "=".$Kasse['KasseID']." ".$Kasse['Navn']; ?></option>
+        <option value="<?php echo $Kasse['KasseID']; ?>"<?php if ($Kasse['KasseID'] == substr($this->input->get('filterplassering'),1)) { echo " selected"; } ?>><?php echo "=".$Kasse['Kode']." ".$Kasse['Navn']; ?></option>
 <?php
   }
 ?>
@@ -49,13 +49,6 @@
 </form>
 <br />
 
-<form method="POST" action="<?php echo site_url('utstyr/kontrolliste'); ?>">
-<?php if (isset($FilterKasseID)) { ?>
-<input type="hidden" name="FilterKasseID" value="<?php echo $FilterKasseID; ?>">
-<?php } ?>
-<?php if (isset($FilterLokasjonID)) { ?>
-<input type="hidden" name="FilterLokasjonID" value="<?php echo $FilterLokasjonID; ?>">
-<?php } ?>
 <div class="table-responsive">
   <table class="table table-bordered table-striped table-hover table-sm">
     <thead>
@@ -64,9 +57,8 @@
         <th>Produsent</th>
 	<th>Beskrivelse</th>
         <th>Plassering</th>
-        <th>Kontrollert</th>
-        <th>Tilstand</th>
-	<th>Kommentar</th>
+	<th>Sist kontrollert</th>
+        <th>Kontrollintervall</th>
         <th>&nbsp;</th>
       </tr>
     </thead>
@@ -74,23 +66,16 @@
 <?php
   if (isset($Utstyrsliste)) {
     foreach ($Utstyrsliste as $Utstyr) {
-      if (((((time()-strtotime($Utstyr['DatoKontrollert'])) / 60) / 60) / 24) >= $Utstyr['KontrollDager']) {
+      if (($Utstyr['KontrollDager'] > 0) and (((((time()-strtotime($Utstyr['DatoKontrollert'])) / 60) / 60) / 24) >= $Utstyr['KontrollDager'])) {
 ?>
         <tr>
 	  <th><a href="<?php echo site_url('utstyr/utstyr/'.$Utstyr['UtstyrID']); ?>" target="_new"><?php echo "-".$Utstyr['UtstyrID']; ?></a><input type="hidden" name="UtstyrID[]" value="<?php echo $Utstyr['UtstyrID']; ?>"></th>
           <td><?php echo $Utstyr['ProdusentNavn']; ?></td>
 	  <td><?php echo $Utstyr['Beskrivelse']; ?></td>
-          <td><?php if (strlen($Utstyr['LokasjonID']) > 0) { echo "+".$Utstyr['LokasjonID']; } else { echo "&nbsp;"; } ?><?php if (strlen($Utstyr['KasseID']) > 0) { echo "=".$Utstyr['KasseID']; } else { echo "&nbsp;"; } ?></td>
-          <td><?php if ($Utstyr['DatoKontrollert'] == '') { echo "&nbsp;"; } else { echo date('d.m.Y',strtotime($Utstyr['DatoKontrollert'])); } ?></td>
-	  <td><select class="form-control form-control-sm" name="Tilstand[]" id="Tilstand">
-            <option value=""></option>
-	    <option value="0">Alt ok!</option>
-	    <option value="1">Trenger vedlikehold</option>
-	    <option value="2">Mangler</option>
-            <option value="3">Ødelagt</option>
-	  </select></td>
-	  <td><input type="text" class="form-control form-control-sm" name="Kommentar[]" id="Kommentar" placeholder="Legg inn kommentar her."></td>
-          <td><input type="submit" class="btn btn-sm btn-primary" name="KontrollLagre" value="Lagre"></td>
+          <td><?php if (strlen($Utstyr['LokasjonID']) > 0) { echo $Utstyr['Lokasjon']; } else { echo "&nbsp;"; } ?><?php if (strlen($Utstyr['KasseID']) > 0) { echo $Utstyr['Kasse']; } else { echo "&nbsp;"; } ?></td>
+	  <td<?php if ($Utstyr['DatoKontrollert'] == '') { echo ' class="bg-danger text-white"'; } ?>><?php if ($Utstyr['DatoKontrollert'] == '') { echo "Aldri kontrollert"; } else { echo date('d.m.Y',strtotime($Utstyr['DatoKontrollert'])).' ('.floor((((time()-strtotime($Utstyr['DatoKontrollert'])) / 60) / 60) / 24).')'; } ?></td>
+          <td><?php echo $Utstyr['KontrollDager'].' dager'; ?></td>
+          <td><a href="<?php echo site_url('utstyr/utstyrkontroll?utstyrid='.$Utstyr['UtstyrID']); ?>" target="_new">Kontroller</a></td>
         </tr>
 <?php
       }
@@ -98,7 +83,7 @@
   } else {
 ?>
       <tr>
-        <td colspan="8" class="text-center">Ingen utstyr er tilgjengelig for kontroll.</td>
+        <td colspan="6" class="text-center">Ingen utstyr er tilgjengelig for kontroll.</td>
       </tr>
 <?php
   }
@@ -106,4 +91,3 @@
     </tbody>
   </table>
 </div>
-</form>

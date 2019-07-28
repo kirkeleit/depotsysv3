@@ -2,7 +2,7 @@
   class Utstyr_model extends CI_Model {
 
     function utstyrsliste($filter = null) {
-      $sql = "SELECT UtstyrID,u.DatoRegistrert,StatusID,u.DatoEndret,u.DatoSlettet,LokasjonID,(SELECT CONCAT('+',Kode,' ',Navn) FROM Lokasjoner l WHERE (l.LokasjonID=u.LokasjonID) LIMIT 1) AS Lokasjon,KasseID,(SELECT CONCAT('=',Kode,' ',Navn) FROM Kasser ka WHERE (ka.KasseID=u.KasseID) LIMIT 1) AS Kasse,u.Beskrivelse,AntallMin,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontroller l WHERE l.UtstyrID=u.UtstyrID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,(SELECT COUNT(*) FROM Avvik a WHERE (a.UtstyrID=u.UtstyrID) AND (StatusID<2) AND (DatoSlettet Is Null)) AS AntallAvvik,(SELECT SUM(Antall) FROM Lagerendringer l WHERE (l.UtstyrID=u.UtstyrID)) AS Antall FROM Utstyr u WHERE (u.DatoSlettet Is Null)";
+      $sql = "SELECT UtstyrID,u.DatoRegistrert,StatusID,u.DatoEndret,u.DatoSlettet,LokasjonID,(SELECT CONCAT('+',Kode,' ',Navn) FROM Lokasjoner l WHERE (l.LokasjonID=u.LokasjonID) LIMIT 1) AS Lokasjon,KasseID,(SELECT CONCAT('=',Kode,' ',Navn) FROM Kasser ka WHERE (ka.KasseID=u.KasseID) LIMIT 1) AS Kasse,u.Beskrivelse,AntallMin,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontroller l WHERE l.UtstyrID=u.UtstyrID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,(SELECT DatoRegistrert FROM Lagerendringer l WHERE (l.UtstyrID=u.UtstyrID) AND (EndringTypeID=1) ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoTelling,(SELECT COUNT(*) FROM Avvik a WHERE (a.UtstyrID=u.UtstyrID) AND (StatusID<2) AND (DatoSlettet Is Null)) AS AntallAvvik,(SELECT SUM(Antall) FROM Lagerendringer l WHERE (l.UtstyrID=u.UtstyrID)) AS Antall FROM Utstyr u WHERE (u.DatoSlettet Is Null)";
       if (isset($filter['FilterUtstyrstype'])) {
         $sql .= " AND (UtstyrID Like '".$filter['FilterUtstyrstype']."%')";
       }
@@ -28,7 +28,7 @@
         if (!is_numeric($rUtstyr['Antall'])) {
           $rUtstyr['Antall'] = 0;
 	}
-	$rUtstyrstyper = $this->db->query("SELECT KontrollDager,AnsvarligRolleID FROM Utstyrstyper WHERE (UtstyrstypeID='".substr($rUtstyr['UtstyrID'],0,2)."') LIMIT 1");
+	$rUtstyrstyper = $this->db->query("SELECT KontrollDager,AnsvarligRolleID FROM Utstyrstyper WHERE (Kode='".substr($rUtstyr['UtstyrID'],0,2)."') LIMIT 1");
 	if ($rUtstyrstype = $rUtstyrstyper->row_array()) {
           $rUtstyr['KontrollDager'] = $rUtstyrstype['KontrollDager'];
           $rUtstyr['AnsvarligRolleID'] = $rUtstyrstype['AnsvarligRolleID'];
@@ -58,7 +58,7 @@
     }
 
     function utstyr_info($UtstyrID = null) {
-      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,StatusID,LokasjonID,(SELECT CONCAT('+',Kode,' ',Navn) FROM Lokasjoner l WHERE (l.LokasjonID=u.LokasjonID) LIMIT 1) AS Lokasjon,KasseID,(SELECT CONCAT('=',Kode,' ',Navn) FROM Kasser k WHERE (k.KasseID=u.KasseID) LIMIT 1) AS Kasse,Beskrivelse,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID) LIMIT 1) AS ProdusentNavn,Notater,(SELECT SUM(Antall) FROM Lagerendringer le WHERE (le.UtstyrID=u.UtstyrID)) AS Antall,AntallMin,BatteriID,BatteriAntall FROM Utstyr u WHERE (UtstyrID='".$UtstyrID."') LIMIT 1");
+      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,StatusID,LokasjonID,(SELECT CONCAT('+',Kode,' ',Navn) FROM Lokasjoner l WHERE (l.LokasjonID=u.LokasjonID) LIMIT 1) AS Lokasjon,KasseID,(SELECT CONCAT('=',Kode,' ',Navn) FROM Kasser k WHERE (k.KasseID=u.KasseID) LIMIT 1) AS Kasse,Beskrivelse,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID) LIMIT 1) AS ProdusentNavn,Notater,(SELECT SUM(Antall) FROM Lagerendringer le WHERE (le.UtstyrID=u.UtstyrID)) AS Antall,AntallMin,BatteritypeID,BatteriAntall FROM Utstyr u WHERE (UtstyrID='".$UtstyrID."') LIMIT 1");
       if ($rutstyr = $rutstyrsliste->row_array()) {
 	return $rutstyr;
       }
@@ -329,6 +329,25 @@
       unset($rBatterityper);
       if (isset($Batterityper)) {
         return $Batterityper;
+      }
+    }
+
+    function batteritype_info($BatteritypeID = null) {
+      $rBatterityper = $this->db->query("SELECT BatteritypeID,Type,Navn,Notater FROM Batterityper b WHERE (BatteritypeID='".$BatteritypeID."') LIMIT 1");
+      if ($rBatteritype = $rBatterityper->row_array()) {
+        return $rBatteritype;
+      }
+    }
+
+    function batteritype_slett($BatteritypeID = null) {
+      if ($BatteritypeID != null) {
+        $this->db->query("UPDATE Utstyr SET BatteritypeID=0 WHERE BatteritypeID=".$BatteritypeID);
+        $this->db->query("DELETE FROM Batterityper WHERE BatteritypeID=".$BatteritypeID." LIMIT 1");
+        if ($this->db->affected_rows() > 0) {
+          return true;
+        } else {
+          return false;
+        }
       }
     }
 

@@ -37,7 +37,8 @@
         Flere valg
       </button>
       <div class="dropdown-menu" aria-labelledby="SkjemaAvansert">
-        <a href="<?php echo site_url('utstyr/slettlokasjon?lokasjonid='.$Lokasjon['LokasjonID']); ?>" class="dropdown-item">Slett lokasjon</a>
+	<a href="<?php echo site_url('utstyr/slettlokasjon?lokasjonid='.$Lokasjon['LokasjonID']); ?>" class="dropdown-item">Slett lokasjon</a>
+        <a href="<?php echo site_url('utstyr/innholdsliste?lokasjonid='.$Lokasjon['LokasjonID']); ?>" target="_new" class="dropdown-item">Innholdsliste</a>
       </div>
     </div>
   </div>

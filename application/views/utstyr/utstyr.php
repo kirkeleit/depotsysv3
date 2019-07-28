@@ -69,16 +69,16 @@
 <?php } ?>
 <?php if (substr($Utstyr['UtstyrID'],-1,1) != 'T') { ?>
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="BatteriID"><b>Batteritype:</b></label>
+      <label class="col-sm-2 col-form-label" for="BatteritypeID"><b>Batteritype:</b></label>
       <div class="col-sm-10">
-        <select class="custom-select" id="BatteriID" name="BatteriID">
-	  <option value="0"<?php if ($Utstyr['BatteriID'] == 0) { echo ' selected'; } ?>>(ingen valgt)</option>
+        <select class="custom-select" id="BatteritypeID" name="BatteritypeID">
+	  <option value="0"<?php if ($Utstyr['BatteritypeID'] == 0) { echo ' selected'; } ?>>(ingen valgt)</option>
 	  <option disabled>──────</option>
 <?php
   if (isset($Batterityper)) {
     foreach ($Batterityper as $Batteritype) {
 ?>
-	  <option value="<?php echo $Batteritype['BatteriID']; ?>"<?php if ($Utstyr['BatteriID'] == $Batteritype['BatteriID']) { echo " selected"; } ?>><?php echo $Batteritype['Navn']; ?></option>
+	  <option value="<?php echo $Batteritype['BatteritypeID']; ?>"<?php if ($Utstyr['BatteritypeID'] == $Batteritype['BatteritypeID']) { echo " selected"; } ?>><?php echo $Batteritype['Navn']; ?></option>
 <?php
     }
   }

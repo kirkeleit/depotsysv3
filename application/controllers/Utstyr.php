@@ -100,7 +100,7 @@
 	  }
 	}
 	$Utstyr['ProdusentID'] = $this->input->post('ProdusentID');
-	$Utstyr['BatteriID'] = $this->input->post('BatteriID');
+	$Utstyr['BatteritypeID'] = $this->input->post('BatteritypeID');
 	$Utstyr['BatteriAntall'] = $this->input->post('BatteriAntall');
 	$Utstyr['Notater'] = $this->input->post('Notater');
 	$Utstyr['StatusID'] = $this->input->post('StatusID');
@@ -368,6 +368,30 @@
       $this->template->load('standard','utstyr/batterityper',$data);
     }
 
+    public function nybatteritype() {
+      $this->load->model('Utstyr_model');
+      $data['Batteritype'] = NULL;
+      $this->template->load('standard','utstyr/batteritype',$data);
+    }
+
+    public function batteritype() {
+      $this->load->model('Utstyr_model');
+      $data['Batteritype'] = $this->Utstyr_model->batteritype_info($this->uri->segment(3));
+      $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterBatteritypeID' => $data['Batteritype']['BatteritypeID']));
+      $this->template->load('standard','utstyr/batteritype',$data);
+    }
+
+    public function slettbatteritype() {
+      $this->load->model('Utstyr_model');
+      $Batteritype = $this->Utstyr_model->batteritype_info($this->input->get('batteritypeid'));
+      if ($Batteritype != null) {
+        $this->Utstyr_model->batteritype_slett($this->input->get('batteritypeid'));
+        $this->session->set_flashdata('Infomelding','Batteritypen \''.$Batteritype['Type'].'\' ble vellykktet slettet.');
+      } else {
+        $this->session->set_flashdata('Feilmelding','Batteritypen eksisterer ikke. Kunne ikke slette batteritypen.');
+      }
+      redirect('utstyr/batterityper');
+    }
 
     public function innholdsliste() {
       $this->load->model('Utstyr_model');
@@ -401,7 +425,7 @@
 
     public function nyttavvik() {
       $this->load->model('Brukere_model');
-      $data['UtstyrID'] = $this->input->get('uid');
+      $data['UtstyrID'] = $this->input->get('utstyrid');
       $data['Avvik'] = null;
       $data['Brukere'] = $this->Brukere_model->brukere();
       $this->template->load('standard','vedlikehold/avvik',$data);
@@ -510,29 +534,6 @@
 
     public function telleliste() {
       $this->load->model('Utstyr_model');
-      $this->load->model('Vedlikehold_model');
-      if ($this->input->post('TellingLagre')) {
-        $y = 0;
-        $UtstyrID = $this->input->post('UtstyrID');
-	$Antall = $this->input->post('Antall');
-	$NyttAntall = $this->input->post('NyttAntall');
-	for ($x=0; $x<sizeof($UtstyrID); $x++) {
-          if (is_numeric($NyttAntall[$x])) {
-            $y++;
-            $data['UtstyrID'] = $UtstyrID[$x];
-            $data['Antall'] = ($NyttAntall[$x]-$Antall[$x]);
-	    $data['Kommentar'] = 'Lageropptelling';
-	    $this->Utstyr_model->utstyr_lagerlagre($data);
-            unset($data);
-	    $data['UtstyrID'] = $UtstyrID[$x];
-	    $data['Tilstand'] = 0;
-	    $data['Kommentar'] = 'Lageropptelling';
-	    $this->Vedlikehold_model->kontroll_lagre($data);
-	    unset($data);
-          }
-	}
-	$this->session->set_flashdata('Infomelding',$y.' stk utstyr er nå registrert med ny opptelling.');
-      }
       $Filter = array('FilterForbruksmateriell' => 1);
       if ($this->input->post('FilterKasseID')) {
         $Filter['FilterKasseID'] = $this->input->post('FilterKasseID');
@@ -550,37 +551,6 @@
 
     public function kontrolliste() {
       $this->load->model('Utstyr_model');
-      $this->load->model('Vedlikehold_model');
-      if ($this->input->post('KontrollLagre')) {
-        $y1 = 0;
-        $y2 = 0;
-        $UtstyrID = $this->input->post('UtstyrID');
-        $Tilstand = $this->input->post('Tilstand');
-	$Kommentar = $this->input->post('Kommentar');
-	for ($x=0; $x<sizeof($UtstyrID); $x++) {
-          if (is_numeric($Tilstand[$x])) {
-            $y1++;
-            $data['UtstyrID'] = $UtstyrID[$x];
-            $data['Tilstand'] = $Tilstand[$x];
-            $data['Kommentar'] = $Kommentar[$x];
-            $this->Vedlikehold_model->kontroll_lagre($data);
-	    unset($data);
-            if ($Tilstand[$x] > 0) {
-              $data['UtstyrID'] = $UtstyrID[$x];
-	      $data['StatusID'] = 0;
-	      $data['Kostnad'] = 0;
-	      $data['Beskrivelse'] = $this->Vedlikehold_model->UtstyrTilstand[$Tilstand[$x]].": ".$Kommentar[$x];
-	      $AvvikID = $this->Vedlikehold_model->avvik_opprett($data);
-	      if ($AvvikID != false) {
-                $y2++;
-                $this->slack->sendmessage("Avvik *#".$AvvikID."* på utstyret *'-".$data['UtstyrID']."'* er nå registrert med følgende beskrivelse:\n>".$data['Beskrivelse']."\n<".site_url('utstyr/avvik/'.$AvvikID)."|Trykk her> for å åpne avviket.");
-	      }
-	      unset($data);
-            }
-	  }
-	}
-	$this->session->set_flashdata('Infomelding',$y1.' stk utstyr er nå registrert som kontrollert. <b>'.$y2.'</b> avvik ble opprettet.');
-      }
       $data['Kasser'] = $this->Utstyr_model->kasser();
       $data['Lokasjoner'] = $this->Utstyr_model->lokasjoner();
       $Filter = array('FilterForbruksmateriell' => 0);
@@ -616,6 +586,17 @@
       }
       $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterForbruksmateriell' => 1));
       $this->template->load('standard','vedlikehold/bestillingsliste',$data);
+    }
+
+    public function utstyrssok() {
+      $this->load->model('Utstyr_model');
+      $Keyword = $this->input->post('Sokestreng');
+      $Keyword = str_replace('=','',$Keyword);
+      $Keyword = str_replace('+','',$Keyword);
+      $Keyword = str_replace('-','',$Keyword);
+      echo $Keyword;
+      $data['Utstyr'] = $this->Utstyr_model->utstyr_info($Keyword);
+      redirect('utstyr/utstyr/'.$data['Utstyr']['UtstyrID']);
     }
 
   }

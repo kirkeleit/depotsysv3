@@ -50,13 +50,6 @@ Tellelisten brukes for å raskt telle over forbruksmateriell. Alt materiell som 
 </form>
 <br />
 
-<form method="POST" action="<?php echo site_url('utstyr/telleliste'); ?>">
-<?php if (isset($FilterKasseID)) { ?>
-<input type="hidden" name="FilterKasseID" value="<?php echo $FilterKasseID; ?>">
-<?php } ?>
-<?php if (isset($FilterLokasjonID)) { ?>
-<input type="hidden" name="FilterLokasjonID" value="<?php echo $FilterLokasjonID; ?>">
-<?php } ?>
 <div class="table-responsive">
   <table class="table table-bordered table-striped table-hover table-sm">
     <thead>
@@ -65,9 +58,8 @@ Tellelisten brukes for å raskt telle over forbruksmateriell. Alt materiell som 
         <th>Produsent</th>
         <th>Beskrivelse</th>
         <th>Plassering</th>
-        <th>Kontrollert</th>
-        <th>Minimum</th>
-        <th>Antall</th>
+	<th>Sist telt</th>
+        <th>Kontrollintervall</th>
         <th>&nbsp;</th>
       </tr>
     </thead>
@@ -75,23 +67,24 @@ Tellelisten brukes for å raskt telle over forbruksmateriell. Alt materiell som 
 <?php
   if (isset($Utstyrsliste)) {
     foreach ($Utstyrsliste as $Utstyr) {
+      if (($Utstyr['KontrollDager'] > 0) and (((((time()-strtotime($Utstyr['DatoTelling'])) / 60) / 60) / 24) >= $Utstyr['KontrollDager'])) {
 ?>
       <tr<?php if ($Utstyr['Antall'] < $Utstyr['AntallMin']) { echo ' class="bg-warning"'; } ?>>
         <th><a href="<?php echo site_url('utstyr/utstyr/'.$Utstyr['UtstyrID']); ?>"><?php echo '-'.$Utstyr['UtstyrID']; ?></a><input type="hidden" name="UtstyrID[]" value="<?php echo $Utstyr['UtstyrID']; ?>"></th>
         <td><?php echo $Utstyr['ProdusentNavn']; ?></td>
         <td><?php echo $Utstyr['Beskrivelse']; ?></td>
         <td><?php if (strlen($Utstyr['LokasjonID']) > 0) { echo $Utstyr['Lokasjon']; } else { echo "&nbsp;"; } ?><?php if (strlen($Utstyr['KasseID']) > 0) { echo $Utstyr['Kasse']; } else { echo "&nbsp;"; } ?></td>
-        <td><?php if ($Utstyr['DatoKontrollert'] == '') { echo "&nbsp;"; } else { echo date('d.m.Y',strtotime($Utstyr['DatoKontrollert'])); } ?></td>
-        <td><?php echo $Utstyr['AntallMin']; ?></td>
-        <td><?php echo $Utstyr['Antall']; ?></td>
-        <td><input type="number" class="form-control" name="NyttAntall[]" ><input type="hidden" name="Antall[]" value="<?php echo $Utstyr['Antall']; ?>"></td>
+	<td<?php if ($Utstyr['DatoTelling'] == '') { echo ' class="bg-danger text-white"'; } ?>><?php if ($Utstyr['DatoTelling'] == '') { echo "Aldri telt"; } else { echo date('d.m.Y',strtotime($Utstyr['DatoTelling'])).' ('.floor((((time()-strtotime($Utstyr['DatoKontrollert'])) / 60) / 60) / 24).')'; } ?></td>
+        <td><?php if ($Utstyr['KontrollDager'] > 0) { echo $Utstyr['KontrollDager']; } else { echo "&nbsp;"; } ?></td>
+        <td><a href="<?php echo site_url('utstyr/utstyrtelling?utstyrid='.$Utstyr['UtstyrID']); ?>" target="_new">Registrer telling</a></td>
       </tr>
 <?php
+      }
     }
   } else {
 ?>
       <tr>
-        <td colspan="8" class="text-center">Ingen utstyr tilgjengelig for telling.</td>
+        <td colspan="7" class="text-center">Ingen utstyr tilgjengelig for telling.</td>
       </tr>
 <?php
   }
@@ -99,5 +92,3 @@ Tellelisten brukes for å raskt telle over forbruksmateriell. Alt materiell som 
     </tbody>
   </table>
 </div>
-<input type="submit" class="btn btn-sm btn-primary" name="TellingLagre" value="Lagre">
-</form>

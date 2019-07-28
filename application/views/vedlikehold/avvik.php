@@ -15,7 +15,7 @@
   <div class="card-header"><b>Avviksskjema</b></div>
   <div class="card-body">
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="AvvikID"><b>Avvik ID</b></label>
+      <label class="col-sm-2 col-form-label" for="AvvikID"><b>Avvik ID:</b></label>
       <div class="col-sm-10">
         <input type="text" class="form-control-plaintext" id="AvvikID" value="<?php if (isset($Avvik['AvvikID'])) { echo $Avvik['AvvikID']; } else { echo "<ny>"; } ?>" readonly>
       </div>
@@ -23,7 +23,7 @@
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="UtstyrID"><b>Utstyr ID</b></label>
       <div class="col-sm-10">
-        <input type="text" class="form-control-plaintext" id="UtstyrID" value="<?php echo '-'.$Avvik['UtstyrID']; ?>" readonly>
+        <input type="text" class="form-control-plaintext" id="UtstyrID" value="<?php if (isset($Avvik['UtstyrID'])) { echo '-'.$Avvik['UtstyrID']; } else { echo '-'.$UtstyrID; } ?>" readonly>
       </div>
     </div>
     <div class="form-group row">

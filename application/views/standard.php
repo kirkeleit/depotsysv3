@@ -71,6 +71,10 @@
         </div>
       </li>
     </ul>
+    <form class="form-inline" method="POST" action="<?php echo site_url('utstyr/utstyrssok'); ?>">
+    <input class="form-control mr-sm-2" type="search" name="Sokestreng" placeholder="Søk etter" aria-label="Search" autofocus>
+    <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Finn</button>
+    </form>
   </div>
 </nav>
 

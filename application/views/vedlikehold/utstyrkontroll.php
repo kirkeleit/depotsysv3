@@ -43,6 +43,7 @@ Utstyr '-<?php echo $Utstyr['UtstyrID']; ?>' er registrert som forbruksmateriell
 	<input type="text" class="form-control-plaintext" id="ProdusentID" value="<?php echo $Utstyr['ProdusentNavn']; ?>" readonly>
       </div>
     </div>
+<?php if ($Utstyrstype['KontrollPunkter'] != '') { ?>
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="KontrollPunkter"><b>Kontrollpunkter:</b></label>
       <div class="col-sm-10">
@@ -59,6 +60,7 @@ Utstyr '-<?php echo $Utstyr['UtstyrID']; ?>' er registrert som forbruksmateriell
         </ul>
       </div>
     </div>
+<?php } ?>
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="TilstandID"><b>Tilstand:</b></label>
       <div class="col-sm-10">

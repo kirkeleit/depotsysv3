@@ -13,7 +13,7 @@
         <th>Produsent</th>
         <th>Beskrivelse</th>
         <th>Plassering</th>
-        <th>Kontrollert dato</th>
+        <th>Telt dato</th>
         <th>Minimum</th>
         <th>Antall</th>
         <th>Mottatt</th>
@@ -29,8 +29,8 @@
         <th><a href="<?php echo site_url('utstyr/utstyr/'.$Utstyr['UtstyrID']); ?>"><?php echo '-'.$Utstyr['UtstyrID']; ?></a><input type="hidden" name="UtstyrID[]" value="<?php echo $Utstyr['UtstyrID']; ?>"></th>
         <td><?php echo $Utstyr['ProdusentNavn']; ?></td>
         <td><?php echo $Utstyr['Beskrivelse']; ?></td>
-        <td><?php if (strlen($Utstyr['LokasjonID']) > 0) { echo "+".$Utstyr['LokasjonID']; } else { echo "&nbsp;"; } ?><?php if (strlen($Utstyr['KasseID']) > 0) { echo "=".$Utstyr['KasseID']; } else { echo "&nbsp;"; } ?></td>
-        <td><?php if ($Utstyr['DatoKontrollert'] != '') { echo date("d.m.Y",strtotime($Utstyr['DatoKontrollert'])); } else { echo "&nbsp;"; } ?></td>
+        <td><?php if (strlen($Utstyr['LokasjonID']) > 0) { echo $Utstyr['Lokasjon']; } else { echo "&nbsp;"; } ?><?php if (strlen($Utstyr['KasseID']) > 0) { echo $Utstyr['Kasse']; } else { echo "&nbsp;"; } ?></td>
+        <td><?php if ($Utstyr['DatoTelling'] != '') { echo date("d.m.Y",strtotime($Utstyr['DatoTelling'])); } else { echo "&nbsp;"; } ?></td>
         <td><?php echo $Utstyr['AntallMin']; ?></td>
         <td><?php echo $Utstyr['Antall']; ?></td>
         <td><input type="number" class="form-control" name="MottattAntall[]" size="6"></td>

@@ -53,7 +53,8 @@
         Flere valg
       </button>
       <div class="dropdown-menu" aria-labelledby="SkjemaAvansert">
-        <a href="<?php echo site_url('utstyr/slettkasse?kasseid='.$Kasse['KasseID']); ?>" class="dropdown-item">Slett kasse</a>
+	<a href="<?php echo site_url('utstyr/slettkasse?kasseid='.$Kasse['KasseID']); ?>" class="dropdown-item">Slett kasse</a>
+        <a href="<?php echo site_url('utstyr/innholdsliste?kasseid='.$Kasse['KasseID']); ?>" target="_new" class="dropdown-item">Innholdsliste</a>
       </div>
     </div>
   </div>
