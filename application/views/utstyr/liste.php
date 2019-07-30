@@ -30,7 +30,7 @@
         <td><?php echo date("d.m.Y",strtotime($Utstyr['DatoEndret'])); ?></td>
         <td><?php if ($Utstyr['DatoKontrollert'] != '') { echo date("d.m.Y",strtotime($Utstyr['DatoKontrollert'])); } else { echo "&nbsp;"; } ?></td>
 	<td class="text-center<?php if ($Utstyr['AntallAvvik'] > 0) { echo ' bg-danger text-white'; } ?>"><?php if ($Utstyr['AntallAvvik'] > 0) { ?><a href="<?php echo site_url('utstyr/avviksliste?filterutstyrid='.$Utstyr['UtstyrID']); ?>" class="text-white"><?php echo $Utstyr['AntallAvvik'].' stk'; ?></a><?php } else { echo '&nbsp;'; } ?></td>
-	<td class="text-center<?php if($Utstyr['StatusID'] == 1) { echo ' bg-success text-white'; } ?>"><?php if ($Utstyr['StatusID'] == 0) { echo "Ikke operativt"; } else { echo "Operativt"; } ?></td>
+	<td class="text-center<?php if ($Utstyr['StatusID'] == 1) { echo ' bg-success text-white'; } elseif ($Utstyr['StatusID'] == 2) { echo ' bg-warning'; } ?>"><?php if ($Utstyr['StatusID'] == 0) { echo "IKKE OPERATIVT"; } elseif ($Utstyr['StatusID'] == 2) { echo "UTREGISTRERT"; } else { echo "OPERATIVT"; } ?></td>
       </tr>
 <?php
     }

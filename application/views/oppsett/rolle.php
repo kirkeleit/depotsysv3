@@ -2,30 +2,34 @@
 <input type="hidden" name="RolleID" value="<?php echo set_value('RolleID',$Rolle['RolleID']); ?>" />
 
 <div class="card">
-  <div class="card-header">Rolle</div>
+  <h5 class="card-header bg-info text-white">Rolle</h5>
   <div class="card-body">
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="RolleID">Rolle ID:</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control-plaintext" id="RolleID" value="<?php echo $Rolle['RolleID']; ?>" readonly>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="Navn">Navn:</label>
+      <label class="col-sm-2 col-form-label" for="Navn"><b>Navn:</b></label>
       <div class="col-sm-10">
         <input type="text" class="form-control" id="Navn" name="Navn" value="<?php echo set_value('Navn',$Rolle['Navn']); ?>">
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="Notater">Notater:</label>
+      <label class="col-sm-2 col-form-label" for="Notater"><b>Notater:</b></label>
       <div class="col-sm-10">
         <textarea class="form-control" id="Notater" name="Notater" rows="3"><?php echo set_value('Notater',$Rolle['Notater']); ?></textarea>
       </div>
     </div>
   </div>
   <div class="card-footer">
-    <input type="submit" class="btn btn-primary" value="Lagre" name="RolleLagre" />
-    <input type="submit" class="btn btn-secondary" value="Slett" name="RolleSlett" />
+    <div class="btn-group" role="group" aria-label="Skjema lagre">
+      <input type="submit" class="btn btn-primary" value="Lagre" name="SkjemaLagre" />
+      <input type="submit" class="btn btn-primary" value=">>" name="SkjemaLagreLukk" />
+    </div>
+    <div class="btn-group" role="group">
+      <button id="SkjemaAvansert" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Flere valg
+      </button>
+      <div class="dropdown-menu" aria-labelledby="SkjemaAvansert">
+        <a href="<?php echo site_url('oppsett/slettrolle?rolleid='.$Rolle['RolleID']); ?>" class="dropdown-item">Slett rolle</a>
+      </div>
+    </div>
   </div>
 </div>
 <br />

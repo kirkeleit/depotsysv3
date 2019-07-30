@@ -1,4 +1,4 @@
-<h2>Plukklister<small class="text-muted"> - Totalt <?php echo sizeof($Plukklister); ?> plukklister</small></h2>
+<h2>Plukklister<?php if (!empty($Plukklister)) { ?><small class="text-muted"> - Totalt <?php echo sizeof($Plukklister); ?> plukklister</small><?php } ?></h2>
 <br />
 
 <div class="card card-body">
@@ -26,7 +26,7 @@ Ei plukkliste brukes for ut-/ og innregistrering av utstyr. Ved å bruke dette s
 ?>
       <tr>
         <th><a href="<?php echo site_url('utstyr/plukkliste/'.$Plukkliste['PlukklisteID']); ?>"><?php echo $Plukkliste['PlukklisteID']; ?></a></th>
-        <td><?php echo date('d.m.Y',strtotime($Plukkliste['DatoRegistrert'])); ?></td>
+	<td><?php echo date('d.m.Y',strtotime($Plukkliste['DatoRegistrert'])); ?></td>
 	<td><?php echo $Plukkliste['AnsvarligBrukerNavn']; ?></td>
         <td><?php echo $Plukkliste['Beskrivelse']; ?></td>
 	<td><?php if ($Plukkliste['UtstyrAntall'] > 0) { echo $Plukkliste['UtstyrAntall']." stk"; } else { echo "&nbsp;"; } ?></td>
@@ -37,7 +37,7 @@ Ei plukkliste brukes for ut-/ og innregistrering av utstyr. Ved å bruke dette s
   } else {
 ?>
       <tr>
-        <td colspan="6" class="text-center">Ingen plukklister er registrert enda.</td>
+        <td colspan="6" class="text-center">Ingen plukklister er registrert enda. Trykk <a href="<?php echo site_url('utstyr/nyplukkliste'); ?>">her</a> for å registrere ny plukkliste.</td>
       </tr>
 <?php
   }

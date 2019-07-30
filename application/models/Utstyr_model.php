@@ -18,6 +18,9 @@
       if (isset($filter['FilterBatteritypeID'])) {
         $sql .= " AND (BatteritypeID='".$filter['FilterBatteritypeID']."')";
       }
+      if (isset($filter['FilterStatusID'])) {
+        $sql .= " AND (StatusID=".$filter['FilterStatusID'].")";
+      }
       if (isset($filter['FilterForbruksmateriell'])) {
         if ($filter['FilterForbruksmateriell'] == 1) {
           $sql .= " AND (UtstyrID Like '%T')";
@@ -28,6 +31,10 @@
       $sql .= " ORDER BY UtstyrID ASC";
       $rUtstyrsliste = $this->db->query($sql);
       foreach ($rUtstyrsliste->result_array() as $rUtstyr) {
+        $rPlukklister = $this->db->query("SELECT * FROM PlukklisteXUtstyr u LEFT JOIN Plukklister p ON (u.PlukklisteID=p.PlukklisteID) WHERE (u.UtstyrID='".$rUtstyr['UtstyrID']."') AND (u.UtAntall > u.InnAntall)");
+        if ($rPlukklister->num_rows() > 0) {
+          $rUtstyr['StatusID'] = 2;
+        }
         if (!is_numeric($rUtstyr['Antall'])) {
           $rUtstyr['Antall'] = 0;
 	}

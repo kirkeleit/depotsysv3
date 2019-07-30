@@ -1,14 +1,36 @@
-<h2>Avviksliste<?php if (!empty($Avviksliste)) { ?><small class="text-muted"> - Totalt <?php echo sizeof($Avviksliste); ?> åpne avvik</small><?php } ?></h2>
+<?php
+  $UtstyrAlt = (!empty($UtstyrslisteKomplett)?sizeof($UtstyrslisteKomplett):0);
+  $UtstyrIkkeOperativt = (!empty($UtstyrslisteIkkeOperativt)?sizeof($UtstyrslisteIkkeOperativt):0);
+  $UtstyrOperativt = $UtstyrAlt-$UtstyrIkkeOperativt;
+  $AntallPlukklister = (!empty($Plukklister)?sizeof($Plukklister):0);
+  $AntallAvvik = (!empty($Avviksliste)?sizeof($Avviksliste):0);
+?>
+<div class="card-deck text-center text-white">
+  <div class="card bg-secondary">
+    <div class="card-header"><h4>OPERATIVT UTSTYR</h4></div>
+    <div class="card-body"><h1><?php echo $UtstyrOperativt.' stk'; ?></h1></div>
+  </div>
+  <div class="card bg-secondary">
+    <div class="card-header"><h4>IKKE-OPERATIVT UTSTYR</h4></div>
+    <div class="card-body"><h1><?php echo $UtstyrIkkeOperativt.' stk'; ?></h1></div>
+  </div>
+  <div class="card bg-secondary">
+    <div class="card-header"><h4>PLUKKLISTER</h4></div>
+    <div class="card-body"><h1><?php echo $AntallPlukklister.' stk'; ?></h1></div>
+  </div>
+  <div class="card bg-secondary">
+    <div class="card-header"><h4>AVVIK</h4></div>
+    <div class="card-body"><h1><?php echo $AntallAvvik.' stk'; ?></h1></div>
+  </div>
+</div>
 <br />
 
-<div class="card card-body">
-Et avvik registreres på utstyr dersom det oppdages feil, problemer eller utstyr trenger vedlikehold. Avvik registreres direkte fra siden for selve utstyret.
-</div>
+<h2>Åpne avvik</h2>
 <br />
 
 <div class="table-responsive">
   <table class="table table-bordered table-striped table-hover table-sm">
-    <thead class="thead-dark">
+    <thead class="thead-secondary">
       <tr>
         <th>#</th>
         <th>Registrert den</th>

@@ -3,58 +3,15 @@
 
   class Utstyr extends CI_Controller {
 
-	/**
-	 * Index Page for this controller.
-	 *
-	 * Maps to the following URL
-	 * 		http://example.com/index.php/welcome
-	 *	- or -
-	 * 		http://example.com/index.php/welcome/index
-	 *	- or -
-	 * Since this controller is set as the default controller in
-	 * config/routes.php, it's displayed at http://example.com/
-	 *
-	 * So any other public methods not prefixed with an underscore will
-	 * map to /index.php/welcome/<method_name>
-	 * @see https://codeigniter.com/user_guide/general/urls.html
-	 */
-
     public function __construct() {
       parent::__construct();
       if (!isset($_SESSION['BrukerID'])) {
         if ($this->uri->segment(2) != 'login') {
-          redirect('utstyr/login');
+          redirect('start/login');
         }
+      } elseif (isset($_SESSION['ForceLogout'])) {
+        redirect('start/logout');
       }
-    }
-
-    public function login() {
-      if ($this->input->post('DoLogin')) {
-        $this->form_validation->set_rules('Brukernavn', 'Brukernavn', 'trim|required');
-        $this->form_validation->set_rules('Passord', 'Passord', 'trim|required');
-        if ($this->form_validation->run() == TRUE) {
-          $this->load->model('Brukere_model');
-          $Brukernavn = $this->input->post('Brukernavn');
-          $Passord = hash('SHA256',$this->input->post('Passord'));
-          $result = $this->Brukere_model->login($Brukernavn,$Passord);
-          if($result) {
-            $this->session->set_userdata('BrukerID', $result['BrukerID']);
-            $this->session->set_userdata('Fornavn', $result['fornavn']);
-            redirect('utstyr');
-          } else {
-            $data['Brukernavn'] = $Brukernavn;
-            $data['Feilmelding'] = "Feil brukernavn eller passord!";
-            $this->load->view('login',$data);
-          }
-        }
-      } else {
-        $this->load->view('login');
-      }
-    }
-
-    public function logout() {
-      $this->session->sess_destroy();
-      redirect('utstyr');
     }
 
     public function index() {
@@ -607,8 +564,19 @@
       $this->template->load('standard','aktivitet/plukklister',$data);
     }
 
+    public function mineplukklister() {
+      $this->load->model('Aktivitet_model');
+      $data['Plukklister'] = $this->Aktivitet_model->plukklister(array('FilterAnsvarligBrukerID' => $this->session->userdata('BrukerID')));
+      $this->template->load('standard','aktivitet/plukklister',$data);
+    }
+
     public function nyplukkliste() {
       $this->load->model('Brukere_model');
+      $this->load->model('Aktivitet_model');
+      if ($this->input->get('aktivitetid')) {
+        $data['AktivitetID'] = $this->input->get('aktivitetid');
+      }
+      $data['Aktiviteter'] = $this->Aktivitet_model->aktiviteter();
       $data['Plukkliste'] = null;
       $data['Brukere'] = $this->Brukere_model->brukere();
       $this->template->load('standard','aktivitet/plukkliste',$data);
@@ -621,7 +589,7 @@
         $PlukklisteID = $this->input->post('PlukklisteID');
 	$data['Beskrivelse'] = $this->input->post('Beskrivelse');
 	$data['AnsvarligBrukerID'] = $this->input->post('AnsvarligBrukerID');
-
+        $data['AktivitetID'] = $this->input->post('AktivitetID');
 	if (is_numeric($PlukklisteID)) {
           $PlukklisteID = $this->Aktivitet_model->plukkliste_lagre($PlukklisteID,$data);
           if ($PlukklisteID != false) {
@@ -639,24 +607,111 @@
           } else {
             redirect('utstyr/plukklister');
           }
-        }
+	}
+      } elseif ($this->input->post('PlukklisteUtlevert')) {
+        $PlukklisteID = $this->input->post('PlukklisteID');
+        $data['StatusID'] = 1;
+	$this->Aktivitet_model->plukkliste_lagre($PlukklisteID,$data);
+	redirect('utstyr/plukkliste/'.$PlukklisteID);
       } else {
         $data['Plukkliste'] = $this->Aktivitet_model->plukkliste_info($this->uri->segment(3));
-        $data['Utstyrsliste'] = $this->Aktivitet_model->utstyrsliste($data['Plukkliste']['PlukklisteID']);
+	$data['Utstyrsliste'] = $this->Aktivitet_model->utstyrsliste($data['Plukkliste']['PlukklisteID']);
+	$data['Aktiviteter'] = $this->Aktivitet_model->aktiviteter();
         $data['Brukere'] = $this->Brukere_model->brukere();
         $this->template->load('standard','aktivitet/plukkliste',$data);
       }
     }
 
+    public function plukklistefjernutstyr() {
+      $this->load->model('Aktivitet_model');
+      $this->Aktivitet_model->plukkliste_fjernutstyr($this->input->get('plukklisteid'),$this->input->get('utstyrid'));
+      redirect('utstyr/utregistrering/'.$this->input->get('plukklisteid'));
+    }
+
     public function utregistrering() {
       $this->load->model('Aktivitet_model');
       if ($this->input->post('UtstyrID')) {
-	$PlukklisteID = $this->input->post('PlukklisteID');
-        $this->Aktivitet_model->plukkliste_leggtilutstyr($PlukklisteID,$this->input->post('UtstyrID'));
+        $PlukklisteID = $this->input->post('PlukklisteID');
+        $UtstyrID = $this->input->post('UtstyrID');
+        $UtstyrID = str_replace('=','',$UtstyrID);
+        $UtstyrID = str_replace('+','',$UtstyrID);
+        $UtstyrID = str_replace('-','',$UtstyrID);
+        $this->Aktivitet_model->plukkliste_leggtilutstyr($PlukklisteID,$UtstyrID);
       }
       $data['Plukkliste'] = $this->Aktivitet_model->plukkliste_info($this->uri->segment(3));
       $data['Utstyrsliste'] = $this->Aktivitet_model->utstyrsliste($data['Plukkliste']['PlukklisteID']);
       $this->template->load('standard','aktivitet/utregistrering',$data);
+    }
+
+    public function innregistrering() {
+      $this->load->model('Utstyr_model');
+      $this->load->model('Aktivitet_model');
+      if ($this->input->post('UtstyrID')) {
+	$data['Utstyr'] = $this->Utstyr_model->utstyr_info($this->input->post('UtstyrID'));
+	$UtstyrX = $this->Aktivitet_model->utstyrx_info($data['Utstyr']['UtstyrID']);
+	if ($UtstyrX != false) {
+          $data['Plukkliste'] = $this->Aktivitet_model->plukkliste_info($UtstyrX['PlukklisteID']);
+          $this->Aktivitet_model->plukkliste_sjekkinnutstyr($UtstyrX['PlukklisteID'],$UtstyrX['UtstyrID']);
+		//$this->session->set_flashdata('Infomelding','Utstyr \'-'.$data['Utstyr']['UtstyrID'].'\' ble vellykktet registrert inn igjen.');
+	}
+	$this->template->load('standard','aktivitet/innregistrering',$data);
+      } else {
+        $this->template->load('standard','aktivitet/innregistrering');
+      }
+    }
+
+    public function aktiviteter() {
+      $this->load->model('Aktivitet_model');
+      $data['Aktiviteter'] = $this->Aktivitet_model->aktiviteter();
+      $this->template->load('standard','aktivitet/aktiviteter',$data);
+    }
+
+    public function nyaktivitet() {
+      $data['Aktivitet'] = null;
+      $this->template->load('standard','aktivitet/aktivitet',$data);
+    }
+
+    public function aktivitet() {
+      $this->load->model('Aktivitet_model');
+      if ($this->input->post('SkjemaLagre') or $this->input->post('SkjemaLagreLukk')) {
+        $AktivitetID = $this->input->post('AktivitetID');
+        $data['Navn'] = $this->input->post('Navn');
+        $data['Notater'] = $this->input->post('Notater');
+        if (is_numeric($AktivitetID)) {
+          $AktivitetID = $this->Aktivitet_model->aktivitet_lagre($AktivitetID,$data);
+          if ($AktivitetID != false) {
+            $this->session->set_flashdata('Infomelding','Aktivitet #'.$AktivitetID.' '.$data['Navn'].' ble vellykket lagret.');
+          }
+        } else {
+          $AktivitetID = $this->Aktivitet_model->aktivitet_opprett($data);
+          if ($AktivitetID != false) {
+            $this->session->set_flashdata('Infomelding','Aktivitet #'.$AktivitetID.' '.$data['Navn'].' ble vellykket opprettet.');
+          }
+        }
+        if ($AktivitetID != false) {
+          if ($this->input->post('SkjemaLagre')) {
+            redirect('utstyr/aktivitet/'.$AktivitetID);
+          } else {
+            redirect('utstyr/aktiviteter');
+          }
+        }
+      } else {
+        $data['Aktivitet'] = $this->Aktivitet_model->aktivitet_info($this->uri->segment(3));
+        $data['Plukklister'] = $this->Aktivitet_model->plukklister(array('FilterAktivitetID' => $data['Aktivitet']['AktivitetID']));
+        $this->template->load('standard','aktivitet/aktivitet',$data);
+      }
+    }
+
+    public function slettaktivitet() {
+      $this->load->model('Aktivitet_model');
+      $Aktivitet = $this->Aktivitet_model->aktivitet_info($this->input->get('aktivitetid'));
+      if ($Aktivitet != null) {
+        $this->Aktivitet_model->aktivitet_slett($Aktivitet['AktivitetID']);
+        $this->session->set_flashdata('Infomelding','Aktivitet #'.$Aktivitet['AktivitetID'].' ble vellykktet slettet.');
+      } else {
+        $this->session->set_flashdata('Feilmelding','Aktiviteten eksisterer ikke. Kunne ikke slette aktiviteten.');
+      }
+      redirect('utstyr/aktiviteter');
     }
 
   }

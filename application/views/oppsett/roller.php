@@ -1,4 +1,4 @@
-<h2>Roller</h2>
+<h2>Roller<?php if (!empty($Roller)) { ?><small class="text-muted"> - Totalt <?php echo sizeof($Roller); ?> roller</small><?php } ?></h2>
 <br />
 
 <div class="card card-body">
@@ -8,7 +8,7 @@
 
 <div class="table-responsive">
   <table class="table table-bordered table-striped table-hover table-sm">
-    <thead>
+    <thead class="thead-dark">
       <tr>
         <th>#</th>
         <th>Navn</th>

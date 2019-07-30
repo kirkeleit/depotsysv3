@@ -1,8 +1,5 @@
-<h2>Kontrolliste</h2>
-<br />
-
 <div class="card card-body">
-<a data-toggle="collapse" href="#ListeFilter" role="button" aria-expanded="false" aria-controls="ListeFilter">Trykk her for å vise filter for listen.</a></div>
+<a data-toggle="collapse" href="#ListeFilter" role="button" aria-expanded="false" aria-controls="ListeFilter">Trykk her for å vise filter for listene.</a></div>
 </div>
 <br />
 
@@ -49,9 +46,11 @@
 </form>
 <br />
 
+<h2>Utstyrsliste</h2>
+<br />
 <div class="table-responsive">
   <table class="table table-bordered table-striped table-hover table-sm">
-    <thead>
+    <thead class="thead-dark">
       <tr>
         <th>Utstyr ID</th>
         <th>Produsent</th>
@@ -84,6 +83,55 @@
 ?>
       <tr>
         <td colspan="6" class="text-center">Ingen utstyr er tilgjengelig for kontroll.</td>
+      </tr>
+<?php
+  }
+?>
+    </tbody>
+  </table>
+</div>
+<br />
+
+<hr />
+
+<h2>Forbruksmateriell</h2>
+<br />
+
+<div class="table-responsive">
+  <table class="table table-bordered table-striped table-hover table-sm">
+    <thead class="thead-dark">
+      <tr>
+        <th>Utstyr ID</th>
+        <th>Produsent</th>
+        <th>Beskrivelse</th>
+        <th>Plassering</th>
+        <th>Sist telt</th>
+        <th>Kontrollintervall</th>
+        <th>&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+<?php
+  if (isset($Forbruksmateriell)) {
+    foreach ($Forbruksmateriell as $Utstyr) {
+      if (($Utstyr['KontrollDager'] > 0) and (((((time()-strtotime($Utstyr['DatoTelling'])) / 60) / 60) / 24) >= $Utstyr['KontrollDager'])) {
+?>
+      <tr<?php if ($Utstyr['Antall'] < $Utstyr['AntallMin']) { echo ' class="bg-warning"'; } ?>>
+        <th><a href="<?php echo site_url('utstyr/utstyr/'.$Utstyr['UtstyrID']); ?>"><?php echo '-'.$Utstyr['UtstyrID']; ?></a><input type="hidden" name="UtstyrID[]" value="<?php echo $Utstyr['UtstyrID']; ?>"></th>
+        <td><?php echo $Utstyr['ProdusentNavn']; ?></td>
+        <td><?php echo $Utstyr['Beskrivelse']; ?></td>
+        <td><?php if (strlen($Utstyr['LokasjonID']) > 0) { echo $Utstyr['Lokasjon']; } else { echo "&nbsp;"; } ?><?php if (strlen($Utstyr['KasseID']) > 0) { echo $Utstyr['Kasse']; } else { echo "&nbsp;"; } ?></td>
+        <td<?php if ($Utstyr['DatoTelling'] == '') { echo ' class="bg-danger text-white"'; } ?>><?php if ($Utstyr['DatoTelling'] == '') { echo "Aldri telt"; } else { echo date('d.m.Y',strtotime($Utstyr['DatoTelling'])).' ('.floor((((time()-strtotime($Utstyr['DatoKontrollert'])) / 60) / 60) / 24).')'; } ?></td>
+        <td><?php if ($Utstyr['KontrollDager'] > 0) { echo $Utstyr['KontrollDager']; } else { echo "&nbsp;"; } ?></td>
+        <td><a href="<?php echo site_url('utstyr/utstyrtelling?utstyrid='.$Utstyr['UtstyrID']); ?>" target="_new">Registrer telling</a></td>
+      </tr>
+<?php
+      }
+    }
+  } else {
+?>
+      <tr>
+        <td colspan="7" class="text-center">Ingen utstyr tilgjengelig for telling.</td>
       </tr>
 <?php
   }
