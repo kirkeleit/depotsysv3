@@ -41,9 +41,6 @@
           Aktivitet
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarAktivitet">
-          <a class="dropdown-item" href="<?php echo site_url('aktivitet/nyplukkliste'); ?>">Ny plukkliste</a>
-	  <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="<?php echo site_url('aktivitet/innregistrering'); ?>">Innregistrering</a>
           <a class="dropdown-item" href="<?php echo site_url('aktivitet/aktiviteter'); ?>">Aktiviteter</a>
 	  <a class="dropdown-item" href="<?php echo site_url('aktivitet/plukklister'); ?>">Plukklister</a>
         </div>
@@ -53,7 +50,8 @@
           Utstyr
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarUtstyr">
-	  <a class="dropdown-item" href="<?php echo site_url('utstyr/utstyrsliste'); ?>">Utstyrsliste</a>
+	  <a class="dropdown-item" href="<?php echo site_url('utstyr/materielliste'); ?>">Materiell</a>
+          <a class="dropdown-item" href="<?php echo site_url('utstyr/forbruksmaterielliste'); ?>">Forbruksmateriell</a>
 	  <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="<?php echo site_url('utstyr/utstyrstyper'); ?>">Utstyrstyper</a>
           <a class="dropdown-item" href="<?php echo site_url('utstyr/lokasjoner'); ?>">Lokasjoner</a>

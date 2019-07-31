@@ -64,16 +64,41 @@
         }
         if ($PlukklisteID != false) {
           if ($this->input->post('SkjemaLagre')) {
-            redirect('utstyr/plukkliste/'.$PlukklisteID);
+            redirect('aktivitet/plukkliste/'.$PlukklisteID);
           } else {
-            redirect('utstyr/plukklister');
+            redirect('aktivitet/plukklister');
           }
 	}
       } elseif ($this->input->post('PlukklisteUtlevert')) {
-        $PlukklisteID = $this->input->post('PlukklisteID');
         $data['StatusID'] = 1;
-	$this->Aktivitet_model->plukkliste_lagre($PlukklisteID,$data);
-	redirect('utstyr/plukkliste/'.$PlukklisteID);
+	$PlukklisteID = $this->input->post('PlukklisteID');
+	if ($this->Aktivitet_model->plukkliste_lagre($PlukklisteID,$data) != false) {
+          $this->depot->NyGUIMelding(0, 'Plukkliste #'.$PlukklisteID.' er nå satt til utlevert.');
+	}
+	$this->depot->SendPlukklisteEpost($this->Aktivitet_model->plukkliste_info($PlukklisteID),$this->Aktivitet_model->utstyrsliste($PlukklisteID));
+	redirect('aktivitet/plukkliste/'.$PlukklisteID);
+      } elseif ($this->input->post('FjernUtstyr')) {
+        $UtstyrID = $this->input->post('FjernUtstyr');
+        $PlukklisteID = $this->input->post('PlukklisteID');
+        $this->Aktivitet_model->plukkliste_fjernutstyr($PlukklisteID,$UtstyrID);
+        redirect('aktivitet/plukkliste/'.$PlukklisteID);
+      } elseif ($this->input->post('RegistrerInnUtstyr')) {
+        $UtstyrID = $this->input->post('RegistrerInnUtstyr');
+        $PlukklisteID = $this->input->post('PlukklisteID');
+        $this->Aktivitet_model->plukkliste_sjekkinnutstyr($PlukklisteID,$UtstyrID);
+        redirect('aktivitet/plukkliste/'.$PlukklisteID);
+      } elseif ($this->input->post('UtstyrID')) {
+        $PlukklisteID = $this->input->post('PlukklisteID');
+        $UtstyrID = $this->input->post('UtstyrID');
+        $UtstyrID = str_replace('=','',$UtstyrID);
+        $UtstyrID = str_replace('+','',$UtstyrID);
+        $UtstyrID = str_replace('-','',$UtstyrID);
+	if ($this->Aktivitet_model->plukkliste_leggtilutstyr($PlukklisteID,$UtstyrID)) {
+          $this->depot->NyGUIMelding(0, 'Utstyr \'-'.$UtstyrID.'\' ble vellykket lagt til plukklisten.');
+	} else {
+          $this->depot->NyGUIMelding(1, 'En feil oppstod med å legge til utstyr \''.$UtstyrID.'\' til på plukklisten, eller utstyret er ikke registrert.');
+	}
+	redirect('aktivitet/plukkliste/'.$PlukklisteID);
       } else {
         $data['Plukkliste'] = $this->Aktivitet_model->plukkliste_info($this->uri->segment(3));
 	$data['Utstyrsliste'] = $this->Aktivitet_model->utstyrsliste($data['Plukkliste']['PlukklisteID']);
@@ -89,35 +114,19 @@
       redirect('utstyr/utregistrering/'.$this->input->get('plukklisteid'));
     }
 
-    public function utregistrering() {
-      $this->load->model('Aktivitet_model');
-      if ($this->input->post('UtstyrID')) {
-        $PlukklisteID = $this->input->post('PlukklisteID');
-        $UtstyrID = $this->input->post('UtstyrID');
-        $UtstyrID = str_replace('=','',$UtstyrID);
-        $UtstyrID = str_replace('+','',$UtstyrID);
-        $UtstyrID = str_replace('-','',$UtstyrID);
-        $this->Aktivitet_model->plukkliste_leggtilutstyr($PlukklisteID,$UtstyrID);
-      }
-      $data['Plukkliste'] = $this->Aktivitet_model->plukkliste_info($this->uri->segment(3));
-      $data['Utstyrsliste'] = $this->Aktivitet_model->utstyrsliste($data['Plukkliste']['PlukklisteID']);
-      $this->template->load('standard','aktivitet/utregistrering',$data);
-    }
+    public function sendplukkliste() {
+      $this->load->library('email');
 
-    public function innregistrering() {
-      $this->load->model('Utstyr_model');
-      $this->load->model('Aktivitet_model');
-      if ($this->input->post('UtstyrID')) {
-	$data['Utstyr'] = $this->Utstyr_model->utstyr_info($this->input->post('UtstyrID'));
-	$UtstyrX = $this->Aktivitet_model->utstyrx_info($data['Utstyr']['UtstyrID']);
-	if ($UtstyrX != false) {
-          $data['Plukkliste'] = $this->Aktivitet_model->plukkliste_info($UtstyrX['PlukklisteID']);
-          $this->Aktivitet_model->plukkliste_sjekkinnutstyr($UtstyrX['PlukklisteID'],$UtstyrX['UtstyrID']);
-	}
-	$this->template->load('standard','aktivitet/innregistrering',$data);
-      } else {
-        $this->template->load('standard','aktivitet/innregistrering');
-      }
+
+      $this->email->from('depot@bomlork.no', 'Your Name');
+      $this->email->to('thorbjorn@kirkeleit.net');
+
+      $this->email->subject('Email Test');
+      $this->email->message('Testing the email class.');
+
+      $this->email->send(FALSE);
+
+      echo $this->email->print_debugger();
     }
 
     public function aktiviteter() {
@@ -150,9 +159,9 @@
         }
         if ($AktivitetID != false) {
           if ($this->input->post('SkjemaLagre')) {
-            redirect('utstyr/aktivitet/'.$AktivitetID);
+            redirect('aktivitet/aktivitet/'.$AktivitetID);
           } else {
-            redirect('utstyr/aktiviteter');
+            redirect('aktivitet/aktiviteter');
           }
         }
       } else {
@@ -171,7 +180,7 @@
       } else {
         $this->depot->NyGUIMelding(0,'Aktiviteten eksisterer ikke. Kunne ikke slette aktiviteten.');
       }
-      redirect('utstyr/aktiviteter');
+      redirect('aktivitet/aktiviteter');
     }
 
   }

@@ -1,7 +1,7 @@
 <?php
   class Aktivitet_model extends CI_Model {
 
-    var $PlukklisteStatus = array(0 => 'Åpen', 1 => 'Utlevert', 2 => 'Delvis innlevert', 3 => 'Innlevert');
+    var $PlukklisteStatus = array(0 => 'Åpen', 1 => 'Låst/Utlevert', 2 => 'Låst/Delvis innlevert', 3 => 'Ferdig');
     var $PlukklisteTypeID = array(0 => 'Personlig', 1 => 'Standard');
 
     function aktiviteter($filter = null) {
@@ -86,6 +86,7 @@
     function plukkliste_info($PlukklisteID = null) {
       $rPlukklister = $this->db->query("SELECT PlukklisteID,DatoRegistrert,DatoEndret,DatoSlettet,PlukklisteTypeID,Beskrivelse,AktivitetID,AnsvarligBrukerID,(SELECT CONCAT(Fornavn,' ',Etternavn) FROM Brukere b WHERE (b.BrukerID=p.AnsvarligBrukerID) LIMIT 1) AS AnsvarligBrukerNavn,StatusID FROM Plukklister p WHERE (PlukklisteID='".$PlukklisteID."') LIMIT 1");
       if ($rPlukkliste = $rPlukklister->row_array()) {
+        $rPlukkliste['Status'] = $this->PlukklisteStatus[$rPlukkliste['StatusID']];
         return $rPlukkliste;
       }
     }
@@ -127,6 +128,9 @@
             $this->db->query("UPDATE PlukklisteXUtstyr SET UtAntall=".($rXUtstyr['UtAntall']+1)." WHERE UtstyrID='".$rUtstyr['UtstyrID']."' AND PlukklisteID=".$PlukklisteID." LIMIT 1");
 	  }
 	}
+	return true;
+      } else {
+        return false;
       }
     }
 

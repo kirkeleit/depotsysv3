@@ -3,7 +3,7 @@
 
 <div class="card card-body">
 Ei plukkliste brukes for ut-/ og innregistrering av utstyr. Ved å bruke dette systematisk vil en til enhver tid ha oversikt over utstyr som medlemmer har hentet ut, hvor utstyret er og hvem som har ansvar for det. Det blir og enklere å forsikre seg om at utstyr kommer tilbake igjen.
-<a href="<?php echo site_url('utstyr/nyplukkliste'); ?>">Trykk her for å opprette ny plukkliste.</a>
+<a href="<?php echo site_url('aktivitet/nyplukkliste'); ?>">Trykk her for å opprette ny plukkliste.</a>
 </div>
 <br />
 
@@ -25,7 +25,7 @@ Ei plukkliste brukes for ut-/ og innregistrering av utstyr. Ved å bruke dette s
     foreach ($Plukklister as $Plukkliste) {
 ?>
       <tr>
-        <th><a href="<?php echo site_url('utstyr/plukkliste/'.$Plukkliste['PlukklisteID']); ?>"><?php echo $Plukkliste['PlukklisteID']; ?></a></th>
+        <th><a href="<?php echo site_url('aktivitet/plukkliste/'.$Plukkliste['PlukklisteID']); ?>"><?php echo $Plukkliste['PlukklisteID']; ?></a></th>
 	<td><?php echo date('d.m.Y',strtotime($Plukkliste['DatoRegistrert'])); ?></td>
 	<td><?php echo $Plukkliste['AnsvarligBrukerNavn']; ?></td>
         <td><?php echo $Plukkliste['Beskrivelse']; ?></td>

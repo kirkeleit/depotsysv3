@@ -15,12 +15,18 @@
     }
 
     public function index() {
-      redirect('utstyr/utstyrsliste');
+      redirect('utstyr/materielliste');
     }
 
-    public function utstyrsliste() {
+    public function materielliste() {
       $this->load->model('Utstyr_model');
-      $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste();
+      $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterForbruksmateriell' => 0));
+      $this->template->load('standard','utstyr/liste',$data);
+    }
+
+    public function forbruksmaterielliste() {
+      $this->load->model('Utstyr_model');
+      $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('FilterForbruksmateriell' => 1));
       $this->template->load('standard','utstyr/liste',$data);
     }
 
