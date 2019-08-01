@@ -37,9 +37,9 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="Beskrivelse"><b>Beskrivelse:</b></label>
+      <label class="col-sm-2 col-form-label" for="Navn"><b>Navn:</b></label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" id="Beskrivelse" name="Beskrivelse" value="<?php echo set_value('Beskrivelse',$Plukkliste['Beskrivelse']); ?>" required>
+        <input type="text" class="form-control" id="Navn" name="Navn" value="<?php echo set_value('Navn',$Plukkliste['Navn']); ?>" required>
       </div>
     </div>
     <div class="form-group row">

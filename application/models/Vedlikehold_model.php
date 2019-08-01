@@ -94,7 +94,7 @@
     }
 
     function avviksliste($filter = null) {
-      $sql = "SELECT AvvikID,DatoRegistrert,UtstyrID,Beskrivelse,BrukerID,StatusID,Kostnad,(SELECT CONCAT(Fornavn,' ',Etternavn) AS Navn FROM Brukere b WHERE (b.BrukerID=a.BrukerID)) AS BrukerNavn FROM Avvik a WHERE (DatoSlettet Is Null)";
+      $sql = "SELECT AvvikID,DatoRegistrert,UtstyrID,Beskrivelse,BrukerID,StatusID,Kostnad,(SELECT Fornavn AS Navn FROM Brukere b WHERE (b.BrukerID=a.BrukerID)) AS BrukerNavn FROM Avvik a WHERE (DatoSlettet Is Null)";
       if (isset($filter['FilterUtstyrID'])) {
         $sql .= " AND (UtstyrID='".$filter['FilterUtstyrID']."')";
       } else {

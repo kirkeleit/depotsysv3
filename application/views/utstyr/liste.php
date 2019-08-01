@@ -22,7 +22,7 @@
     foreach ($Utstyrsliste as $Utstyr) {
 ?>
       <tr<?php if ($Utstyr['StatusID'] == 0) { ?> class="table-danger"<?php } ?>>
-        <th><a href="<?php echo site_url('utstyr/utstyr/'.$Utstyr['UtstyrID']); ?>"><?php echo "-".$Utstyr['UtstyrID']; ?></a></th>
+        <th><a href="<?php echo site_url('utstyr/utstyr/'.$Utstyr['UtstyrID']); ?>" class="text-nowrap"><?php echo "-".$Utstyr['UtstyrID']; ?></a></th>
         <td><?php echo $Utstyr['ProdusentNavn']; ?></td>
         <td><?php echo $Utstyr['Beskrivelse']; ?></td>
         <td><?php if (substr($Utstyr['UtstyrID'],-1,1) == 'T') { echo $Utstyr['Antall']." stk"; } else { echo "&nbsp;"; } ?></td>

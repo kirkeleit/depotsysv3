@@ -12,9 +12,9 @@ Ei plukkliste brukes for ut-/ og innregistrering av utstyr. Ved å bruke dette s
     <thead class="thead-dark">
       <tr>
         <th>#</th>
-	<th>Registrert</th>
+	<th>Navn</th>
 	<th>Ansvarlig</th>
-        <th>Beskrivelse</th>
+        <th>Dato</th>
 	<th>Utstyr</th>
         <th>Status</th>
       </tr>
@@ -26,10 +26,10 @@ Ei plukkliste brukes for ut-/ og innregistrering av utstyr. Ved å bruke dette s
 ?>
       <tr>
         <th><a href="<?php echo site_url('aktivitet/plukkliste/'.$Plukkliste['PlukklisteID']); ?>"><?php echo $Plukkliste['PlukklisteID']; ?></a></th>
-	<td><?php echo date('d.m.Y',strtotime($Plukkliste['DatoRegistrert'])); ?></td>
-	<td><?php echo $Plukkliste['AnsvarligBrukerNavn']; ?></td>
-        <td><?php echo $Plukkliste['Beskrivelse']; ?></td>
-	<td><?php if ($Plukkliste['UtstyrAntall'] > 0) { echo $Plukkliste['UtstyrAntall']." stk"; } else { echo "&nbsp;"; } ?></td>
+        <td><?php echo $Plukkliste['Navn']; ?></td>
+        <td><?php echo $Plukkliste['AnsvarligBrukerNavn']; ?></td>
+        <td><?php echo date('d.m.Y',strtotime($Plukkliste['DatoRegistrert'])); ?></td>
+        <td><?php if ($Plukkliste['UtstyrAntall'] > 0) { echo $Plukkliste['UtstyrAntall']." stk"; } else { echo "0 stk"; } ?></td>
         <td><?php echo $Plukkliste['Status']; ?></td>
       </tr>
 <?php

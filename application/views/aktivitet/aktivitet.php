@@ -67,7 +67,7 @@
   } else {
 ?>
       <tr>
-      <td colspan="5" class="text-center">Ingen plukklister er lagt til på denne aktiviteten enda. Trykk <a href="<?php echo site_url('utstyr/nyplukkliste?aktivitetid='.$Aktivitet['AktivitetID']); ?>" target="_new">her</a> for å opprette ny.</td>
+      <td colspan="6" class="text-center">Ingen plukklister er lagt til på denne aktiviteten enda. Trykk <a href="<?php echo site_url('utstyr/nyplukkliste?aktivitetid='.$Aktivitet['AktivitetID']); ?>" target="_new">her</a> for å opprette ny.</td>
       </tr>
 <?php
   }

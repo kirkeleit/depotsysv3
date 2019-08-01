@@ -12,8 +12,8 @@ En aktivitet brukes for å knytte sammen flere plukklister som hører naturlig s
     <thead class="thead-dark">
       <tr>
         <th>#</th>
-	<th>Registrert</th>
-        <th>Navn</th>
+	<th>Navn</th>
+        <th>Registrert</th>
 	<th>Plukklister</th>
       </tr>
     </thead>
@@ -24,9 +24,9 @@ En aktivitet brukes for å knytte sammen flere plukklister som hører naturlig s
 ?>
       <tr>
         <th><a href="<?php echo site_url('utstyr/aktivitet/'.$Aktivitet['AktivitetID']); ?>"><?php echo $Aktivitet['AktivitetID']; ?></a></th>
+	<td><?php echo $Aktivitet['Navn']; ?></td>
         <td><?php echo date('d.m.Y',strtotime($Aktivitet['DatoRegistrert'])); ?></td>
-        <td><?php echo $Aktivitet['Navn']; ?></td>
-	<td><?php if ($Aktivitet['PlukklisterAntall'] > 0) { echo $Aktivitet['PlukklisterAntall']." stk"; } else { echo "&nbsp;"; } ?></td>
+	<td><?php if ($Aktivitet['PlukklisterAntall'] > 0) { echo $Aktivitet['PlukklisterAntall']." stk"; } else { echo "0 stk"; } ?></td>
       </tr>
 <?php
     }

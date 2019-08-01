@@ -5,7 +5,7 @@
     var $PlukklisteTypeID = array(0 => 'Personlig', 1 => 'Standard');
 
     function aktiviteter($filter = null) {
-      $sql = "SELECT AktivitetID,DatoRegistrert,DatoEndret,DatoSlettet,Navn,Notater,(SELECT COUNT(*) FROM Plukklister p WHERE (p.AktivitetID=a.AktivitetID)) AS PlukklisterAntall FROM Aktiviteter a WHERE (DatoSlettet Is Null)";
+      $sql = "SELECT AktivitetID,DatoRegistrert,DatoEndret,DatoSlettet,Navn,Notater,(SELECT COUNT(*) FROM Plukklister p WHERE (p.AktivitetID=a.AktivitetID) AND (StatusID<3)) AS PlukklisterAntall FROM Aktiviteter a WHERE (DatoSlettet Is Null)";
       if (isset($filter['FilterID'])) {
         $sql .= " AND (LokasjonID Like '".$filter['FilterLokasjonID']."%')";
       }
@@ -57,7 +57,7 @@
     }
 
     function plukklister($filter = null) {
-      $sql = "SELECT PlukklisteID,DatoRegistrert,DatoEndret,DatoSlettet,PlukklisteTypeID,Beskrivelse,AktivitetID,AnsvarligBrukerID,(SELECT CONCAT(Fornavn,' ',Etternavn) FROM Brukere b WHERE (b.BrukerID=p.AnsvarligBrukerID) LIMIT 1) AS AnsvarligBrukerNavn,(SELECT COUNT(*) FROM PlukklisteXUtstyr x WHERE (x.PlukklisteID=p.PlukklisteID)) AS UtstyrAntall,StatusID FROM Plukklister p WHERE (DatoSlettet Is Null)";
+      $sql = "SELECT PlukklisteID,DatoRegistrert,DatoEndret,DatoSlettet,PlukklisteTypeID,Navn,AktivitetID,AnsvarligBrukerID,(SELECT Fornavn FROM Brukere b WHERE (b.BrukerID=p.AnsvarligBrukerID) LIMIT 1) AS AnsvarligBrukerNavn,(SELECT COUNT(*) FROM PlukklisteXUtstyr x WHERE (x.PlukklisteID=p.PlukklisteID)) AS UtstyrAntall,StatusID FROM Plukklister p WHERE (DatoSlettet Is Null)";
       if (isset($filter['FilterAktivitetID'])) {
         $sql .= " AND (AktivitetID Like '".$filter['FilterAktivitetID']."%')";
       }
@@ -84,7 +84,7 @@
     }
 
     function plukkliste_info($PlukklisteID = null) {
-      $rPlukklister = $this->db->query("SELECT PlukklisteID,DatoRegistrert,DatoEndret,DatoSlettet,PlukklisteTypeID,Beskrivelse,AktivitetID,AnsvarligBrukerID,(SELECT CONCAT(Fornavn,' ',Etternavn) FROM Brukere b WHERE (b.BrukerID=p.AnsvarligBrukerID) LIMIT 1) AS AnsvarligBrukerNavn,StatusID FROM Plukklister p WHERE (PlukklisteID='".$PlukklisteID."') LIMIT 1");
+      $rPlukklister = $this->db->query("SELECT PlukklisteID,DatoRegistrert,DatoEndret,DatoSlettet,PlukklisteTypeID,Navn,AktivitetID,AnsvarligBrukerID,(SELECT CONCAT(Fornavn,' ',Etternavn) FROM Brukere b WHERE (b.BrukerID=p.AnsvarligBrukerID) LIMIT 1) AS AnsvarligBrukerNavn,StatusID FROM Plukklister p WHERE (PlukklisteID='".$PlukklisteID."') LIMIT 1");
       if ($rPlukkliste = $rPlukklister->row_array()) {
         $rPlukkliste['Status'] = $this->PlukklisteStatus[$rPlukkliste['StatusID']];
         return $rPlukkliste;

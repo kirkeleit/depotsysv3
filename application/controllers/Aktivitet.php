@@ -47,7 +47,7 @@
       $this->load->model('Brukere_model');
       if ($this->input->post('SkjemaLagre') or $this->input->post('SkjemaLagreLukk')) {
         $PlukklisteID = $this->input->post('PlukklisteID');
-	$data['Beskrivelse'] = $this->input->post('Beskrivelse');
+	$data['Navn'] = $this->input->post('Navn');
 	$data['AnsvarligBrukerID'] = $this->input->post('AnsvarligBrukerID');
 	$data['AktivitetID'] = $this->input->post('AktivitetID');
 	$data['PlukklisteTypeID'] = $this->input->post('PlukklisteTypeID');
