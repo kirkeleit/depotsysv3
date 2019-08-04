@@ -48,13 +48,13 @@
     }
 
     public function dashboard() {
-      $this->load->model('Utstyr_model');
+      $this->load->model('Materiell_model');
       $this->load->model('Aktivitet_model');
       $this->load->model('Vedlikehold_model');
       $data['Avviksliste'] = $this->Vedlikehold_model->avviksliste();
       $data['Plukklister'] = $this->Aktivitet_model->plukklister();
-      $data['UtstyrslisteIkkeOperativt'] = $this->Utstyr_model->utstyrsliste(array('FilterStatusID' => 0));
-      $data['UtstyrslisteKomplett'] = $this->Utstyr_model->utstyrsliste();
+      $data['MateriellisteIkkeOperativt'] = $this->Utstyr_model->materielliste(array('FilterStatusID' => 0));
+      $data['MateriellisteKomplett'] = $this->Utstyr_model->materielliste();
       $this->template->load('standard','start/dashboard',$data);
     }
 

@@ -1,18 +1,18 @@
 <?php
-  $UtstyrAlt = (!empty($UtstyrslisteKomplett)?sizeof($UtstyrslisteKomplett):0);
-  $UtstyrIkkeOperativt = (!empty($UtstyrslisteIkkeOperativt)?sizeof($UtstyrslisteIkkeOperativt):0);
-  $UtstyrOperativt = $UtstyrAlt-$UtstyrIkkeOperativt;
+  $MateriellAlt = (!empty($MateriellisteKomplett)?sizeof($MateriellisteKomplett):0);
+  $MateriellIkkeOperativt = (!empty($MateriellIkkeOperativt)?sizeof($MateriellIkkeOperativt):0);
+  $MateriellOperativt = $MateriellAlt-$MateriellIkkeOperativt;
   $AntallPlukklister = (!empty($Plukklister)?sizeof($Plukklister):0);
   $AntallAvvik = (!empty($Avviksliste)?sizeof($Avviksliste):0);
 ?>
 <div class="card-deck text-center text-white">
   <div class="card bg-secondary">
-    <div class="card-header"><h4>OPERATIVT UTSTYR</h4></div>
-    <div class="card-body"><h1><?php echo $UtstyrOperativt.' stk'; ?></h1></div>
+    <div class="card-header"><h4>OPERATIVT MATERIELL</h4></div>
+    <div class="card-body"><h1><?php echo $MateriellOperativt.' stk'; ?></h1></div>
   </div>
   <div class="card bg-secondary">
-    <div class="card-header"><h4>IKKE-OPERATIVT UTSTYR</h4></div>
-    <div class="card-body"><h1><?php echo $UtstyrIkkeOperativt.' stk'; ?></h1></div>
+    <div class="card-header"><h4>IKKE-OPERATIVT MATERIELL</h4></div>
+    <div class="card-body"><h1><?php echo $MateriellIkkeOperativt.' stk'; ?></h1></div>
   </div>
   <div class="card bg-secondary">
     <div class="card-header"><h4>PLUKKLISTER</h4></div>
