@@ -75,9 +75,9 @@
 	if ($this->Aktivitet_model->plukkliste_lagre($PlukklisteID,$data) != false) {
           $this->depot->NyGUIMelding(0, 'Plukkliste #'.$PlukklisteID.' er nå satt til utlevert.');
 	}
-	$this->depot->SendPlukklisteEpost($this->Aktivitet_model->plukkliste_info($PlukklisteID),$this->Aktivitet_model->utstyrsliste($PlukklisteID));
+	$this->depot->SendPlukklisteEpost($this->Aktivitet_model->plukkliste_info($PlukklisteID),$this->Aktivitet_model->materielliste($PlukklisteID));
 	redirect('aktivitet/plukkliste/'.$PlukklisteID);
-      } elseif ($this->input->post('FjernUtstyr')) {
+      } elseif ($this->input->post('FjernMateriell')) {
         $MateriellID = $this->input->post('FjernMateriell');
         $PlukklisteID = $this->input->post('PlukklisteID');
         $this->Aktivitet_model->plukkliste_fjernmateriell($PlukklisteID,$MateriellID);
@@ -87,24 +87,29 @@
         $PlukklisteID = $this->input->post('PlukklisteID');
         $this->Aktivitet_model->plukkliste_sjekkinnmateriell($PlukklisteID,$MateriellID);
         redirect('aktivitet/plukkliste/'.$PlukklisteID);
-      } elseif ($this->input->post('MateriellID')) {
-        $PlukklisteID = $this->input->post('PlukklisteID');
-        $MateriellID = $this->input->post('MateriellID');
-        $MateriellID = str_replace('=','',$MateriellID);
-        $MateriellID = str_replace('+','',$MateriellID);
-        $MateriellID = str_replace('-','',$MateriellID);
-	if ($this->Aktivitet_model->plukkliste_leggtilmateriell($PlukklisteID,$MateriellID)) {
-          $this->depot->NyGUIMelding(0, 'Materiell \'-'.$MateriellID.'\' ble vellykket lagt til plukklisten.');
-	} else {
-          $this->depot->NyGUIMelding(1, 'En feil oppstod med å legge til materiell \''.$MateriellID.'\' til på plukklisten, eller materiellet er ikke registrert.');
-	}
-	redirect('aktivitet/plukkliste/'.$PlukklisteID);
       } else {
         $data['Plukkliste'] = $this->Aktivitet_model->plukkliste_info($this->uri->segment(3));
 	$data['Materielliste'] = $this->Aktivitet_model->materielliste($data['Plukkliste']['PlukklisteID']);
 	$data['Aktiviteter'] = $this->Aktivitet_model->aktiviteter();
         $data['Brukere'] = $this->Brukere_model->brukere();
         $this->template->load('standard','aktivitet/plukkliste',$data);
+      }
+    }
+
+    public function plukkliste_leggtilmateriell() {
+	    $this->load->model('Aktivitet_model');
+      if ($this->input->post('MateriellID')) {
+        $PlukklisteID = $this->input->post('PlukklisteID');
+        $MateriellID = $this->input->post('MateriellID');
+        $MateriellID = str_replace('=','',$MateriellID);
+        $MateriellID = str_replace('+','',$MateriellID);
+        $MateriellID = str_replace('-','',$MateriellID);
+        if ($this->Aktivitet_model->plukkliste_leggtilmateriell($PlukklisteID,$MateriellID)) {
+          $this->depot->NyGUIMelding(0, 'Materiell \'-'.$MateriellID.'\' ble vellykket lagt til plukklisten.');
+        } else {
+          $this->depot->NyGUIMelding(1, 'En feil oppstod med å legge til materiell \''.$MateriellID.'\' til på plukklisten, eller materiellet er ikke registrert.');
+        }
+	redirect('aktivitet/plukkliste/'.$PlukklisteID);
       }
     }
 

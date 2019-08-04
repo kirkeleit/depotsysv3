@@ -81,7 +81,7 @@
 
 
     function roller() {
-      $sql = "SELECT RolleID,Navn,Notater FROM Roller WHERE (DatoSlettet Is Null)";
+      $sql = "SELECT RolleID,Navn,Epostadresse,Notater FROM Roller WHERE (DatoSlettet Is Null)";
       $sql .= " ORDER BY RolleID ASC";
       $rRoller = $this->db->query($sql);
       foreach ($rRoller->result_array() as $rRolle) {
@@ -95,7 +95,7 @@
     }
 
     function rolle_info($RolleID = null) {
-      $rRoller = $this->db->query("SELECT RolleID,Navn,Notater FROM Roller WHERE (RolleID='".$RolleID."') LIMIT 1");
+      $rRoller = $this->db->query("SELECT RolleID,Navn,Epostadresse,Notater FROM Roller WHERE (RolleID='".$RolleID."') LIMIT 1");
       if ($rRolle = $rRoller->row_array()) {
         return $rRolle;
       }

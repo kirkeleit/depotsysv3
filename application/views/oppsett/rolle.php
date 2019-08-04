@@ -11,6 +11,12 @@
       </div>
     </div>
     <div class="form-group row">
+      <label class="col-sm-2 col-form-label" for="Epostadresse"><b>E-postadresse:</b></label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="Epostadresse" name="Epostadresse" value="<?php echo set_value('Epostadresse',$Rolle['Epostadresse']); ?>">
+      </div>
+    </div>
+    <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="Notater"><b>Notater:</b></label>
       <div class="col-sm-10">
         <textarea class="form-control" id="Notater" name="Notater" rows="3"><?php echo set_value('Notater',$Rolle['Notater']); ?></textarea>

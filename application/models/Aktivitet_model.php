@@ -111,21 +111,21 @@
       }
     }
 
-    function plukkliste_leggtilutstyr($PlukklisteID,$UtstyrID) {
-      $rUtstyrsliste = $this->db->query("SELECT UtstyrID FROM Utstyr WHERE (UtstyrID='".$UtstyrID."') LIMIT 1");
-      if ($rUtstyr = $rUtstyrsliste->row_array()) {
-        if (substr($rUtstyr['UtstyrID'],-1,1) != 'T') {
-          $rXUtstyrsliste = $this->db->query("SELECT UtstyrID FROM PlukklisteXUtstyr WHERE (PlukklisteID=".$PlukklisteID.") AND (UtstyrID='".$rUtstyr['UtstyrID']."')");
-	  if ($rXUtstyrsliste->num_rows() == 0) {
-            $this->db->query("INSERT INTO PlukklisteXUtstyr (DatoRegistrert,UtstyrID,PlukklisteID,UtAntall) VALUES (Now(),'".$rUtstyr['UtstyrID']."',".$PlukklisteID.",1)");
+    function plukkliste_leggtilmateriell($PlukklisteID,$MateriellID) {
+      $rMaterielliste = $this->db->query("SELECT MateriellID FROM Materiell WHERE (MateriellID='".$MateriellID."') LIMIT 1");
+      if ($rMateriell = $rMaterielliste->row_array()) {
+        if (substr($rMateriell['MateriellID'],-1,1) != 'T') {
+          $rXMaterielliste = $this->db->query("SELECT MateriellID FROM PlukklisteXMateriell WHERE (PlukklisteID=".$PlukklisteID.") AND (MateriellID='".$rMateriell['MateriellID']."')");
+	  if ($rXMaterielliste->num_rows() == 0) {
+            $this->db->query("INSERT INTO PlukklisteXMateriell (DatoRegistrert,MateriellID,PlukklisteID,UtAntall) VALUES (Now(),'".$rMateriell['MateriellID']."',".$PlukklisteID.",1)");
 	  }
 	} else {
-          $rXUtstyrsliste = $this->db->query("SELECT UtstyrID,UtAntall FROM PlukklisteXUtstyr WHERE (PlukklisteID=".$PlukklisteID.") AND (UtstyrID='".$rUtstyr['UtstyrID']."')");
-          if ($rXUtstyrsliste->num_rows() == 0) {
-            $this->db->query("INSERT INTO PlukklisteXUtstyr (DatoRegistrert,UtstyrID,PlukklisteID,UtAntall) VALUES (Now(),'".$rUtstyr['UtstyrID']."',".$PlukklisteID.",1)");
+          $rXMaterielliste = $this->db->query("SELECT MateriellID,UtAntall FROM PlukklisteXMateriell WHERE (PlukklisteID=".$PlukklisteID.") AND (MateriellID='".$rMateriell['MateriellID']."')");
+          if ($rXMaterielliste->num_rows() == 0) {
+            $this->db->query("INSERT INTO PlukklisteXMateriell (DatoRegistrert,MateriellID,PlukklisteID,UtAntall) VALUES (Now(),'".$rMateriell['MateriellID']."',".$PlukklisteID.",1)");
 	  } else {
-            $rXUtstyr = $rXUtstyrsliste->row_array();
-            $this->db->query("UPDATE PlukklisteXUtstyr SET UtAntall=".($rXUtstyr['UtAntall']+1)." WHERE UtstyrID='".$rUtstyr['UtstyrID']."' AND PlukklisteID=".$PlukklisteID." LIMIT 1");
+            $rXMateriell = $rXMaterielliste->row_array();
+            $this->db->query("UPDATE PlukklisteXMateriell SET UtAntall=".($rXMateriell['UtAntall']+1)." WHERE MateriellID='".$rMateriell['MateriellID']."' AND PlukklisteID=".$PlukklisteID." LIMIT 1");
 	  }
 	}
 	return true;
@@ -134,15 +134,15 @@
       }
     }
 
-    function plukkliste_sjekkinnutstyr($PlukklisteID,$UtstyrID) {
+    function plukkliste_sjekkinnmateriell($PlukklisteID,$MateriellID) {
       $rPlukklister = $this->db->query("SELECT PlukklisteID FROM Plukklister WHERE (PlukklisteID=".$PlukklisteID.") LIMIT 1");
       if ($rPlukkliste = $rPlukklister->row_array()) {
-        $rXUtstyrsliste = $this->db->query("SELECT PlukklisteID,UtAntall,UtstyrID FROM PlukklisteXUtstyr WHERE (UtstyrID='".$UtstyrID."')");
-	foreach ($rXUtstyrsliste->result_array() as $rXUtstyr) {
-          $this->db->query("UPDATE PlukklisteXUtstyr SET InnAntall=".$rXUtstyr['UtAntall'].",DatoEndret=Now() WHERE PlukklisteID=".$rXUtstyr['PlukklisteID']." AND UtstyrID='".$rXUtstyr['UtstyrID']."' LIMIT 1");
+        $rXMaterielliste = $this->db->query("SELECT PlukklisteID,UtAntall,MateriellID FROM PlukklisteXMateriell WHERE (MateriellID='".$MateriellID."')");
+	foreach ($rXMaterielliste->result_array() as $rXMateriell) {
+          $this->db->query("UPDATE PlukklisteXMateriell SET InnAntall=".$rXMateriell['UtAntall'].",DatoEndret=Now() WHERE PlukklisteID=".$rXMateriell['PlukklisteID']." AND MateriellID='".$rXMateriell['MateriellID']."' LIMIT 1");
 	}
-	$rPlukklisteUtstyr = $this->db->query("SELECT * FROM PlukklisteXUtstyr WHERE (PlukklisteID=".$rPlukkliste['PlukklisteID'].") AND (InnAntall != UtAntall)");
-	if ($rPlukklisteUtstyr->num_rows() == 0) {
+	$rPlukklisteMateriell = $this->db->query("SELECT * FROM PlukklisteXMateriell WHERE (PlukklisteID=".$rPlukkliste['PlukklisteID'].") AND (InnAntall != UtAntall)");
+	if ($rPlukklisteMateriell->num_rows() == 0) {
           $this->db->query("UPDATE Plukklister SET StatusID=3,DatoEndret=Now() WHERE PlukklisteID=".$rPlukkliste['PlukklisteID']." LIMIT 1");
 	} else {
           $this->db->query("UPDATE Plukklister SET StatusID=2,DatoEndret=Now() WHERE PlukklisteID=".$rPlukkliste['PlukklisteID']." LIMIT 1");
@@ -150,8 +150,8 @@
       }
     }
 
-    function plukkliste_fjernutstyr($PlukklisteID,$UtstyrID) {
-      $this->db->query("DELETE FROM PlukklisteXUtstyr WHERE UtstyrID='".$UtstyrID."' AND PlukklisteID=".$PlukklisteID);
+    function plukkliste_fjernmateriell($PlukklisteID,$MateriellID) {
+      $this->db->query("DELETE FROM PlukklisteXMateriell WHERE MateriellID='".$MateriellID."' AND PlukklisteID=".$PlukklisteID);
     }
 
     function plukkliste_slett($PlukklisteID) {

@@ -11,7 +11,8 @@
     <thead class="thead-dark">
       <tr>
         <th>#</th>
-        <th>Navn</th>
+	<th>Navn</th>
+        <th>E-postadresse</th>
       </tr>
     </thead>
     <tbody>
@@ -21,14 +22,15 @@
 ?>
       <tr>
 	<th><a href="<?php echo site_url('oppsett/rolle/'.$Rolle['RolleID']); ?>"><?php echo $Rolle['RolleID']; ?></a></th>
-        <td><?php echo $Rolle['Navn']; ?></td>
+	<td><?php echo $Rolle['Navn']; ?></td>
+        <td><?php echo $Rolle['Epostadresse']; ?></td>
       </tr>
 <?php
     }
   } else {
 ?>
       <tr>
-        <td colspan="2" class="text-center">Ingen roller er registrert enda.</td>
+        <td colspan="3" class="text-center">Ingen roller er registrert enda.</td>
       </tr>
 <?php
   }

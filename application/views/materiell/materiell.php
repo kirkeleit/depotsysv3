@@ -149,7 +149,7 @@
     foreach ($Avviksliste as $Avvik) {
 ?>
       <tr>
-        <th><a href="<?php echo site_url('utstyr/avvik/'.$Avvik['AvvikID']); ?>"><?php echo $Avvik['AvvikID']; ?></a></th>
+        <th><a href="<?php echo site_url('vedlikehold/avvik/'.$Avvik['AvvikID']); ?>"><?php echo $Avvik['AvvikID']; ?></a></th>
         <td><?php echo date('d.m.Y',strtotime($Avvik['DatoRegistrert'])); ?></td>
         <td><?php echo $Avvik['BrukerNavn']; ?></td>
         <td><?php echo $Avvik['Beskrivelse']; ?></td>
@@ -168,6 +168,7 @@
     </tbody>
   </table>
 </div>
+<br />
 <?php } ?>
 
 <?php if (substr($Materiell['MateriellID'],-1,1) != 'T') { ?>
@@ -206,6 +207,7 @@
     </tbody>
   </table>
 </div>
+<br />
 <?php } ?>
 
 <?php if (substr($Materiell['MateriellID'],-1,1) == 'T') { ?>

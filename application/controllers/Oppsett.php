@@ -125,7 +125,8 @@
       $this->load->model('Brukere_model');
       if ($this->input->post('SkjemaLagre') or $this->input->post('SkjemaLagreLukk')) {
         $RolleID = $this->input->post('RolleID');
-        $data['Navn'] = $this->input->post('Navn');
+	$data['Navn'] = $this->input->post('Navn');
+	$data['Epostadresse'] = $this->input->post('Epostadresse');
 	$data['Notater'] = $this->input->post('Notater');
 	if (!is_numeric($RolleID)) {
           $RolleID = $this->Brukere_model->rolle_opprett($data);

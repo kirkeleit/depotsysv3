@@ -31,7 +31,7 @@
       $sql .= " ORDER BY MateriellID ASC";
       $rMaterielliste = $this->db->query($sql);
       foreach ($rMaterielliste->result_array() as $rMateriell) {
-        $rPlukklister = $this->db->query("SELECT * FROM PlukklisteXMateriell u LEFT JOIN Plukklister p ON (u.PlukklisteID=p.PlukklisteID) WHERE (u.MateriellID='".$rMateriell['MateriellID']."') AND (u.UtAntall > u.InnAntall)");
+        $rPlukklister = $this->db->query("SELECT * FROM PlukklisteXMateriell u LEFT JOIN Plukklister p ON (u.PlukklisteID=p.PlukklisteID) WHERE (u.MateriellID='".$rMateriell['MateriellID']."') AND (u.UtAntall > u.InnAntall) AND (p.StatusID>0)");
         if ($rPlukklister->num_rows() > 0) {
           $rMateriell['StatusID'] = 2;
         }

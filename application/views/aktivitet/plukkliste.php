@@ -119,7 +119,7 @@
       if ($Plukkliste['StatusID'] == 0) {
         if (substr($Materiell['MateriellID'],-1,1) == 'T') {
 ?>
-	<td><button type="submit" class="btn btn-sm btn-secondary" name="FjernMateriell" value="<?php echo $Materiell['MateriellID']; ?>">Fjern</button>&nbsp;<input type="submit" class="btn btn-sm btn-secondary" value="+"></td>
+	<td><button type="submit" class="btn btn-sm btn-secondary" name="FjernMateriell" value="<?php echo $Materiell['MateriellID']; ?>">Fjern</button></td>
 <?php
         } else {
 ?>
@@ -154,6 +154,9 @@
   }
   if ($Plukkliste['StatusID'] == 0) {
 ?>
+</form>
+<form method="POST" action="<?php echo site_url('aktivitet/plukkliste_leggtilmateriell'); ?>">
+<input type="hidden" name="PlukklisteID" value="<?php echo $Plukkliste['PlukklisteID']; ?>" />
       <tr>
         <td colspan="2"><input type="text" name="MateriellID" id="MateriellID" class="form-control-sm" placeholder="Skriv inn materiell ID her!" autofocus></td>
         <td colspan="4">&nbsp;</td>
