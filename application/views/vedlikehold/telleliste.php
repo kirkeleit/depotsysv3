@@ -7,7 +7,7 @@ Tellelisten brukes for å raskt telle over forbruksmateriell. Alt materiell som 
 </div>
 <br />
 
-<form method="POST" action="<?php echo site_url('utstyr/telleliste'); ?>">
+<form method="POST" action="<?php echo site_url('vedlikehold/telleliste'); ?>">
 <div class="card card-body collapse" id="ListeFilter">
   <div class="form-group row">
     <label class="col-sm-2 col-form-label" for="LokasjonID"><b>Lokasjon:</b></label>
@@ -54,7 +54,7 @@ Tellelisten brukes for å raskt telle over forbruksmateriell. Alt materiell som 
   <table class="table table-bordered table-striped table-hover table-sm">
     <thead>
       <tr>
-        <th>Utstyr ID</th>
+        <th>Materiell ID</th>
         <th>Produsent</th>
         <th>Beskrivelse</th>
         <th>Plassering</th>
@@ -65,18 +65,18 @@ Tellelisten brukes for å raskt telle over forbruksmateriell. Alt materiell som 
     </thead>
     <tbody>
 <?php
-  if (isset($Utstyrsliste)) {
-    foreach ($Utstyrsliste as $Utstyr) {
-      if (($Utstyr['KontrollDager'] > 0) and (((((time()-strtotime($Utstyr['DatoTelling'])) / 60) / 60) / 24) >= $Utstyr['KontrollDager'])) {
+  if (isset($Materielliste)) {
+    foreach ($Materielliste as $Materiell) {
+      if (($Materiell['KontrollDager'] > 0) and (((((time()-strtotime($Materiell['DatoTelling'])) / 60) / 60) / 24) >= $Materiell['KontrollDager'])) {
 ?>
-      <tr<?php if ($Utstyr['Antall'] < $Utstyr['AntallMin']) { echo ' class="bg-warning"'; } ?>>
-        <th><a href="<?php echo site_url('utstyr/utstyr/'.$Utstyr['UtstyrID']); ?>"><?php echo '-'.$Utstyr['UtstyrID']; ?></a><input type="hidden" name="UtstyrID[]" value="<?php echo $Utstyr['UtstyrID']; ?>"></th>
-        <td><?php echo $Utstyr['ProdusentNavn']; ?></td>
-        <td><?php echo $Utstyr['Beskrivelse']; ?></td>
-        <td><?php if (strlen($Utstyr['LokasjonID']) > 0) { echo $Utstyr['Lokasjon']; } else { echo "&nbsp;"; } ?><?php if (strlen($Utstyr['KasseID']) > 0) { echo $Utstyr['Kasse']; } else { echo "&nbsp;"; } ?></td>
-	<td<?php if ($Utstyr['DatoTelling'] == '') { echo ' class="bg-danger text-white"'; } ?>><?php if ($Utstyr['DatoTelling'] == '') { echo "Aldri telt"; } else { echo date('d.m.Y',strtotime($Utstyr['DatoTelling'])).' ('.floor((((time()-strtotime($Utstyr['DatoKontrollert'])) / 60) / 60) / 24).')'; } ?></td>
-        <td><?php if ($Utstyr['KontrollDager'] > 0) { echo $Utstyr['KontrollDager']; } else { echo "&nbsp;"; } ?></td>
-        <td><a href="<?php echo site_url('utstyr/utstyrtelling?utstyrid='.$Utstyr['UtstyrID']); ?>" target="_new">Registrer telling</a></td>
+      <tr<?php if ($Materiell['Antall'] < $Materiell['AntallMin']) { echo ' class="bg-warning"'; } ?>>
+        <th><a href="<?php echo site_url('materiell/materiell/'.$Materiell['MateriellID']); ?>"><?php echo '-'.$Materiell['MateriellID']; ?></a></th>
+        <td><?php echo $Materiell['ProdusentNavn']; ?></td>
+        <td><?php echo $Materiell['Beskrivelse']; ?></td>
+        <td><?php if (strlen($Materiell['LokasjonID']) > 0) { echo $Materiell['Lokasjon']; } else { echo "&nbsp;"; } ?><?php if (strlen($Materiell['KasseID']) > 0) { echo $Materiell['Kasse']; } else { echo "&nbsp;"; } ?></td>
+	<td<?php if ($Materiell['DatoTelling'] == '') { echo ' class="bg-danger text-white"'; } ?>><?php if ($Materiell['DatoTelling'] == '') { echo "Aldri telt"; } else { echo date('d.m.Y',strtotime($Materiell['DatoTelling'])).' ('.floor((((time()-strtotime($Materiell['DatoKontrollert'])) / 60) / 60) / 24).')'; } ?></td>
+        <td><?php if ($Materiell['KontrollDager'] > 0) { echo $Materiell['KontrollDager']; } else { echo "&nbsp;"; } ?></td>
+        <td><a href="<?php echo site_url('vedlikehold/materielltelling?materiellid='.$Materiell['MateriellID']); ?>" target="_new">Registrer telling</a></td>
       </tr>
 <?php
       }
@@ -84,7 +84,7 @@ Tellelisten brukes for å raskt telle over forbruksmateriell. Alt materiell som 
   } else {
 ?>
       <tr>
-        <td colspan="7" class="text-center">Ingen utstyr tilgjengelig for telling.</td>
+        <td colspan="7" class="text-center">Ingen materiell tilgjengelig for telling.</td>
       </tr>
 <?php
   }

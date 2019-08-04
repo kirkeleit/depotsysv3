@@ -57,7 +57,7 @@
     }
 
     function plukklister($filter = null) {
-      $sql = "SELECT PlukklisteID,DatoRegistrert,DatoEndret,DatoSlettet,PlukklisteTypeID,Navn,AktivitetID,AnsvarligBrukerID,(SELECT Fornavn FROM Brukere b WHERE (b.BrukerID=p.AnsvarligBrukerID) LIMIT 1) AS AnsvarligBrukerNavn,(SELECT COUNT(*) FROM PlukklisteXUtstyr x WHERE (x.PlukklisteID=p.PlukklisteID)) AS UtstyrAntall,StatusID FROM Plukklister p WHERE (DatoSlettet Is Null)";
+      $sql = "SELECT PlukklisteID,DatoRegistrert,DatoEndret,DatoSlettet,PlukklisteTypeID,Navn,AktivitetID,AnsvarligBrukerID,(SELECT Fornavn FROM Brukere b WHERE (b.BrukerID=p.AnsvarligBrukerID) LIMIT 1) AS AnsvarligBrukerNavn,(SELECT COUNT(*) FROM PlukklisteXMateriell x WHERE (x.PlukklisteID=p.PlukklisteID)) AS MateriellAntall,StatusID FROM Plukklister p WHERE (DatoSlettet Is Null)";
       if (isset($filter['FilterAktivitetID'])) {
         $sql .= " AND (AktivitetID Like '".$filter['FilterAktivitetID']."%')";
       }
@@ -158,8 +158,8 @@
       $this->db->query("UPDATE Plukklister SET DatoSlettet=Now() WHERE PlukklisteID='".$PlukklisteID."' LIMIT 1");
     }
 
-    function utstyrsliste($PlukklisteID) {
-      $sql = "SELECT x.UtstyrID,u.Beskrivelse,x.UtAntall,x.InnAntall,(SELECT COUNT(*) FROM Avvik a WHERE (a.UtstyrID=u.UtstyrID) AND (DatoSlettet Is Null)) AS AntallAvvik,u.ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn FROM PlukklisteXUtstyr x LEFT JOIN Utstyr u ON (u.UtstyrID=x.UtstyrID) WHERE (x.PlukklisteID=".$PlukklisteID.") ORDER BY x.DatoRegistrert ASC";
+    function materielliste($PlukklisteID) {
+      $sql = "SELECT x.MateriellID,m.Beskrivelse,x.UtAntall,x.InnAntall,(SELECT COUNT(*) FROM Avvik a WHERE (a.MateriellID=m.MateriellID) AND (DatoSlettet Is Null)) AS AntallAvvik,m.ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=m.ProdusentID)) AS ProdusentNavn FROM PlukklisteXMateriell x LEFT JOIN Materiell m ON (m.MateriellID=x.MateriellID) WHERE (x.PlukklisteID=".$PlukklisteID.") ORDER BY x.DatoRegistrert ASC";
       $rUtstyrsliste = $this->db->query($sql);
       foreach ($rUtstyrsliste->result_array() as $rUtstyr) {
         $Utstyrsliste[] = $rUtstyr;

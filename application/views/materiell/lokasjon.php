@@ -1,4 +1,4 @@
-<form method="POST" action="<?php echo site_url('utstyr/lokasjon/'.$Lokasjon['LokasjonID']); ?>">
+<form method="POST" action="<?php echo site_url('materiell/lokasjon/'.$Lokasjon['LokasjonID']); ?>">
 <input type="hidden" name="LokasjonID" value="<?php echo set_value('LokasjonID',$Lokasjon['LokasjonID']); ?>" />
 
 <div class="card">
@@ -54,7 +54,7 @@
         <th>Kode</th>
         <th>Navn</th>
         <th>Endret</th>
-        <th>Utstyr</th>
+        <th>Materiell</th>
       </tr>
     </thead>
     <tbody>
@@ -63,10 +63,10 @@
     foreach ($Kasser as $Kasse) {
 ?>
       <tr>
-        <th><a href="<?php echo site_url('utstyr/kasse/'.$Kasse['KasseID']); ?>"><?php echo "=".$Kasse['Kode']; ?></a></th>
+        <th><a href="<?php echo site_url('materiell/kasse/'.$Kasse['KasseID']); ?>"><?php echo "=".$Kasse['Kode']; ?></a></th>
         <td><?php echo $Kasse['Navn']; ?></td>
         <td><?php echo date("d.m.Y",strtotime($Kasse['DatoEndret'])); ?></td>
-        <td><?php if ($Kasse['UtstyrAntall'] > 0) { echo $Kasse['UtstyrAntall'].' stk'; } else { echo "&nbsp;"; } ?></td>
+        <td><?php if ($Kasse['MateriellAntall'] > 0) { echo $Kasse['MateriellAntall'].' stk'; } else { echo "&nbsp;"; } ?></td>
       </tr>
 <?php
     }
@@ -83,12 +83,12 @@
 </div>
 <br />
 
-<h5>Utstyrsliste</h5>
+<h5>Materielliste</h5>
 <div class="table-responsive">
   <table class="table table-bordered table-sm table-striped table-hover">
     <thead>
       <tr>
-        <th>Utstyr ID</th>
+        <th>Materiell ID</th>
         <th>Produsent</th>
         <th>Beskrivelse</th>
         <th>Antall</th>
@@ -100,25 +100,25 @@
     </thead>
     <tbody>
 <?php
-  if (isset($Utstyrsliste)) {
-    foreach ($Utstyrsliste as $Utstyr) {
+  if (isset($Materielliste)) {
+    foreach ($Materielliste as $Materiell) {
 ?>
-      <tr<?php if ($Utstyr['StatusID'] == 0) { echo ' class="bg-danger text-white"'; } ?>>
-        <th><a href="<?php echo site_url('utstyr/utstyr/'.$Utstyr['UtstyrID']); ?>"<?php if ($Utstyr['StatusID'] == 0) { echo ' class="text-white"'; } ?>><?php echo "-".$Utstyr['UtstyrID']; ?></a></th>
-        <td><?php if ($Utstyr['ProdusentID'] > 0) { echo $Utstyr['ProdusentNavn']; ?>&nbsp;<a href="<?php echo site_url('utstyr/produsent/'.$Utstyr['ProdusentID']); ?>" target="_new"><img src="/res/open_in_new_window.png" height="16" width="16"></a><?php } else { echo "&nbsp;"; } ?></td>
-        <td><?php echo $Utstyr['Beskrivelse']; ?></td>
-        <td><?php if (substr($Utstyr['UtstyrID'],-1,1) == 'T') { echo $Utstyr['Antall']." stk"; } else { echo "&nbsp;"; } ?></td>
-        <td><?php echo $Utstyr['AntallMin']; ?></td>
-        <td><?php if (substr($Utstyr['UtstyrID'],-1,1) == 'T') { if ($Utstyr['DatoTelling'] != '') { echo date('d.m.Y',strtotime($Utstyr['DatoTelling'])); } else { echo "&nbsp;"; } } else { if ($Utstyr['DatoKontrollert'] != '') { echo date("d.m.Y",strtotime($Utstyr['DatoKontrollert'])); } else { echo "&nbsp;"; } } ?></td>
-        <td<?php if ($Utstyr['AntallAvvik'] > 0) { echo ' class="bg-danger text-white"'; } ?>><?php if ($Utstyr['AntallAvvik'] > 0) { echo $Utstyr['AntallAvvik'].' stk'; } else { echo '&nbsp;'; } ?></td>
-        <td<?php if ($Utstyr['StatusID'] == 1) { echo ' class="bg-success text-white"'; } ?>><?php if ($Utstyr['StatusID'] == 1) { echo "Operativt"; } else { echo "IKKE operativt"; } ?></td>
+      <tr<?php if ($Materiell['StatusID'] == 0) { echo ' class="bg-danger text-white"'; } ?>>
+        <th><a href="<?php echo site_url('materiell/materiell/'.$Materiell['MateriellID']); ?>"<?php if ($Materiell['StatusID'] == 0) { echo ' class="text-white"'; } ?>><?php echo "-".$Materiell['MateriellID']; ?></a></th>
+        <td><?php if ($Materiell['ProdusentID'] > 0) { echo $Materiell['ProdusentNavn']; ?>&nbsp;<a href="<?php echo site_url('materiell/produsent/'.$Materiell['ProdusentID']); ?>" target="_new"><img src="/res/open_in_new_window.png" height="16" width="16"></a><?php } else { echo "&nbsp;"; } ?></td>
+        <td><?php echo $Materiell['Beskrivelse']; ?></td>
+        <td><?php if (substr($Materiell['MateriellID'],-1,1) == 'T') { echo $Materiell['Antall']." stk"; } else { echo "&nbsp;"; } ?></td>
+        <td><?php echo $Materiell['AntallMin']; ?></td>
+        <td><?php if (substr($Materiell['MateriellID'],-1,1) == 'T') { if ($Materiell['DatoTelling'] != '') { echo date('d.m.Y',strtotime($Materiell['DatoTelling'])); } else { echo "&nbsp;"; } } else { if ($Materiell['DatoKontrollert'] != '') { echo date("d.m.Y",strtotime($Materiell['DatoKontrollert'])); } else { echo "&nbsp;"; } } ?></td>
+        <td<?php if ($Materiell['AntallAvvik'] > 0) { echo ' class="bg-danger text-white"'; } ?>><?php if ($Materiell['AntallAvvik'] > 0) { echo $Materiell['AntallAvvik'].' stk'; } else { echo '&nbsp;'; } ?></td>
+        <td class="text-center<?php if ($Materiell['StatusID'] == 1) { echo ' bg-success text-white'; } elseif ($Materiell['StatusID'] == 2) { echo ' bg-warning'; } ?>"><?php if ($Materiell['StatusID'] == 0) { echo "IKKE OPERATIVT"; } elseif ($Materiell['StatusID'] == 2) { echo "UTREGISTRERT"; } else { echo "OPERATIVT"; } ?></td>
       </tr>
 <?php
     }
   } else {
 ?>
       <tr>
-        <td colspan="8" class="text-center">Ingen utstyr registrert med denne utstyrstypen enda.</td>
+        <td colspan="9" class="text-center">Ingen materiell registrert med denne lokasjonen enda.</td>
       </tr>
 <?php
   }

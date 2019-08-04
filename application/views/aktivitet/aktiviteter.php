@@ -3,7 +3,7 @@
 
 <div class="card card-body">
 En aktivitet brukes for å knytte sammen flere plukklister som hører naturlig sammen. For eksempel til ei sanitetsvakt kan det være flere lag som tar ut forskjellig utstyr, eller flere personer i løpet av vakta. Da kan hver enkelt person/ansvarlig lage sine plukklister, og så kan dette samtidig eller senere knytte disse sammen i en aktivitet. Bruk av aktivitet er valgfritt, og plukklister kan fint brukes uten å knytte de til en aktivitet.
-<a href="<?php echo site_url('utstyr/nyaktivitet'); ?>">Trykk her for å opprette ny aktivitet.</a>
+<a href="<?php echo site_url('aktivitet/nyaktivitet'); ?>">Trykk her for å opprette ny aktivitet.</a>
 </div>
 <br />
 
@@ -23,7 +23,7 @@ En aktivitet brukes for å knytte sammen flere plukklister som hører naturlig s
     foreach ($Aktiviteter as $Aktivitet) {
 ?>
       <tr>
-        <th><a href="<?php echo site_url('utstyr/aktivitet/'.$Aktivitet['AktivitetID']); ?>"><?php echo $Aktivitet['AktivitetID']; ?></a></th>
+        <th><a href="<?php echo site_url('aktivitet/aktivitet/'.$Aktivitet['AktivitetID']); ?>"><?php echo $Aktivitet['AktivitetID']; ?></a></th>
 	<td><?php echo $Aktivitet['Navn']; ?></td>
         <td><?php echo date('d.m.Y',strtotime($Aktivitet['DatoRegistrert'])); ?></td>
 	<td><?php if ($Aktivitet['PlukklisterAntall'] > 0) { echo $Aktivitet['PlukklisterAntall']." stk"; } else { echo "0 stk"; } ?></td>
@@ -33,7 +33,7 @@ En aktivitet brukes for å knytte sammen flere plukklister som hører naturlig s
   } else {
 ?>
       <tr>
-        <td colspan="4" class="text-center">Ingen aktiviteter er registrert enda. Trykk <a href="<?php echo site_url('utstyr/nyaktivitet'); ?>">her</a> for å opprette ny aktivitet.</td>
+        <td colspan="4" class="text-center">Ingen aktiviteter er registrert enda. Trykk <a href="<?php echo site_url('aktivitet/nyaktivitet'); ?>">her</a> for å opprette ny aktivitet.</td>
       </tr>
 <?php
   }

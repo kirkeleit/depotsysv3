@@ -47,17 +47,16 @@
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarUtstyr" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Utstyr
+          Materiell
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarUtstyr">
-	  <a class="dropdown-item" href="<?php echo site_url('utstyr/materielliste'); ?>">Materiell</a>
-          <a class="dropdown-item" href="<?php echo site_url('utstyr/forbruksmaterielliste'); ?>">Forbruksmateriell</a>
+	  <a class="dropdown-item" href="<?php echo site_url('materiell/materielliste'); ?>">Materielliste</a>
 	  <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="<?php echo site_url('utstyr/utstyrstyper'); ?>">Utstyrstyper</a>
-          <a class="dropdown-item" href="<?php echo site_url('utstyr/lokasjoner'); ?>">Lokasjoner</a>
-	  <a class="dropdown-item" href="<?php echo site_url('utstyr/kasser'); ?>">Kasser</a>
-	  <a class="dropdown-item" href="<?php echo site_url('utstyr/produsenter'); ?>">Produsenter</a>
-          <a class="dropdown-item" href="<?php echo site_url('utstyr/batterityper'); ?>">Batterityper</a>
+          <a class="dropdown-item" href="<?php echo site_url('materiell/materielltyper'); ?>">Materielltyper</a>
+          <a class="dropdown-item" href="<?php echo site_url('materiell/lokasjoner'); ?>">Lokasjoner</a>
+	  <a class="dropdown-item" href="<?php echo site_url('materiell/kasser'); ?>">Kasser</a>
+	  <a class="dropdown-item" href="<?php echo site_url('materiell/produsenter'); ?>">Produsenter</a>
+          <a class="dropdown-item" href="<?php echo site_url('materiell/batterityper'); ?>">Batterityper</a>
         </div>
       </li>
       <li class="nav-item dropdown">
@@ -67,6 +66,7 @@
 	<div class="dropdown-menu" aria-labelledby="navbarVedlikehold">
 	  <a class="dropdown-item" href="<?php echo site_url('vedlikehold/avviksliste'); ?>">Avviksliste</a>
 	  <a class="dropdown-item" href="<?php echo site_url('vedlikehold/kontrolliste'); ?>">Kontrolliste</a>
+          <a class="dropdown-item" href="<?php echo site_url('vedlikehold/telleliste'); ?>">Telleliste</a>
           <a class="dropdown-item" href="<?php echo site_url('vedlikehold/bestillingsliste'); ?>">Bestillingsliste</a>
 	</div> 
       </li>
@@ -85,8 +85,9 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarMinBruker">
 	  <a class="dropdown-item" href="<?php echo site_url('oppsett/minprofil'); ?>">Min profil</a>
-          <a class="dropdown-item" href="<?php echo site_url('utstyr/mittutstyr'); ?>">Utlevert utstyr</a>
-          <a class="dropdown-item" href="<?php echo site_url('utstyr/mineplukklister'); ?>">Mine plukklister</a>
+          <a class="dropdown-item" href="<?php echo site_url('materiell/mittutstyr'); ?>">Utlevert materiell</a>
+	  <a class="dropdown-item" href="<?php echo site_url('aktivitet/mineplukklister'); ?>">Mine plukklister</a>
+          <a class="dropdown-item" href="<?php echo site_url('guide/'); ?>">Guide</a>
 	  <a class="dropdown-item" href="<?php echo site_url('start/logout'); ?>">Logg ut</a>
         </div>
       </li>

@@ -78,55 +78,34 @@
 	$this->depot->SendPlukklisteEpost($this->Aktivitet_model->plukkliste_info($PlukklisteID),$this->Aktivitet_model->utstyrsliste($PlukklisteID));
 	redirect('aktivitet/plukkliste/'.$PlukklisteID);
       } elseif ($this->input->post('FjernUtstyr')) {
-        $UtstyrID = $this->input->post('FjernUtstyr');
+        $MateriellID = $this->input->post('FjernMateriell');
         $PlukklisteID = $this->input->post('PlukklisteID');
-        $this->Aktivitet_model->plukkliste_fjernutstyr($PlukklisteID,$UtstyrID);
+        $this->Aktivitet_model->plukkliste_fjernmateriell($PlukklisteID,$MateriellID);
         redirect('aktivitet/plukkliste/'.$PlukklisteID);
-      } elseif ($this->input->post('RegistrerInnUtstyr')) {
-        $UtstyrID = $this->input->post('RegistrerInnUtstyr');
+      } elseif ($this->input->post('RegistrerInnMateriell')) {
+        $MateriellID = $this->input->post('RegistrerInnMateriell');
         $PlukklisteID = $this->input->post('PlukklisteID');
-        $this->Aktivitet_model->plukkliste_sjekkinnutstyr($PlukklisteID,$UtstyrID);
+        $this->Aktivitet_model->plukkliste_sjekkinnmateriell($PlukklisteID,$MateriellID);
         redirect('aktivitet/plukkliste/'.$PlukklisteID);
-      } elseif ($this->input->post('UtstyrID')) {
+      } elseif ($this->input->post('MateriellID')) {
         $PlukklisteID = $this->input->post('PlukklisteID');
-        $UtstyrID = $this->input->post('UtstyrID');
-        $UtstyrID = str_replace('=','',$UtstyrID);
-        $UtstyrID = str_replace('+','',$UtstyrID);
-        $UtstyrID = str_replace('-','',$UtstyrID);
-	if ($this->Aktivitet_model->plukkliste_leggtilutstyr($PlukklisteID,$UtstyrID)) {
-          $this->depot->NyGUIMelding(0, 'Utstyr \'-'.$UtstyrID.'\' ble vellykket lagt til plukklisten.');
+        $MateriellID = $this->input->post('MateriellID');
+        $MateriellID = str_replace('=','',$MateriellID);
+        $MateriellID = str_replace('+','',$MateriellID);
+        $MateriellID = str_replace('-','',$MateriellID);
+	if ($this->Aktivitet_model->plukkliste_leggtilmateriell($PlukklisteID,$MateriellID)) {
+          $this->depot->NyGUIMelding(0, 'Materiell \'-'.$MateriellID.'\' ble vellykket lagt til plukklisten.');
 	} else {
-          $this->depot->NyGUIMelding(1, 'En feil oppstod med å legge til utstyr \''.$UtstyrID.'\' til på plukklisten, eller utstyret er ikke registrert.');
+          $this->depot->NyGUIMelding(1, 'En feil oppstod med å legge til materiell \''.$MateriellID.'\' til på plukklisten, eller materiellet er ikke registrert.');
 	}
 	redirect('aktivitet/plukkliste/'.$PlukklisteID);
       } else {
         $data['Plukkliste'] = $this->Aktivitet_model->plukkliste_info($this->uri->segment(3));
-	$data['Utstyrsliste'] = $this->Aktivitet_model->utstyrsliste($data['Plukkliste']['PlukklisteID']);
+	$data['Materielliste'] = $this->Aktivitet_model->materielliste($data['Plukkliste']['PlukklisteID']);
 	$data['Aktiviteter'] = $this->Aktivitet_model->aktiviteter();
         $data['Brukere'] = $this->Brukere_model->brukere();
         $this->template->load('standard','aktivitet/plukkliste',$data);
       }
-    }
-
-    public function plukklistefjernutstyr() {
-      $this->load->model('Aktivitet_model');
-      $this->Aktivitet_model->plukkliste_fjernutstyr($this->input->get('plukklisteid'),$this->input->get('utstyrid'));
-      redirect('utstyr/utregistrering/'.$this->input->get('plukklisteid'));
-    }
-
-    public function sendplukkliste() {
-      $this->load->library('email');
-
-
-      $this->email->from('depot@bomlork.no', 'Your Name');
-      $this->email->to('thorbjorn@kirkeleit.net');
-
-      $this->email->subject('Email Test');
-      $this->email->message('Testing the email class.');
-
-      $this->email->send(FALSE);
-
-      echo $this->email->print_debugger();
     }
 
     public function aktiviteter() {

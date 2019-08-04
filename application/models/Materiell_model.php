@@ -1,10 +1,10 @@
 <?php
-  class Utstyr_model extends CI_Model {
+  class Materiell_model extends CI_Model {
 
-    function utstyrsliste($filter = null) {
-      $sql = "SELECT UtstyrID,u.DatoRegistrert,StatusID,u.DatoEndret,u.DatoSlettet,LokasjonID,(SELECT CONCAT('+',Kode,' ',Navn) FROM Lokasjoner l WHERE (l.LokasjonID=u.LokasjonID) LIMIT 1) AS Lokasjon,KasseID,(SELECT CONCAT('=',Kode,' ',Navn) FROM Kasser ka WHERE (ka.KasseID=u.KasseID) LIMIT 1) AS Kasse,u.Beskrivelse,AntallMin,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontroller l WHERE l.UtstyrID=u.UtstyrID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,(SELECT DatoRegistrert FROM Lagerendringer l WHERE (l.UtstyrID=u.UtstyrID) AND (EndringTypeID=1) ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoTelling,(SELECT COUNT(*) FROM Avvik a WHERE (a.UtstyrID=u.UtstyrID) AND (StatusID<2) AND (DatoSlettet Is Null)) AS AntallAvvik,(SELECT SUM(Antall) FROM Lagerendringer l WHERE (l.UtstyrID=u.UtstyrID)) AS Antall FROM Utstyr u WHERE (u.DatoSlettet Is Null)";
-      if (isset($filter['FilterUtstyrstype'])) {
-        $sql .= " AND (UtstyrID Like '".$filter['FilterUtstyrstype']."%')";
+    function materielliste($filter = null) {
+      $sql = "SELECT MateriellID,m.DatoRegistrert,StatusID,m.DatoEndret,m.DatoSlettet,LokasjonID,(SELECT CONCAT('+',Kode,' ',Navn) FROM Lokasjoner l WHERE (l.LokasjonID=m.LokasjonID) LIMIT 1) AS Lokasjon,KasseID,(SELECT CONCAT('=',Kode,' ',Navn) FROM Kasser ka WHERE (ka.KasseID=m.KasseID) LIMIT 1) AS Kasse,m.Beskrivelse,AntallMin,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=m.ProdusentID)) AS ProdusentNavn,(SELECT DatoRegistrert FROM Kontroller l WHERE l.MateriellID=m.MateriellID ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoKontrollert,(SELECT DatoRegistrert FROM Lagerendringer l WHERE (l.MateriellID=m.MateriellID) AND (EndringTypeID=1) ORDER BY DatoRegistrert DESC LIMIT 1) AS DatoTelling,(SELECT COUNT(*) FROM Avvik a WHERE (a.MateriellID=m.MateriellID) AND (StatusID<2) AND (DatoSlettet Is Null)) AS AntallAvvik,(SELECT SUM(Antall) FROM Lagerendringer l WHERE (l.MateriellID=m.MateriellID)) AS Antall FROM Materiell m WHERE (m.DatoSlettet Is Null)";
+      if (isset($filter['FilterMaterielltype'])) {
+        $sql .= " AND (MateriellID Like '".$filter['FilterMaterielltype']."%')";
       }
       if (isset($filter['FilterProdusentID'])) {
         $sql .= " AND (ProdusentID='".$filter['FilterProdusentID']."')";
@@ -23,135 +23,131 @@
       }
       if (isset($filter['FilterForbruksmateriell'])) {
         if ($filter['FilterForbruksmateriell'] == 1) {
-          $sql .= " AND (UtstyrID Like '%T')";
+          $sql .= " AND (MateriellID Like '%T')";
 	} else {
-          $sql .= " AND (UtstyrID Not Like '%T')";
+          $sql .= " AND (MateriellID Not Like '%T')";
 	}
       }
-      $sql .= " ORDER BY UtstyrID ASC";
-      $rUtstyrsliste = $this->db->query($sql);
-      foreach ($rUtstyrsliste->result_array() as $rUtstyr) {
-        $rPlukklister = $this->db->query("SELECT * FROM PlukklisteXUtstyr u LEFT JOIN Plukklister p ON (u.PlukklisteID=p.PlukklisteID) WHERE (u.UtstyrID='".$rUtstyr['UtstyrID']."') AND (u.UtAntall > u.InnAntall)");
+      $sql .= " ORDER BY MateriellID ASC";
+      $rMaterielliste = $this->db->query($sql);
+      foreach ($rMaterielliste->result_array() as $rMateriell) {
+        $rPlukklister = $this->db->query("SELECT * FROM PlukklisteXMateriell u LEFT JOIN Plukklister p ON (u.PlukklisteID=p.PlukklisteID) WHERE (u.MateriellID='".$rMateriell['MateriellID']."') AND (u.UtAntall > u.InnAntall)");
         if ($rPlukklister->num_rows() > 0) {
-          $rUtstyr['StatusID'] = 2;
+          $rMateriell['StatusID'] = 2;
         }
-        if (!is_numeric($rUtstyr['Antall'])) {
-          $rUtstyr['Antall'] = 0;
+        if (!is_numeric($rMateriell['Antall'])) {
+          $rMateriell['Antall'] = 0;
 	}
-	$rUtstyrstyper = $this->db->query("SELECT KontrollDager,AnsvarligRolleID FROM Utstyrstyper WHERE (Kode='".substr($rUtstyr['UtstyrID'],0,2)."') LIMIT 1");
-	if ($rUtstyrstype = $rUtstyrstyper->row_array()) {
-          $rUtstyr['KontrollDager'] = $rUtstyrstype['KontrollDager'];
-          $rUtstyr['AnsvarligRolleID'] = $rUtstyrstype['AnsvarligRolleID'];
+	$rMaterielltyper = $this->db->query("SELECT KontrollDager,AnsvarligRolleID FROM Materielltyper WHERE (Kode='".substr($rMateriell['MateriellID'],0,2)."') LIMIT 1");
+	if ($rMaterielltype = $rMaterielltyper->row_array()) {
+          $rMateriell['KontrollDager'] = $rMaterielltype['KontrollDager'];
+          $rMateriell['AnsvarligRolleID'] = $rMaterielltype['AnsvarligRolleID'];
 	} else {
-          $rUtstyr['KontrollDager'] = 0;
-          $rUtstyr['AnsvarligRolleID'] = 0;
+          $rMateriell['KontrollDager'] = 0;
+          $rMateriell['AnsvarligRolleID'] = 0;
 	}
-        $Utstyrsliste[] = $rUtstyr;
-        unset($rUtstyr);
+        $Materielliste[] = $rMateriell;
+        unset($rMateriell);
       }
-      unset($rUtstyrsliste);
-      unset($rutstyrsliste);
-      if (isset($Utstyrsliste)) {
-        return $Utstyrsliste;
+      unset($rMaterielliste);
+      if (isset($Materielliste)) {
+        return $Materielliste;
       }
     }
 
-    function nyttutstyrid($UtstyrstypeID) {
-      $rutstyrsliste = $this->db->query("SELECT * FROM Utstyr WHERE (UtstyrID Like CONCAT('".$UtstyrstypeID."','%')) ORDER BY UtstyrID DESC");
-      if ($rutstyrsliste->num_rows() == 0) {
-        return $UtstyrstypeID.'001';
+    function nyttmateriellid($MaterielltypeID) {
+      $rMaterielliste = $this->db->query("SELECT * FROM Materiell WHERE (MateriellID Like CONCAT('".$MaterielltypeID."','%')) ORDER BY MateriellID DESC");
+      if ($rMaterielliste->num_rows() == 0) {
+        return $MaterielltypeID.'001';
       } else {
-        $rutstyr = $rutstyrsliste->row_array();
+        $rMateriell = $rMaterielliste->row_array();
         //return substr($rkomponent['KomponentID'],2);
-        return $UtstyrstypeID.str_pad((substr($rutstyr['UtstyrID'],2)+1),3,'0',STR_PAD_LEFT);
+        return $MaterielltypeID.str_pad((substr($rMateriell['MateriellID'],2)+1),3,'0',STR_PAD_LEFT);
       }
     }
 
-    function utstyr_info($UtstyrID = null) {
-      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,DatoEndret,DatoSlettet,StatusID,LokasjonID,(SELECT CONCAT('+',Kode,' ',Navn) FROM Lokasjoner l WHERE (l.LokasjonID=u.LokasjonID) LIMIT 1) AS Lokasjon,KasseID,(SELECT CONCAT('=',Kode,' ',Navn) FROM Kasser k WHERE (k.KasseID=u.KasseID) LIMIT 1) AS Kasse,Beskrivelse,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID) LIMIT 1) AS ProdusentNavn,Notater,(SELECT SUM(Antall) FROM Lagerendringer le WHERE (le.UtstyrID=u.UtstyrID)) AS Antall,AntallMin,BatteritypeID,BatteriAntall FROM Utstyr u WHERE (UtstyrID='".$UtstyrID."') LIMIT 1");
-      if ($rutstyr = $rutstyrsliste->row_array()) {
-	return $rutstyr;
+    function materiell_info($MateriellID = null) {
+      $rMaterielliste = $this->db->query("SELECT MateriellID,DatoRegistrert,DatoEndret,DatoSlettet,StatusID,LokasjonID,(SELECT CONCAT('+',Kode,' ',Navn) FROM Lokasjoner l WHERE (l.LokasjonID=m.LokasjonID) LIMIT 1) AS Lokasjon,KasseID,(SELECT CONCAT('=',Kode,' ',Navn) FROM Kasser k WHERE (k.KasseID=m.KasseID) LIMIT 1) AS Kasse,Beskrivelse,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=m.ProdusentID) LIMIT 1) AS ProdusentNavn,Notater,(SELECT SUM(Antall) FROM Lagerendringer le WHERE (le.MateriellID=m.MateriellID)) AS Antall,AntallMin,BatteritypeID,BatteriAntall FROM Materiell m WHERE (MateriellID='".$MateriellID."') LIMIT 1");
+      if ($rMateriell = $rMaterielliste->row_array()) {
+	return $rMateriell;
       }
     }
 
-    function utstyr_lagre($UtstyrID = null,$data) {
+    function materiell_lagre($MateriellID = null,$data) {
       $data['DatoEndret'] = date('Y-m-d H:i:s');
-      if ($UtstyrID == null) {
+      if ($MateriellID == null) {
         $data['DatoRegistrert'] = $data['DatoEndret'];
-        $this->db->query($this->db->insert_string('Utstyr',$data));
+        $this->db->query($this->db->insert_string('Materiell',$data));
         //$data['KomponentID'] = $this->db->insert_id();
       } else {
-        $this->db->query($this->db->update_string('Utstyr',$data,"UtstyrID='".$UtstyrID."'"));
-        $data['UtstyrID'] = $UtstyrID;
-      }
-      if ($this->db->affected_rows() > 0) {
-        //$this->session->set_flashdata('Infomelding','Lagerplassen "" ble vellykket oppdatert!');
+        $this->db->query($this->db->update_string('Materiell',$data,"MateriellID='".$MateriellID."'"));
+        $data['MateriellID'] = $MateriellID;
       }
       return $data;
     }
 
-    function utstyr_lagerlagre($data) {
+    function materiell_lagerlagre($data) {
       $data['DatoRegistrert'] = date('Y-m-d H:i:s');
       $data['BrukerID'] = $_SESSION['BrukerID'];
       $this->db->query($this->db->insert_string('Utstyrslager',$data));
       return true;
     }
 
-    function utstyr_slett($UtstyrID) {
-      $this->db->query("UPDATE Utstyr SET DatoSlettet=Now() WHERE UtstyrID='".$UtstyrID."' LIMIT 1");
+    function materiell_slett($MateriellID) {
+      $this->db->query("UPDATE Materiell SET DatoSlettet=Now() WHERE MateriellID='".$MateriellID."' LIMIT 1");
     }
 
 
-    function utstyrstyper() {
-      $rUtstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,(SELECT COUNT(*) FROM Utstyr u WHERE (u.UtstyrID Like CONCAT(ut.Kode,'%'))) AS AntallUtstyr,AnsvarligRolleID,(SELECT Navn FROM Roller r WHERE (r.RolleID=ut.AnsvarligRolleID) LIMIT 1) AS AnsvarligRolle,KontrollDager FROM Utstyrstyper ut WHERE (DatoSlettet Is Null) ORDER BY Kode ASC");
-      foreach ($rUtstyrstyper->result_array() as $rUtstyrstype) {
-        $Utstyrstyper[] = $rUtstyrstype;
-        unset($rutstyrstype);
+    function materielltyper() {
+      $rMaterielltyper = $this->db->query("SELECT MaterielltypeID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,(SELECT COUNT(*) FROM Materiell m WHERE (m.MateriellID Like CONCAT(mt.Kode,'%'))) AS AntallMateriell,AnsvarligRolleID,(SELECT Navn FROM Roller r WHERE (r.RolleID=mt.AnsvarligRolleID) LIMIT 1) AS AnsvarligRolle,KontrollDager FROM Materielltyper mt WHERE (DatoSlettet Is Null) ORDER BY Kode ASC");
+      foreach ($rMaterielltyper->result_array() as $rMaterielltype) {
+        $Materielltyper[] = $rMaterielltype;
+        unset($rMaterielltype);
       }
-      unset($rUtstyrstyper);
-      if (isset($Utstyrstyper)) {
-        return $Utstyrstyper;
+      unset($rMaterielltyper);
+      if (isset($Materielltyper)) {
+        return $Materielltyper;
       }
     }
 
-    function utstyrstype_info($UtstyrstypeID = null) {
-      if (is_numeric($UtstyrstypeID)) {
-        $rUtstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,AnsvarligRolleID,KontrollDager,KontrollPunkter,Notater FROM Utstyrstyper WHERE (UtstyrstypeID='".$UtstyrstypeID."') LIMIT 1");
+    function materielltype_info($MaterielltypeID = null) {
+      if (is_numeric($MaterielltypeID)) {
+        $rMaterielltyper = $this->db->query("SELECT MaterielltypeID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,AnsvarligRolleID,KontrollDager,KontrollPunkter,Notater FROM Materielltyper WHERE (MaterielltypeID='".$MaterielltypeID."') LIMIT 1");
       } else {
-        $rUtstyrstyper = $this->db->query("SELECT UtstyrstypeID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,AnsvarligRolleID,KontrollDager,KontrollPunkter,Notater FROM Utstyrstyper WHERE (Kode='".$UtstyrstypeID."') LIMIT 1");
+        $rMaterielltyper = $this->db->query("SELECT MaterielltypeID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,AnsvarligRolleID,KontrollDager,KontrollPunkter,Notater FROM Materielltyper WHERE (Kode='".$MaterielltypeID."') LIMIT 1");
       }
-      if ($rUtstyrstype = $rUtstyrstyper->row_array()) {
-        return $rUtstyrstype;
+      if ($rMaterielltype = $rMaterielltyper->row_array()) {
+        return $rMaterielltype;
       } else {
         return false;
       }
     }
 
-    function utstyrstype_opprett($data) {
+    function materielltype_opprett($data) {
       $data['DatoRegistrert'] = date('Y-m-d H:i:s');
       $data['DatoEndret'] = $data['DatoRegistrert'];
-      if ($this->db->query($this->db->insert_string('Utstyrstyper',$data))) {
-        $UtstyrstypeID = $this->db->insert_id();
-        return $UtstyrstypeID;
+      if ($this->db->query($this->db->insert_string('Materielltyper',$data))) {
+        $MaterielltypeID = $this->db->insert_id();
+        return $MaterielltypeID;
       } else {
         return false;
       }
     }
 
-    function utstyrstype_lagre($UtstyrstypeID = null,$data) {
-      if ($UtstyrstypeID != null) {
+    function materielltype_lagre($MaterielltypeID = null,$data) {
+      if ($MaterielltypeID != null) {
         $data['DatoEndret'] = date('Y-m-d H:i:s');
-	if ($this->db->query($this->db->update_string('Utstyrstyper',$data,'UtstyrstypeID='.$UtstyrstypeID))) {
-          return $UtstyrstypeID;
+	if ($this->db->query($this->db->update_string('Materielltyper',$data,'MaterielltypeID='.$MaterielltypeID))) {
+          return $MaterielltypeID;
 	} else {
           return false;
 	}
       }
     }
 
-    function utstyrstype_slett($UtstyrstypeID = null) {
-      if ($UtstyrstypeID != null) {
-        $this->db->query("UPDATE Utstyrstyper SET DatoSlettet=Now() WHERE UtstyrstypeID='".$UtstyrstypeID."' LIMIT 1");
+    function materielltype_slett($MaterielltypeID = null) {
+      if ($MaterielltypeID != null) {
+        $this->db->query("UPDATE Materielltyper SET DatoSlettet=Now() WHERE MaterielltypeID='".$MaterielltypeID."' LIMIT 1");
         if ($this->db->affected_rows() > 0) {
           return true;
         } else {
@@ -162,7 +158,7 @@
 
 
     function produsenter() {
-      $rProdusenter = $this->db->query("SELECT ProdusentID,DatoRegistrert,DatoEndret,DatoSlettet,Navn,Nettsted,(SELECT COUNT(*) FROM Utstyr u WHERE (u.ProdusentID=p.ProdusentID)) AS UtstyrAntall FROM Produsenter p WHERE (DatoSlettet Is Null) ORDER BY Navn ASC");
+      $rProdusenter = $this->db->query("SELECT ProdusentID,DatoRegistrert,DatoEndret,DatoSlettet,Navn,Nettsted,(SELECT COUNT(*) FROM Materiell m WHERE (m.ProdusentID=p.ProdusentID)) AS MateriellAntall FROM Produsenter p WHERE (DatoSlettet Is Null) ORDER BY Navn ASC");
       foreach ($rProdusenter->result_array() as $rProdusent) {
         $Produsenter[] = $rProdusent;
         unset($rProdusent);
@@ -204,7 +200,7 @@
 
     function produsent_slett($ProdusentID = null) {
       if ($ProdusentID != null) {
-        $this->db->query("UPDATE Utstyr SET ProdusentID=0 WHERE ProdusentID=".$ProdusentID);
+        $this->db->query("UPDATE Materiell SET ProdusentID=0 WHERE ProdusentID=".$ProdusentID);
         $this->db->query("UPDATE Produsenter SET DatoSlettet=Now() WHERE ProdusentID='".$ProdusentID."' LIMIT 1");
         if ($this->db->affected_rows() > 0) {
           return true;
@@ -216,7 +212,7 @@
 
 
     function lokasjoner() {
-      $rLokasjoner = $this->db->query("SELECT LokasjonID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,(SELECT COUNT(*) FROM Kasser ka WHERE (ka.LokasjonID=l.LokasjonID)) AS KasserAntall,(SELECT COUNT(*) FROM Utstyr u WHERE (u.LokasjonID=l.LokasjonID)) AS UtstyrAntall FROM Lokasjoner l WHERE (DatoSlettet Is Null) ORDER BY Kode ASC");
+      $rLokasjoner = $this->db->query("SELECT LokasjonID,DatoRegistrert,DatoEndret,DatoSlettet,Kode,Navn,(SELECT COUNT(*) FROM Kasser ka WHERE (ka.LokasjonID=l.LokasjonID)) AS KasserAntall,(SELECT COUNT(*) FROM Materiell m WHERE (m.LokasjonID=l.LokasjonID)) AS MateriellAntall FROM Lokasjoner l WHERE (DatoSlettet Is Null) ORDER BY Kode ASC");
       foreach ($rLokasjoner->result_array() as $rLokasjon) {
         $Lokasjoner[] = $rLokasjon;
         unset($rLokasjon);
@@ -272,7 +268,7 @@
 
 
     function kasser($filter = null) {
-      $sql = "SELECT KasseID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,(SELECT CONCAT('+',Kode,' ',Navn) FROM Lokasjoner l WHERE (l.LokasjonID=ka.LokasjonID) LIMIT 1) AS Lokasjon,Kode,Navn,(SELECT COUNT(*) FROM Utstyr u WHERE (u.KasseID=ka.KasseID)) AS UtstyrAntall FROM Kasser ka WHERE (DatoSlettet Is Null)";
+      $sql = "SELECT KasseID,DatoRegistrert,DatoEndret,DatoSlettet,LokasjonID,(SELECT CONCAT('+',Kode,' ',Navn) FROM Lokasjoner l WHERE (l.LokasjonID=ka.LokasjonID) LIMIT 1) AS Lokasjon,Kode,Navn,(SELECT COUNT(*) FROM Materiell m WHERE (m.KasseID=ka.KasseID)) AS MateriellAntall FROM Kasser ka WHERE (DatoSlettet Is Null)";
       if (isset($filter['FilterLokasjonID'])) {
         $sql .= " AND (LokasjonID='".$filter['FilterLokasjonID']."')";
       }
@@ -331,7 +327,7 @@
     }
 
     function batterityper() {
-      $rBatterityper = $this->db->query("SELECT BatteritypeID,Type,Navn,(SELECT COUNT(*) FROM Utstyr u WHERE (u.BatteritypeID=b.BatteritypeID)) AS UtstyrAntall,(SELECT SUM(BatteriAntall) FROM Utstyr u WHERE (u.BatteritypeID=b.BatteritypeID)) AS BehovAntall FROM Batterityper b ORDER BY Type ASC");
+      $rBatterityper = $this->db->query("SELECT BatteritypeID,Type,Navn,(SELECT COUNT(*) FROM Materiell m WHERE (m.BatteritypeID=b.BatteritypeID)) AS MateriellAntall,(SELECT SUM(BatteriAntall) FROM Materiell m WHERE (m.BatteritypeID=b.BatteritypeID)) AS BehovAntall FROM Batterityper b ORDER BY Type ASC");
       foreach ($rBatterityper->result_array() as $rBatteritype) {
         $Batterityper[] = $rBatteritype;
         unset($rBatteritype);

@@ -7,7 +7,7 @@
       <tr>
         <th>Type</th>
 	<th>Navn</th>
-	<th>Utstyr</th>
+	<th>Materiell</th>
         <th>Totalt behov</th>
       </tr>
     </thead>
@@ -19,7 +19,7 @@
       <tr>
         <th><a href="<?php echo site_url('utstyr/batteritype/'.$Batteritype['BatteritypeID']); ?>"><?php echo $Batteritype['Type']; ?></a></th>
 	<td><?php echo $Batteritype['Navn']; ?></td>
-	<td><?php if ($Batteritype['UtstyrAntall'] > 0) { echo $Batteritype['UtstyrAntall'].' stk'; } else { echo "&nbsp;"; } ?></td>
+	<td><?php if ($Batteritype['MateriellAntall'] > 0) { echo $Batteritype['MateriellAntall'].' stk'; } else { echo "&nbsp;"; } ?></td>
         <td><?php if ($Batteritype['BehovAntall'] > 0) { echo $Batteritype['BehovAntall'].' stk'; } else { echo "&nbsp;"; } ?></td>
       </tr>
 <?php

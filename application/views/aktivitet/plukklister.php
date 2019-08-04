@@ -2,7 +2,7 @@
 <br />
 
 <div class="card card-body">
-Ei plukkliste brukes for ut-/ og innregistrering av utstyr. Ved å bruke dette systematisk vil en til enhver tid ha oversikt over utstyr som medlemmer har hentet ut, hvor utstyret er og hvem som har ansvar for det. Det blir og enklere å forsikre seg om at utstyr kommer tilbake igjen.
+Ei plukkliste brukes for ut-/ og innregistrering av materiell. Ved å bruke dette systematisk vil en til enhver tid ha oversikt over materiell som medlemmer har hentet ut, hvor materiellet er og hvem som har ansvar for det. Det blir og enklere å forsikre seg om at utlevert materiell kommer tilbake igjen.
 <a href="<?php echo site_url('aktivitet/nyplukkliste'); ?>">Trykk her for å opprette ny plukkliste.</a>
 </div>
 <br />
@@ -15,7 +15,7 @@ Ei plukkliste brukes for ut-/ og innregistrering av utstyr. Ved å bruke dette s
 	<th>Navn</th>
 	<th>Ansvarlig</th>
         <th>Dato</th>
-	<th>Utstyr</th>
+	<th>Materiell</th>
         <th>Status</th>
       </tr>
     </thead>
@@ -29,7 +29,7 @@ Ei plukkliste brukes for ut-/ og innregistrering av utstyr. Ved å bruke dette s
         <td><?php echo $Plukkliste['Navn']; ?></td>
         <td><?php echo $Plukkliste['AnsvarligBrukerNavn']; ?></td>
         <td><?php echo date('d.m.Y',strtotime($Plukkliste['DatoRegistrert'])); ?></td>
-        <td><?php if ($Plukkliste['UtstyrAntall'] > 0) { echo $Plukkliste['UtstyrAntall']." stk"; } else { echo "0 stk"; } ?></td>
+        <td><?php if ($Plukkliste['MateriellAntall'] > 0) { echo $Plukkliste['MateriellAntall']." stk"; } else { echo "0 stk"; } ?></td>
         <td><?php echo $Plukkliste['Status']; ?></td>
       </tr>
 <?php
@@ -37,7 +37,7 @@ Ei plukkliste brukes for ut-/ og innregistrering av utstyr. Ved å bruke dette s
   } else {
 ?>
       <tr>
-        <td colspan="6" class="text-center">Ingen plukklister er registrert enda. Trykk <a href="<?php echo site_url('utstyr/nyplukkliste'); ?>">her</a> for å registrere ny plukkliste.</td>
+        <td colspan="6" class="text-center">Ingen plukklister er registrert enda. Trykk <a href="<?php echo site_url('aktivitet/nyplukkliste'); ?>">her</a> for å registrere ny plukkliste.</td>
       </tr>
 <?php
   }

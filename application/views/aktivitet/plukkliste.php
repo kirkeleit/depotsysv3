@@ -93,12 +93,12 @@
 
 <form method="POST" action="<?php echo site_url('aktivitet/plukkliste/'.$Plukkliste['PlukklisteID']); ?>">
 <input type="hidden" name="PlukklisteID" value="<?php echo set_value('PlukklisteID',$Plukkliste['PlukklisteID']); ?>" />
-<h5>Utstyrsliste</h5>
+<h5>Materielliste</h5>
 <div class="table-responsive">
   <table class="table table-bordered table-sm table-striped table-hover">
     <thead>
       <tr>
-        <th>Utstyr ID</th>
+        <th>Materiell ID</th>
         <th>Produsent</th>
         <th>Beskrivelse</th>
 	<th>UT / INN</th>
@@ -107,29 +107,29 @@
     </thead>
     <tbody>
 <?php
-  if (isset($Utstyrsliste)) {
-    foreach ($Utstyrsliste as $Utstyr) {
+  if (isset($Materielliste)) {
+    foreach ($Materielliste as $Materiell) {
 ?>
       <tr>
-        <th><a href="<?php echo site_url('utstyr/utstyr/'.$Utstyr['UtstyrID']); ?>"><?php echo "-".$Utstyr['UtstyrID']; ?></a></th>
-        <td><?php if ($Utstyr['ProdusentID'] > 0) { echo $Utstyr['ProdusentNavn']; } else { echo "&nbsp;"; } ?></td>
-        <td><?php echo $Utstyr['Beskrivelse']; ?></td>
-	<td><?php echo $Utstyr['UtAntall']." / ".$Utstyr['InnAntall']; ?></td>
+        <th><a href="<?php echo site_url('materiell/materiell/'.$Materiell['MateriellID']); ?>" class="text-nowrap"><?php echo "-".$Materiell['MateriellID']; ?></a></th>
+        <td><?php if ($Materiell['ProdusentID'] > 0) { echo $Materiell['ProdusentNavn']; } else { echo "&nbsp;"; } ?></td>
+        <td><?php echo $Materiell['Beskrivelse']; ?></td>
+	<td><?php echo $Materiell['UtAntall']." / ".$Materiell['InnAntall']; ?></td>
 <?php
       if ($Plukkliste['StatusID'] == 0) {
-        if (substr($Utstyr['UtstyrID'],-1,1) == 'T') {
+        if (substr($Materiell['MateriellID'],-1,1) == 'T') {
 ?>
-	<td><button type="submit" class="btn btn-sm btn-secondary" name="FjernUtstyr" value="<?php echo $Utstyr['UtstyrID']; ?>">Fjern</button>&nbsp;<input type="submit" class="btn btn-sm btn-secondary" value="+"></td>
+	<td><button type="submit" class="btn btn-sm btn-secondary" name="FjernMateriell" value="<?php echo $Materiell['MateriellID']; ?>">Fjern</button>&nbsp;<input type="submit" class="btn btn-sm btn-secondary" value="+"></td>
 <?php
         } else {
 ?>
-	<td><button type="submit" class="btn btn-sm btn-secondary" name="FjernUtstyr" value="<?php echo $Utstyr['UtstyrID']; ?>">Fjern</button></td>
+	<td><button type="submit" class="btn btn-sm btn-secondary" name="FjernMateriell" value="<?php echo $Materiell['MateriellID']; ?>">Fjern</button></td>
 <?php
         }
       } elseif ($Plukkliste['StatusID'] < 3) {
-        if ($Utstyr['UtAntall'] > $Utstyr['InnAntall']) {
+        if ($Materiell['UtAntall'] > $Materiell['InnAntall']) {
 ?>
-	<td><button type="submit" class="btn btn-sm btn-success" name="RegistrerInnUtstyr" value="<?php echo $Utstyr['UtstyrID']; ?>">REG.INN</button></td>
+	<td><button type="submit" class="btn btn-sm btn-success" name="RegistrerInnMateriell" value="<?php echo $Materiell['MateriellID']; ?>">REG.INN</button></td>
 <?php
         } else {
 ?>
@@ -148,14 +148,14 @@
   } else {
 ?>
       <tr>
-        <td colspan="6" class="text-center">Ingen utstyr er lagt til på denne plukklisten enda.</td>
+        <td colspan="6" class="text-center">Ingen materiell er lagt til på denne plukklisten enda.</td>
       </tr>
 <?php
   }
   if ($Plukkliste['StatusID'] == 0) {
 ?>
       <tr>
-        <td colspan="2"><input type="text" name="UtstyrID" id="UtstyrID" class="form-control-sm" placeholder="Skriv inn utstyr her!" autofocus></td>
+        <td colspan="2"><input type="text" name="MateriellID" id="MateriellID" class="form-control-sm" placeholder="Skriv inn materiell ID her!" autofocus></td>
         <td colspan="4">&nbsp;</td>
       </tr>
 <?php

@@ -94,9 +94,9 @@
     }
 
     function avviksliste($filter = null) {
-      $sql = "SELECT AvvikID,DatoRegistrert,UtstyrID,Beskrivelse,BrukerID,StatusID,Kostnad,(SELECT Fornavn AS Navn FROM Brukere b WHERE (b.BrukerID=a.BrukerID)) AS BrukerNavn FROM Avvik a WHERE (DatoSlettet Is Null)";
-      if (isset($filter['FilterUtstyrID'])) {
-        $sql .= " AND (UtstyrID='".$filter['FilterUtstyrID']."')";
+      $sql = "SELECT AvvikID,DatoRegistrert,MateriellID,Beskrivelse,BrukerID,StatusID,Kostnad,(SELECT Fornavn AS Navn FROM Brukere b WHERE (b.BrukerID=a.BrukerID)) AS BrukerNavn FROM Avvik a WHERE (DatoSlettet Is Null)";
+      if (isset($filter['FilterMateriellID'])) {
+        $sql .= " AND (MateriellID='".$filter['FilterMateriellID']."')";
       } else {
         $sql .= " AND (StatusID < 3)";
       }
@@ -114,7 +114,7 @@
     }
 
     function avvik_info($AvvikID = null) {
-      $rAvviksliste = $this->db->query("SELECT AvvikID,DatoRegistrert,DatoEndret,DatoSlettet,Kostnad,Beskrivelse,BrukerID,StatusID,UtstyrID,(SELECT CONCAT(Fornavn,' ',Etternavn) AS Navn FROM Brukere b WHERE (b.BrukerID=a.BrukerID)) AS BrukerNavn FROM Avvik a WHERE (AvvikID='".$AvvikID."')");
+      $rAvviksliste = $this->db->query("SELECT AvvikID,DatoRegistrert,DatoEndret,DatoSlettet,Kostnad,Beskrivelse,BrukerID,StatusID,MateriellID,(SELECT CONCAT(Fornavn,' ',Etternavn) AS Navn FROM Brukere b WHERE (b.BrukerID=a.BrukerID)) AS BrukerNavn FROM Avvik a WHERE (AvvikID='".$AvvikID."')");
       if ($rAvvik = $rAvviksliste->row_array()) {
         $rLogglinjer = $this->db->query("SELECT AvvikID,BrukerID,DatoRegistrert,Tekst,LoggtypeID,(SELECT CONCAT(Fornavn,' ',Etternavn) AS Navn FROM Brukere b WHERE (b.BrukerID=a.BrukerID)) AS BrukerNavn FROM Avvikslogg a WHERE (AvvikID='".$rAvvik['AvvikID']."') ORDER BY DatoRegistrert ASC");
 	foreach ($rLogglinjer->result_array() as $rLogglinje) {
@@ -166,8 +166,8 @@
       }
     }
 
-    function lagerendringer($UtstyrID) {
-      $rLagerendringer = $this->db->query("SELECT ID,DatoRegistrert,BrukerID,(SELECT CONCAT(Fornavn,' ',Etternavn) FROM Brukere b WHERE (b.BrukerID=l.BrukerID)) AS BrukerNavn,Antall,EndringTypeID,Kommentar FROM Lagerendringer l WHERE (UtstyrID='".$UtstyrID."') ORDER BY DatoRegistrert DESC LIMIT 20");
+    function lagerendringer($MateriellID) {
+      $rLagerendringer = $this->db->query("SELECT ID,DatoRegistrert,BrukerID,(SELECT CONCAT(Fornavn,' ',Etternavn) FROM Brukere b WHERE (b.BrukerID=l.BrukerID)) AS BrukerNavn,Antall,EndringTypeID,Kommentar FROM Lagerendringer l WHERE (MateriellID='".$MateriellID."') ORDER BY DatoRegistrert DESC LIMIT 20");
       foreach ($rLagerendringer->result_array() as $rLagerendring) {
         $rLagerendring['EndringType'] = $this->LagerendringType[$rLagerendring['EndringTypeID']];
         $Lagerendringer[] = $rLagerendring;
@@ -187,8 +187,8 @@
       return true;
     }
 
-    function kontroller($UtstyrID) {
-      $rKontroller = $this->db->query("SELECT ID,DatoRegistrert,BrukerID,(SELECT CONCAT(Fornavn,' ',Etternavn) FROM Brukere b WHERE (b.BrukerID=k.BrukerID)) AS BrukerNavn,TilstandID,Kommentar FROM Kontroller k WHERE (UtstyrID='".$UtstyrID."') ORDER BY DatoRegistrert DESC LIMIT 20");
+    function kontroller($MateriellID) {
+      $rKontroller = $this->db->query("SELECT ID,DatoRegistrert,BrukerID,(SELECT CONCAT(Fornavn,' ',Etternavn) FROM Brukere b WHERE (b.BrukerID=k.BrukerID)) AS BrukerNavn,TilstandID,Kommentar FROM Kontroller k WHERE (MateriellID='".$MateriellID."') ORDER BY DatoRegistrert DESC LIMIT 20");
       foreach ($rKontroller->result_array() as $rKontroll) {
         $rKontroll['Tilstand'] = $this->KontrollTilstand[$rKontroll['TilstandID']];
         $Kontroller[] = $rKontroll;

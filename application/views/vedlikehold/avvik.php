@@ -2,13 +2,13 @@
 <div class="card card-body bg-danger text-white">Dette avviket ble slettet den <?php echo date('d.m.Y',strtotime($Avvik['DatoSlettet'])); ?>. Endringer vil ikke bli lagret.</div>
 <br />
 <?php } ?>
-<form method="POST" action="<?php echo site_url('utstyr/avvik/'.$Avvik['AvvikID']); ?>">
+<form method="POST" action="<?php echo site_url('vedlikehold/avvik/'.$Avvik['AvvikID']); ?>">
 <?php if (isset($Avvik)) { ?>
 <input type="hidden" name="AvvikID" value="<?php echo $Avvik['AvvikID']; ?>" />
-<input type="hidden" name="UtstyrID" value="<?php echo $Avvik['UtstyrID']; ?>" />
+<input type="hidden" name="MateriellID" value="<?php echo $Avvik['MateriellID']; ?>" />
 <?php } ?>
-<?php if (isset($UtstyrID)) { ?>
-<input type="hidden" name="UtstyrID" value="<?php echo set_value('UtstyrID',$UtstyrID); ?>" />
+<?php if (isset($MateriellID)) { ?>
+<input type="hidden" name="MateriellID" value="<?php echo set_value('MateriellID',$MateriellID); ?>" />
 <?php } ?>
 
 <div class="card">
@@ -21,15 +21,15 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="UtstyrID"><b>Utstyr ID:</b></label>
+      <label class="col-sm-2 col-form-label" for="MateriellID"><b>Materiell ID:</b></label>
       <div class="col-sm-10">
-        <input type="text" class="form-control-plaintext" id="UtstyrID" value="<?php if (isset($Avvik['UtstyrID'])) { echo '-'.$Avvik['UtstyrID']; } else { echo '-'.$UtstyrID; } ?>" readonly>
+        <input type="text" class="form-control-plaintext" id="MateriellID" value="<?php if (isset($Avvik['MateriellID'])) { echo '-'.$Avvik['MateriellID']; } else { echo '-'.$MateriellID; } ?>" readonly>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="UtstyrNavn"><b>Utstyr:</b></label>
+      <label class="col-sm-2 col-form-label" for="MateriellNavn"><b>Materiell:</b></label>
       <div class="col-sm-10">
-	<input type="text" class="form-control-plaintext" id="UtstyrNavn" value="<?php if ($Utstyr['ProdusentID'] > 0) { echo $Utstyr['ProdusentNavn'].' '; } ?><?php echo $Utstyr['Beskrivelse']; ?>" readonly>
+	<input type="text" class="form-control-plaintext" id="MateriellNavn" value="<?php if ($Materiell['ProdusentID'] > 0) { echo $Materiell['ProdusentNavn'].' '; } ?><?php echo $Materiell['Beskrivelse']; ?>" readonly>
       </div>
     </div>
     <div class="form-group row">
@@ -90,7 +90,7 @@
         Flere valg
       </button>
       <div class="dropdown-menu" aria-labelledby="SkjemaAvansert">
-        <a href="<?php echo site_url('utstyr/slettavvik?avvikid='.$Avvik['AvvikID']); ?>" class="dropdown-item">Slett avvik</a>
+        <a href="<?php echo site_url('vedlikehold/slettavvik?avvikid='.$Avvik['AvvikID']); ?>" class="dropdown-item">Slett avvik</a>
       </div>
     </div>
   </div>

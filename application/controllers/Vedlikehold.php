@@ -20,8 +20,8 @@
 
     public function avviksliste() {
       $this->load->model('Vedlikehold_model');
-      if ($this->input->get('filterutstyrid')) {
-        $Filter['FilterUtstyrID'] = $this->input->get('filterutstyrid');
+      if ($this->input->get('filtermateriellid')) {
+        $Filter['FilterMateriellID'] = $this->input->get('filtermateriellid');
       }
       if (isset($Filter)) {
         $data['Avviksliste'] = $this->Vedlikehold_model->avviksliste($Filter);
@@ -37,16 +37,17 @@
 
     public function nyttavvik() {
       $this->load->model('Brukere_model');
-      $data['UtstyrID'] = $this->input->get('utstyrid');
+      $data['MateriellID'] = $this->input->get('materiellid');
       $data['Avvik'] = null;
+      $data['Materiell'] = null;
       $data['Brukere'] = $this->Brukere_model->brukere();
       $this->template->load('standard','vedlikehold/avvik',$data);
     }
 
     public function avvik() {
       $this->load->model('Vedlikehold_model');
-      if ($this->input->post('AvvikLagre')) {
-        $data['UtstyrID'] = $this->input->post('UtstyrID');
+      if ($this->input->post('SkjemaLagre') or $this->input->post('SkjemaLagreLukk')) {
+        $data['MateriellID'] = $this->input->post('MateriellID');
         $data['BrukerID'] = $this->input->post('BrukerID');
         $data['Beskrivelse'] = $this->input->post('Beskrivelse');
         $data['Kostnad'] = $this->input->post('Kostnad');
@@ -54,16 +55,20 @@
         if ($this->input->post('AvvikID')) {
 	  $AvvikID = $this->Vedlikehold_model->avvik_lagre($this->input->post('AvvikID'),$data);
 	  if ($AvvikID != false) {
-            $this->depot->NyGUIMelding(0,'Avvik #'.$AvvikID.' på utstyr \'-'.$data['UtstyrID'].'\' er nå lagret.');
+            $this->depot->NyGUIMelding(0,'Avvik #'.$AvvikID.' på materiell \'-'.$data['MateriellID'].'\' er nå lagret.');
 	  }
 	} else {
 	  $AvvikID = $this->Vedlikehold_model->avvik_opprett($data);
 	  if ($AvvikID != false) {
-            $this->depot->NyGUIMelding(0,'Avvik #'.$AvvikID.' på utstyr \'-'.$data['UtstyrID'].'\' er nå opprettet!');
-            $this->slack->sendmessage("Avvik *#".$AvvikID."* på utstyret *'-".$data['UtstyrID']."'* er nå registrert med følgende beskrivelse:\n>".$data['Beskrivelse']."\n<".site_url('utstyr/avvik/'.$AvvikID)."|Trykk her> for å åpne avviket.");
+            $this->depot->NyGUIMelding(0,'Avvik #'.$AvvikID.' på materiell \'-'.$data['MateriellID'].'\' er nå opprettet!');
+            $this->slack->sendmessage("Avvik *#".$AvvikID."* på materiellet *'-".$data['MateriellID']."'* er nå registrert med følgende beskrivelse:\n>".$data['Beskrivelse']."\n<".site_url('vedlikehold/avvik/'.$AvvikID)."|Trykk her> for å åpne avviket.");
 	  }
 	}
-	redirect('utstyr/avvik/'.$AvvikID);
+	if ($this->input->post('SkjemaLagreLukk')) {
+          redirect('vedlikehold/avviksliste');
+	} else {
+          redirect('vedlikehold/avvik/'.$AvvikID);
+	}
       } elseif ($this->input->post('AvvikLagrelogg')) {
         $data['BrukerID'] = $_SESSION['BrukerID'];
         $data['Tekst'] = $this->input->post('Loggtekst');
@@ -75,79 +80,79 @@
 	$AvvikID = $this->Vedlikehold_model->avvik_logg($this->input->post('AvvikID'),$data);
 	if ($AvvikID != false) {
           $this->depot->NyGUIMelding(0,'Logg er lagt til på avvik #'.$AvvikID.'.');
-          $this->slack->sendmessage("Følgende logg er nå lagt til på avvik *#".$AvvikID."*:\n>".$data['Tekst']."\n<".site_url('utstyr/avvik/'.$AvvikID)."|Trykk her> for å åpne avviket.");
+          $this->slack->sendmessage("Følgende logg er nå lagt til på avvik *#".$AvvikID."*:\n>".$data['Tekst']."\n<".site_url('vedlikehold/avvik/'.$AvvikID)."|Trykk her> for å åpne avviket.");
           if ($this->input->post('AvvikLukk')) {
             $this->Vedlikehold_model->avvik_lagre($AvvikID,array('StatusID' => 3));
-            $this->slack->sendmessage("Avvik *#".$AvvikID."* er nå lukket. <".site_url('utstyr/avvik/'.$AvvikID)."|Trykk her> for å åpne avviket.");
+            $this->slack->sendmessage("Avvik *#".$AvvikID."* er nå lukket. <".site_url('vedlikehold/avvik/'.$AvvikID)."|Trykk her> for å åpne avviket.");
           } else {
             $this->Vedlikehold_model->avvik_lagre($AvvikID,array('StatusID' => 1));
           }
 	}
-        redirect('utstyr/avvik/'.$AvvikID);
+        redirect('vedlikehold/avvik/'.$AvvikID);
       } elseif ($this->input->post('AvvikSlett')) {
         $AvvikID = $this->Vedlikehold_model->avvik_slett($this->input->post('AvvikID'));
         if ($AvvikID != false) {
           $this->depot->NyGUIMelding(0,'Avvik #'.$AvvikID.' ble vellykket slettet.');
-          $this->slack->sendmessage("Avvik *#".$AvvikID."* ble vellykket slettet. <".site_url('utstyr/avvik/'.$AvvikID)."|Trykk her> for å åpne avviket.");
+          $this->slack->sendmessage("Avvik *#".$AvvikID."* ble vellykket slettet. <".site_url('vedlikehold/avvik/'.$AvvikID)."|Trykk her> for å åpne avviket.");
         }
-        redirect('utstyr/avviksliste');
+        redirect('vedlikehold/avviksliste');
       } else {
-	      $this->load->model('Brukere_model');
-	      $this->load->model('Utstyr_model');
+        $this->load->model('Brukere_model');
+        $this->load->model('Materiell_model');
 	$data['Avvik'] = $this->Vedlikehold_model->avvik_info($this->uri->segment(3));
-	$data['Utstyr'] = $this->Utstyr_model->utstyr_info($data['Avvik']['UtstyrID']);
+	$data['Materiell'] = $this->Materiell_model->materiell_info($data['Avvik']['MateriellID']);
         $data['Brukere'] = $this->Brukere_model->brukere();
         $this->template->load('standard','vedlikehold/avvik',$data);
       }
     }
 
-    public function utstyrtelling() {
-      $this->load->model('Utstyr_model');
+    public function materielltelling() {
+      $this->load->model('Materiell_model');
       $this->load->model('Vedlikehold_model');
       if ($this->input->post('SkjemaLagre')){
-        $data['UtstyrID'] = $this->input->post('UtstyrID');
+        $data['MateriellID'] = $this->input->post('MateriellID');
 	$data['Antall'] = ($this->input->post('NyttAntall')-$this->input->post('Antall'));
 	$data['EndringTypeID'] = 1;
 	if ($this->Vedlikehold_model->lagerendring_lagre($data)) {
-          $this->depot->NyGUIMelding(0,'Lagerstatus for \''.$data['UtstyrID'].'\' er nå oppdatert.');
-	  redirect('utstyr/utstyr/'.$data['UtstyrID']);
+          $this->depot->NyGUIMelding(0,'Lagerstatus for \''.$data['MateriellID'].'\' er nå oppdatert.');
+	  redirect('materiell/materiell/'.$data['MateriellID']);
 	}
       }
-      $data['Utstyr'] = $this->Utstyr_model->utstyr_info($this->input->get('utstyrid'));
-      $data['Lagerendringer'] = $this->Vedlikehold_model->lagerendringer($data['Utstyr']['UtstyrID']);
-      $this->template->load('standard','vedlikehold/utstyrtelling',$data);
+      $data['Materiell'] = $this->Materiell_model->materiell_info($this->input->get('materiellid'));
+      $data['Lagerendringer'] = $this->Vedlikehold_model->lagerendringer($data['Materiell']['MateriellID']);
+      $this->template->load('standard','vedlikehold/materielltelling',$data);
     }
 
-    public function utstyrkontroll() {
-      $this->load->model('Utstyr_model');
+    public function materiellkontroll() {
+      $this->load->model('Materiell_model');
       $this->load->model('Vedlikehold_model');
       if ($this->input->post('SkjemaLagre')){
-        $data['UtstyrID'] = $this->input->post('UtstyrID');
+        $data['MateriellID'] = $this->input->post('MateriellID');
         $data['TilstandID'] = $this->input->post('TilstandID');
         $data['Kommentar'] = $this->input->post('Kommentar');
         if ($this->Vedlikehold_model->kontroll_lagre($data)) {
-          $this->depot->NyGUIMelding(0,'Kontroll av \''.$data['UtstyrID'].'\' er nå registrert.');
+          $this->depot->NyGUIMelding(0,'Kontroll av \''.$data['MateriellID'].'\' er nå registrert.');
           if ($data['TilstandID'] > 0) {
-            $data2['UtstyrID'] = $data['UtstyrID'];
+            $data2['MateriellID'] = $data['MateriellID'];
 	    $data2['Beskrivelse'] = $data['Kommentar'];
 	    $data2['StatusID'] = 0;
 	    $AvvikID = $this->Vedlikehold_model->avvik_registrere($data2);
 	    if ($AvvikID != false) {
-              $this->slack->sendmessage("Avvik *#".$AvvikID."* på utstyret *'-".$data2['UtstyrID']."'* er nå registrert med følgende beskrivelse:\n>".$data2['Beskrivelse']."\n<".site_url('utstyr/avvik/'.$AvvikID)."|Trykk her> for å åpne avviket.");
+              $this->slack->sendmessage("Avvik *#".$AvvikID."* på utstyret *'-".$data2['MateriellID']."'* er nå registrert med følgende beskrivelse:\n>".$data2['Beskrivelse']."\n<".site_url('vedlikehold/avvik/'.$AvvikID)."|Trykk her> for å åpne avviket.");
 	    }
           }
-          redirect('utstyr/utstyr/'.$data['UtstyrID']);
+          redirect('materiell/materiell/'.$data['MateriellID']);
         }
       }
-      $data['Utstyr'] = $this->Utstyr_model->utstyr_info($this->input->get('utstyrid'));
-      $data['Utstyrstype'] = $this->Utstyr_model->utstyrstype_info(substr($data['Utstyr']['UtstyrID'],0,2));
-      $data['Kontroller'] = $this->Vedlikehold_model->kontroller($data['Utstyr']['UtstyrID']);
+      $data['Materiell'] = $this->Materiell_model->materiell_info($this->input->get('materiellid'));
+      $data['Materielltype'] = $this->Materiell_model->materielltype_info(substr($data['Materiell']['MateriellID'],0,2));
+      $data['Kontroller'] = $this->Vedlikehold_model->kontroller($data['Materiell']['MateriellID']);
       $data['Tilstander'] = $this->Vedlikehold_model->KontrollTilstand;
-      $this->template->load('standard','vedlikehold/utstyrkontroll',$data);
+      $this->template->load('standard','vedlikehold/materiellkontroll',$data);
     }
 
     public function telleliste() {
-      $this->load->model('Utstyr_model');
+      $this->load->model('Materiell_model');
       $Filter = array('FilterForbruksmateriell' => 1);
       if ($this->input->post('FilterKasseID')) {
         $Filter['FilterKasseID'] = $this->input->post('FilterKasseID');
@@ -157,30 +162,26 @@
         $Filter['FilterLokasjonID'] = $this->input->post('FilterLokasjonID');
         $data['FilterLokasjonID'] = $this->input->post('FilterLokasjonID');
       }
-      $data['Kasser'] = $this->Utstyr_model->kasser();
-      $data['Lokasjoner'] = $this->Utstyr_model->lokasjoner();
-      $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste($Filter);
+      $data['Kasser'] = $this->Materiell_model->kasser();
+      $data['Lokasjoner'] = $this->Materiell_model->lokasjoner();
+      $data['Materielliste'] = $this->Materiell_model->materielliste($Filter);
       $this->template->load('standard','vedlikehold/telleliste',$data);
     }
 
     public function kontrolliste() {
-      $this->load->model('Utstyr_model');
-      $data['Kasser'] = $this->Utstyr_model->kasser();
-      $data['Lokasjoner'] = $this->Utstyr_model->lokasjoner();
-      $Filter1 = array('FilterForbruksmateriell' => 0);
-      $Filter2 = array('FilterForbruksmateriell' => 1);
+      $this->load->model('Materiell_model');
+      $data['Kasser'] = $this->Materiell_model->kasser();
+      $data['Lokasjoner'] = $this->Materiell_model->lokasjoner();
+      $Filter = array('FilterForbruksmateriell' => 0);
       if ($this->input->post('FilterKasseID')) {
-        $Filter1['FilterKasseID'] = $this->input->post('FilterKasseID');
-        $Filter2['FilterKasseID'] = $this->input->post('FilterKasseID');
+        $Filter['FilterKasseID'] = $this->input->post('FilterKasseID');
         $data['FilterKasseID'] = $this->input->post('FilterKasseID');
       }
       if ($this->input->post('FilterLokasjonID')) {
-        $Filter1['FilterLokasjonID'] = $this->input->post('FilterLokasjonID');
-        $Filter2['FilterLokasjonID'] = $this->input->post('FilterLokasjonID');
+        $Filter['FilterLokasjonID'] = $this->input->post('FilterLokasjonID');
         $data['FilterLokasjonID'] = $this->input->post('FilterLokasjonID');
       }
-      $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste($Filter1);
-      $data['Forbruksmateriell'] = $this->Utstyr_model->utstyrsliste($Filter2);
+      $data['Materielliste'] = $this->Materiell_model->materielliste($Filter);
       $this->template->load('standard','vedlikehold/kontrolliste',$data);
     }
 

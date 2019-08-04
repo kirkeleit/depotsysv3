@@ -1,58 +1,58 @@
-<?php if (substr($Utstyr['UtstyrID'],-1,1) != 'T') { ?>
+<?php if (substr($Materiell['MateriellID'],-1,1) != 'T') { ?>
 <div class="card card-body bg-warning">
-Utstyr '-<?php echo $Utstyr['UtstyrID']; ?>' er ikke registrert som forbruksmateriell, og kan derfor ikke telles i forhold til lagerbeholdning.
+Materiell '-<?php echo $Materiell['MateriellID']; ?>' er ikke registrert som forbruksmateriell, og kan derfor ikke telles i forhold til lagerbeholdning.
 </div>
 <?php } else { ?>
-<form method="POST" action="<?php echo site_url('utstyr/utstyrtelling?utstyrid='.$Utstyr['UtstyrID']); ?>">
-<input type="hidden" name="UtstyrID" value="<?php echo set_value('UtstyrID',$Utstyr['UtstyrID']); ?>" />
+<form method="POST" action="<?php echo site_url('vedlikehold/materielltelling?materiellid='.$Materiell['MateriellID']); ?>">
+<input type="hidden" name="MateriellID" value="<?php echo set_value('MateriellID',$Materiell['MateriellID']); ?>" />
 
 <div class="card">
-  <h5 class="card-header">Utstyr</h5>
+  <h5 class="card-header">Materielltelling</h5>
   <div class="card-body">
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label" for="UtstyrID"><b>Utstyr ID:</b></label>
+      <label class="col-sm-2 col-form-label" for="MateriellID"><b>Materiell ID:</b></label>
       <div class="col-sm-10">
-        <input type="text" class="form-control-plaintext" id="UtstyrID" value="-<?php echo $Utstyr['UtstyrID']; ?>" readonly>
+        <input type="text" class="form-control-plaintext" id="MateriellID" value="-<?php echo $Materiell['MateriellID']; ?>" readonly>
       </div>
     </div>
-<?php if ($Utstyr['LokasjonID'] > 0) { ?>
+<?php if ($Materiell['LokasjonID'] > 0) { ?>
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="Lokasjon"><b>Lokasjon:</b></label>
       <div class="col-sm-10">
-        <input type="text" class="form-control-plaintext" id="Lokasjon" value="<?php echo $Utstyr['Lokasjon']; ?>" readonly>
+        <input type="text" class="form-control-plaintext" id="Lokasjon" value="<?php echo $Materiell['Lokasjon']; ?>" readonly>
       </div>
     </div>
 <?php } ?>
-<?php if ($Utstyr['KasseID'] > 0) { ?>
+<?php if ($Materiell['KasseID'] > 0) { ?>
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="Kasse"><b>Kasse:</b></label>
       <div class="col-sm-10">
-        <input type="text" class="form-control-plaintext" id="Kasse" value="<?php echo $Utstyr['Kasse']; ?>" readonly>
+        <input type="text" class="form-control-plaintext" id="Kasse" value="<?php echo $Materiell['Kasse']; ?>" readonly>
       </div>
     </div>
 <?php } ?>
     <div class="form-group row">
       <label class="col-sm-2 col-form-label"><b>Beskrivelse:</b></label>
       <div class="col-sm-10">
-        <input type="text" class="form-control-plaintext" id="Beskrivelse" value="<?php echo $Utstyr['Beskrivelse']; ?>" readonly>
+        <input type="text" class="form-control-plaintext" id="Beskrivelse" value="<?php echo $Materiell['Beskrivelse']; ?>" readonly>
       </div>
     </div>
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="ProdusentID"><b>Produsent:</b></label>
       <div class="col-sm-10">
-	<input type="text" class="form-control-plaintext" id="ProdusentID" value="<?php echo $Utstyr['ProdusentNavn']; ?>" readonly>
+	<input type="text" class="form-control-plaintext" id="ProdusentID" value="<?php echo $Materiell['ProdusentNavn']; ?>" readonly>
       </div>
     </div>
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="Antall"><b>Antall på lager:</b></label>
       <div class="col-sm-10">
-        <input type="text" class="form-control-plaintext" id="Antall" name="Antall" value="<?php if (isset($Utstyr['Antall'])) { echo $Utstyr['Antall']; } else { echo "0"; } ?>" readonly>
+        <input type="text" class="form-control-plaintext" id="Antall" name="Antall" value="<?php if (isset($Materiell['Antall'])) { echo $Materiell['Antall']; } else { echo "0"; } ?>" readonly>
       </div>
     </div>
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="AntallMin"><b>Antall minimum:</b></label>
       <div class="col-sm-10">
-        <input type="text" class="form-control-plaintext" id="AntallMin" value="<?php echo $Utstyr['AntallMin']; ?>" readonly>
+        <input type="text" class="form-control-plaintext" id="AntallMin" value="<?php echo $Materiell['AntallMin']; ?>" readonly>
       </div>
     </div>
     <div class="form-group row">
@@ -100,7 +100,7 @@ Utstyr '-<?php echo $Utstyr['UtstyrID']; ?>' er ikke registrert som forbruksmate
   } else {
 ?>
       <tr>
-        <td colspan="5" class="text-center">Ingen endringer er gjort på lageret for utstyret.</td>
+        <td colspan="5" class="text-center">Ingen endringer er gjort på lageret for materiellet.</td>
       </tr>
 <?php
   }

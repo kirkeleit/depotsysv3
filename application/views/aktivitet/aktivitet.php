@@ -1,4 +1,4 @@
-<form method="POST" action="<?php echo site_url('utstyr/aktivitet/'.$Aktivitet['AktivitetID']); ?>">
+<form method="POST" action="<?php echo site_url('aktivitet/aktivitet/'.$Aktivitet['AktivitetID']); ?>">
 <input type="hidden" name="AktivitetID" value="<?php echo set_value('AktivitetID',$Aktivitet['AktivitetID']); ?>" />
 
 <div class="card">
@@ -27,8 +27,8 @@
         Flere valg
       </button>
       <div class="dropdown-menu" aria-labelledby="SkjemaAvansert">
-	<a href="<?php echo site_url('utstyr/slettaktivitet?aktivitetid='.$Aktivitet['AktivitetID']); ?>" class="dropdown-item">Slett aktivitet</a>
-        <a href="<?php echo site_url('utstyr/nyplukkliste?aktivitetid='.$Aktivitet['AktivitetID']); ?>" class="dropdown-item">Ny plukkliste</a>
+	<a href="<?php echo site_url('aktivitet/slettaktivitet?aktivitetid='.$Aktivitet['AktivitetID']); ?>" class="dropdown-item">Slett aktivitet</a>
+        <a href="<?php echo site_url('aktivitet/nyplukkliste?aktivitetid='.$Aktivitet['AktivitetID']); ?>" class="dropdown-item">Ny plukkliste</a>
       </div>
     </div>
   </div>
@@ -45,7 +45,7 @@
 	<th>Registrert</th>
         <th>Beskrivelse</th>
         <th>Ansvarlig</th>
-	<th>Utstyr</th>
+	<th>Materiell</th>
         <th>Status</th>
       </tr>
     </thead>
@@ -55,11 +55,11 @@
     foreach ($Plukklister as $Plukkliste) {
 ?>
       <tr>
-        <th><a href="<?php echo site_url('utstyr/plukkliste/'.$Plukkliste['PlukklisteID']); ?>"><?php echo $Plukkliste['PlukklisteID']; ?></a></th>
+        <th><a href="<?php echo site_url('aktivitet/plukkliste/'.$Plukkliste['PlukklisteID']); ?>"><?php echo $Plukkliste['PlukklisteID']; ?></a></th>
         <td><?php if ($Plukkliste['DatoRegistrert'] != '') { echo date('d.m.Y',strtotime($Plukkliste['DatoRegistrert'])); } else { echo "&nbsp;"; } ?></td>
-        <td><?php echo $Plukkliste['Beskrivelse']; ?></td>
+        <td><?php echo $Plukkliste['Navn']; ?></td>
 	<td><?php if ($Plukkliste['AnsvarligBrukerID'] > 0) { echo $Plukkliste['AnsvarligBrukerNavn']; } else { echo "&nbsp;"; } ?></td>
-	<td><?php if ($Plukkliste['UtstyrAntall'] > 0) { echo $Plukkliste['UtstyrAntall']." stk"; } else { echo "&nbsp;"; } ?></td>
+	<td><?php if ($Plukkliste['MateriellAntall'] > 0) { echo $Plukkliste['MateriellAntall']." stk"; } else { echo "&nbsp;"; } ?></td>
         <td><?php echo $Plukkliste['Status']; ?></td>
       </tr>
 <?php
@@ -67,7 +67,7 @@
   } else {
 ?>
       <tr>
-      <td colspan="6" class="text-center">Ingen plukklister er lagt til på denne aktiviteten enda. Trykk <a href="<?php echo site_url('utstyr/nyplukkliste?aktivitetid='.$Aktivitet['AktivitetID']); ?>" target="_new">her</a> for å opprette ny.</td>
+      <td colspan="6" class="text-center">Ingen plukklister er lagt til på denne aktiviteten enda. Trykk <a href="<?php echo site_url('aktivitet/nyplukkliste?aktivitetid='.$Aktivitet['AktivitetID']); ?>" target="_new">her</a> for å opprette ny.</td>
       </tr>
 <?php
   }
