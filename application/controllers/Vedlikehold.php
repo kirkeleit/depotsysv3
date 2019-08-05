@@ -28,7 +28,7 @@
       } else {
         $data['Avviksliste'] = $this->Vedlikehold_model->avviksliste();
       }
-      if (sizeof($data['Avviksliste']) == 1) {
+      if (!empty($data['Avviksliste']) and sizeof($data['Avviksliste']) == 1) {
         redirect('utstyr/avvik/'.$data['Avviksliste'][0]['AvvikID']);
       } else {
         $this->template->load('standard','vedlikehold/avviksliste',$data);

@@ -1,25 +1,12 @@
 <form method="POST" action="<?php echo site_url('aktivitet/plukkliste/'.$Plukkliste['PlukklisteID']); ?>">
 <input type="hidden" name="PlukklisteID" value="<?php echo set_value('PlukklisteID',$Plukkliste['PlukklisteID']); ?>" />
 <input type="hidden" name="PlukklisteTypeID" value="1" />
-
 <div class="card">
-  <h5 class="card-header bg-info text-white">Plukkliste</h5>
+  <h6 class="card-header bg-secondary text-white"><?php echo (!is_numeric($Plukkliste['PlukklisteID'])?'Ny ':''); ?>Plukkliste<?php echo (is_numeric($Plukkliste['PlukklisteID'])?' #'.$Plukkliste['PlukklisteID']:''); ?></h6>
   <div class="card-body">
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="AktivitetID"><b>Aktivitet:</b></label>
       <div class="col-sm-10">
-<?php
-  if (isset($AktivitetID)) {
-    foreach ($Aktiviteter as $Aktivitet) {
-      if ($Aktivitet['AktivitetID'] == $AktivitetID) {
-?>
-        <input type="hidden" name="AktivitetID" value="<?php echo $Aktivitet['AktivitetID']; ?>" />
-	<input type="text" class="form-control-plaintext" id="AktivitetID" value="<?php echo $Aktivitet['Navn']; ?>" readonly />
-<?php
-      }
-    }
-  } else {
-?>
         <select class="custom-select" id="AktivitetID" name="AktivitetID">
           <option value="0">(ikke valgt)</option>
           <option disabled>──────</option>
@@ -33,7 +20,6 @@
   }
 ?>
 	</select>
-<?php } ?>
       </div>
     </div>
     <div class="form-group row">
@@ -69,9 +55,10 @@
   </div>
   <div class="card-footer">
     <div class="btn-group" role="group" aria-label="Skjema lagre">
-      <input type="submit" class="btn btn-primary" value="Lagre" name="SkjemaLagre" />
-      <input type="submit" class="btn btn-primary" value=">>" name="SkjemaLagreLukk" />
+      <input type="submit" class="btn btn-success" value="<?php echo (isset($Plukkliste)?'Lagre':'Opprett'); ?>" name="SkjemaLagre" />
+      <input type="submit" class="btn btn-success" value=">>" name="SkjemaLagreLukk" />
     </div>
+<?php if (is_numeric($Plukkliste['PlukklisteID'])) { ?>
     <div class="btn-group" role="group">
       <button id="SkjemaAvansert" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Flere valg
@@ -86,11 +73,13 @@
 <?php if ($Plukkliste['StatusID'] == 0) { ?>
     <input type="submit" class="btn btn-success" value="Utlevert" name="PlukklisteUtlevert" />
 <?php } ?>
+<?php } ?>
   </div>
 </div>
 </form>
 <br />
 
+<?php if (is_numeric($Plukkliste['PlukklisteID'])) { ?>
 <form method="POST" action="<?php echo site_url('aktivitet/plukkliste/'.$Plukkliste['PlukklisteID']); ?>">
 <input type="hidden" name="PlukklisteID" value="<?php echo set_value('PlukklisteID',$Plukkliste['PlukklisteID']); ?>" />
 <h5>Materielliste</h5>
@@ -168,3 +157,4 @@
   </table>
 </div>
 </form>
+<?php } ?>

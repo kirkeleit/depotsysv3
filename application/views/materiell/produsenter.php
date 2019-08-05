@@ -1,4 +1,4 @@
-<h2>Produsenter<small class="text-muted"> - Totalt <?php echo sizeof($Produsenter); ?> produsenter</small></h2>
+<h2>Produsenter<?php if (!empty($Produsenter)) { ?><small class="text-muted"> - Totalt <?php echo sizeof($Produsenter); ?> produsenter</small><?php } ?></h2>
 <br />
 
 <div class="card card-body">

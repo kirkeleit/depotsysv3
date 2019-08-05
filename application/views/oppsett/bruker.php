@@ -1,8 +1,7 @@
 <form method="POST" action="<?php echo site_url('oppsett/bruker/'.$Bruker['BrukerID']); ?>">
 <input type="hidden" name="BrukerID" value="<?php echo set_value('BrukerID',$Bruker['BrukerID']); ?>" />
-
 <div class="card">
-  <h5 class="card-header bg-info text-white">Bruker</h5>
+  <h6 class="card-header bg-secondary text-white"><?php echo (!isset($Bruker)?'Ny ':''); ?>Bruker<?php echo (isset($Bruker)?' #'.$Bruker['BrukerID']:''); ?></h6>
   <div class="card-body">
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="Fornavn"><b>Fornavn:</b></label>
@@ -58,9 +57,10 @@
   </div>
   <div class="card-footer">
     <div class="btn-group" role="group" aria-label="Skjema lagre">
-      <input type="submit" class="btn btn-primary" value="Lagre" name="SkjemaLagre" />
-      <input type="submit" class="btn btn-primary" value=">>" name="SkjemaLagreLukk" />
+      <input type="submit" class="btn btn-success" value="<?php echo (isset($Bruker)?'Lagre':'Opprett'); ?>" name="SkjemaLagre" />
+      <input type="submit" class="btn btn-success" value=">>" name="SkjemaLagreLukk" />
     </div>
+<?php if (isset($Bruker)) { ?>
     <div class="btn-group" role="group">
       <button id="SkjemaAvansert" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Flere valg
@@ -69,8 +69,7 @@
         <a href="<?php echo site_url('oppsett/slettbruker?brukerid='.$Bruker['BrukerID']); ?>" class="dropdown-item">Slett bruker</a>
       </div>
     </div>
+<?php } ?>
   </div>
 </div>
-<br />
-
 </form>

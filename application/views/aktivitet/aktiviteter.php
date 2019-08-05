@@ -2,7 +2,7 @@
 <br />
 
 <div class="card card-body">
-En aktivitet brukes for å knytte sammen flere plukklister som hører naturlig sammen. For eksempel til ei sanitetsvakt kan det være flere lag som tar ut forskjellig utstyr, eller flere personer i løpet av vakta. Da kan hver enkelt person/ansvarlig lage sine plukklister, og så kan dette samtidig eller senere knytte disse sammen i en aktivitet. Bruk av aktivitet er valgfritt, og plukklister kan fint brukes uten å knytte de til en aktivitet.
+En aktivitet brukes for å knytte sammen flere plukklister som hører naturlig sammen. For eksempel til ei sanitetsvakt kan det være flere lag som tar ut forskjellig materiell, eller flere personer i løpet av vakta. Da kan hver enkelt person/ansvarlig lage sine plukklister, og så kan dette samtidig eller senere knytte disse sammen i en aktivitet. Bruk av aktivitet er valgfritt, og plukklister kan fint brukes uten å knytte de til en aktivitet.
 <a href="<?php echo site_url('aktivitet/nyaktivitet'); ?>">Trykk her for å opprette ny aktivitet.</a>
 </div>
 <br />

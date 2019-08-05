@@ -1,6 +1,6 @@
 <?php
   $MateriellAlt = (!empty($MateriellisteKomplett)?sizeof($MateriellisteKomplett):0);
-  $MateriellIkkeOperativt = (!empty($MateriellIkkeOperativt)?sizeof($MateriellIkkeOperativt):0);
+  $MateriellIkkeOperativt = (!empty($MateriellisteIkkeOperativt)?sizeof($MateriellisteIkkeOperativt):0);
   $MateriellOperativt = $MateriellAlt-$MateriellIkkeOperativt;
   $AntallPlukklister = (!empty($Plukklister)?sizeof($Plukklister):0);
   $AntallAvvik = (!empty($Avviksliste)?sizeof($Avviksliste):0);

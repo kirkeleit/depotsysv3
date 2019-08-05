@@ -25,7 +25,9 @@
     }
 
     public function nybruker() {
-      $data['Bruker'] = null;
+	    $this->load->model('Brukere_model');
+	    $data['Bruker'] = null;
+	    $data['Roller'] = $this->Brukere_model->roller();
       $this->template->load('standard','oppsett/bruker',$data);
     }
 

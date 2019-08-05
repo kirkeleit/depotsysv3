@@ -12,7 +12,7 @@
 <?php } ?>
 
 <div class="card">
-  <div class="card-header"><b>Avviksskjema</b></div>
+  <h6 class="card-header bg-secondary text-white"><?php echo (!isset($Avvik)?'Nytt ':''); ?>Avvik<?php echo (isset($Avvik)?' #'.$Avvik['AvvikID']:''); ?></h6>
   <div class="card-body">
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="AvvikID"><b>Avvik ID:</b></label>
@@ -82,9 +82,10 @@
 <?php if ($Avvik['DatoSlettet'] == '') { ?>
   <div class="card-footer">
     <div class="btn-group" role="group" aria-label="Skjema lagre">
-      <input type="submit" class="btn btn-primary" value="Lagre" name="SkjemaLagre" />
-      <input type="submit" class="btn btn-primary" value=">>" name="SkjemaLagreLukk" />
+      <input type="submit" class="btn btn-success" value="<?php echo (isset($Avvik)?'Lagre':'Opprett'); ?>" name="SkjemaLagre" />
+      <input type="submit" class="btn btn-success" value=">>" name="SkjemaLagreLukk" />
     </div>
+<?php if (isset($Avvik)) { ?>
     <div class="btn-group" role="group">
       <button id="SkjemaAvansert" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Flere valg
@@ -93,6 +94,7 @@
         <a href="<?php echo site_url('vedlikehold/slettavvik?avvikid='.$Avvik['AvvikID']); ?>" class="dropdown-item">Slett avvik</a>
       </div>
     </div>
+<?php } ?>
   </div>
 <?php } ?>
 </div>

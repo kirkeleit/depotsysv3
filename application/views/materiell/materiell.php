@@ -1,8 +1,7 @@
 <form method="POST" action="<?php echo site_url('materiell/materiell/'.$Materiell['MateriellID']); ?>">
 <input type="hidden" name="MateriellID" value="<?php echo set_value('MateriellID',$Materiell['MateriellID']); ?>" />
-
 <div class="card">
-  <h5 class="card-header">Materiell</h5>
+  <h6 class="card-header bg-secondary text-white"><?php echo (!isset($Materiell)?'Nytt ':''); ?>Materiell<?php echo (isset($Materiell)?' '.$Materiell['MateriellID']:''); ?></h6>
   <div class="card-body">
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="MateriellID"><b>Materiell ID:</b></label>
@@ -111,8 +110,8 @@
   </div>
   <div class="card-footer">
     <div class="btn-group" role="group" aria-label="Skjema lagre">
-      <input type="submit" class="btn btn-primary" value="Lagre" name="SkjemaLagre" />
-      <input type="submit" class="btn btn-primary" value=">>" name="SkjemaLagreLukk" />
+      <input type="submit" class="btn btn-success" value="Lagre" name="SkjemaLagre" />
+      <input type="submit" class="btn btn-success" value=">>" name="SkjemaLagreLukk" />
     </div>
     <div class="btn-group" role="group">
       <button id="SkjemaAvansert" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

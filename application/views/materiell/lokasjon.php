@@ -1,8 +1,7 @@
 <form method="POST" action="<?php echo site_url('materiell/lokasjon/'.$Lokasjon['LokasjonID']); ?>">
 <input type="hidden" name="LokasjonID" value="<?php echo set_value('LokasjonID',$Lokasjon['LokasjonID']); ?>" />
-
 <div class="card">
-  <h5 class="card-header">Lokasjon</h5>
+  <h6 class="card-header bg-secondary text-white"><?php echo (!isset($Lokasjon)?'Ny ':''); ?>Lokasjon<?php echo (isset($Lokasjon)?' '.$Lokasjon['Kode']:''); ?></h6>
   <div class="card-body">
     <div class="form-group row">
       <label class="col-sm-2 col-form-label" for="Kode"><b>Kode:</b></label>
@@ -29,9 +28,10 @@
   </div>
   <div class="card-footer">
     <div class="btn-group" role="group" aria-label="Skjema lagre">
-      <input type="submit" class="btn btn-primary" value="Lagre" name="SkjemaLagre" />
-      <input type="submit" class="btn btn-primary" value=">>" name="SkjemaLagreLukk" />
+      <input type="submit" class="btn btn-success" value="<?php echo (isset($Lokasjon)?'Lagre':'Opprett'); ?>" name="SkjemaLagre" />
+      <input type="submit" class="btn btn-success" value=">>" name="SkjemaLagreLukk" />
     </div>
+<?php if (isset($Lokasjon)) { ?>
     <div class="btn-group" role="group">
       <button id="SkjemaAvansert" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Flere valg
@@ -41,11 +41,13 @@
         <a href="<?php echo site_url('utstyr/innholdsliste?lokasjonid='.$Lokasjon['LokasjonID']); ?>" target="_new" class="dropdown-item">Innholdsliste</a>
       </div>
     </div>
+<?php } ?>
   </div>
 </div>
 </form>
 <br />
 
+<?php if (isset($Lokasjon)) { ?>
 <h5>Kasser</h5>
 <div class="table-responsive">
   <table class="table table-bordered table-sm table-striped table-hover">
@@ -126,3 +128,4 @@
     </tbody>
   </table>
 </div>
+<?php } ?>

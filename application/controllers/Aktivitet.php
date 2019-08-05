@@ -33,11 +33,17 @@
     public function nyplukkliste() {
       $this->load->model('Brukere_model');
       $this->load->model('Aktivitet_model');
-      if ($this->input->get('aktivitetid')) {
-        $data['AktivitetID'] = $this->input->get('aktivitetid');
-      }
       $data['Aktiviteter'] = $this->Aktivitet_model->aktiviteter();
-      $data['Plukkliste'] = null;
+      $data['Plukkliste'] = array('PlukklisteID' => '',
+                                  'AktivitetID' => 0,
+				  'AnsvarligBrukerID' => $this->session->userdata('BrukerID'),
+				  'Navn' => 'Plukkliste '.date('d.m.Y'),
+				  'Notater' => '',
+				  'StatusID' => 0,
+				  'Status' => '<ny>');
+      if ($this->input->get('aktivitetid')) {
+        $data['Plukkliste']['AktivitetID'] = $this->input->get('aktivitetid');
+      }
       $data['Brukere'] = $this->Brukere_model->brukere();
       $this->template->load('standard','aktivitet/plukkliste',$data);
     }
